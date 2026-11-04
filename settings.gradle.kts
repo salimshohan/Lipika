@@ -20,7 +20,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "kiebord"
+rootProject.name = "Lipika"
 
 include(":app")
 include(":core:common")

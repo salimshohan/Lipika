@@ -10,7 +10,7 @@ android {
     ndkVersion = "26.2.11394342"
 
     defaultConfig {
-        applicationId = "com.codepotro.borno.kiebord"
+        applicationId = "com.salimshohan.lipika"
         minSdk = 24
         targetSdk = 36
         versionCode = 7

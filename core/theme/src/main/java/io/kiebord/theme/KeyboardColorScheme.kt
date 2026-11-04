@@ -289,20 +289,20 @@ data class KeyboardColorScheme(
         }
 
         val DefaultDark = KeyboardColorScheme(
-            containerBackground = Color(0xFF222222),
-            keyBackground = Color(0xFF424242),
+            containerBackground = Color(0xFF101216),
+            keyBackground = Color(0xFF1E222B),
             keyForeground = Color(0xFFFFFFFF),
             keyBorder = Color(0x00000000),
             keyShadow = Color(0x4D000000),
-            actionKeyBackground = Color(0xFF313131),
+            actionKeyBackground = Color(0xFF262C38),
             actionKeyForeground = Color(0xFFFFFFFF),
-            shiftActiveColor = Color(0xFF426DEF),
-            accentColor = Color(0xFF426DEF),
+            shiftActiveColor = Color(0xFF38BDF8),
+            accentColor = Color(0xFF38BDF8),
             moreKeysBackground = Color(0xFF424242),
-            guidelineColor = Color(0xFF426DEF),
-            suggestionBackground = Color(0xFF222222),
+            guidelineColor = Color(0xFF38BDF8),
+            suggestionBackground = Color(0xFF101216),
             suggestionForeground = Color(0xBFFFFFFF),
-            keyPressedBackground = Color(0xFF1D1D1D),
+            keyPressedBackground = Color(0xFF2C3342),
             keyPressedForeground = Color(0xFFFFFFFF)
         )
 
@@ -323,20 +323,20 @@ data class KeyboardColorScheme(
         )
 
         val DefaultLight = KeyboardColorScheme(
-            containerBackground = Color(0xFFE9EAEE),
+            containerBackground = Color(0xFFF1F5F9),
             keyBackground = Color(0xFFFFFFFF),
             keyForeground = Color(0xFF000000),
             keyBorder = Color(0x00000000),
             keyShadow = Color(0x4D000000),
-            actionKeyBackground = Color(0xFFDCDFE5),
-            actionKeyForeground = Color(0xFFFFFFFF),
-            shiftActiveColor = Color(0xFF90CAF9),
-            accentColor = Color(0xFF1973EA),
+            actionKeyBackground = Color(0xFFE2E8F0),
+            actionKeyForeground = Color(0xFF0F172A),
+            shiftActiveColor = Color(0xFF0284C7),
+            accentColor = Color(0xFF0284C7),
             moreKeysBackground = Color(0xFFFFFFFF),
-            guidelineColor = Color(0xFF1973EA),
-            suggestionBackground = Color(0xFFE9EAEE),
-            suggestionForeground = Color(0xB3000000),
-            keyPressedBackground = Color(0xFFC1C8CD),
+            guidelineColor = Color(0xFF0284C7),
+            suggestionBackground = Color(0xFFF1F5F9),
+            suggestionForeground = Color(0xD90F172A),
+            keyPressedBackground = Color(0xFFE0E7FF),
             keyPressedForeground = Color(0xFF000000)
         )
 

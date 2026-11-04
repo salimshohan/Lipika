@@ -54,9 +54,9 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
 import io.kiebord.app.R
 
-private const val GITHUB_REPO_URL = "https://github.com/JayedAhsan/Kiebord"
-private const val GITHUB_ISSUES_URL = "https://github.com/JayedAhsan/Kiebord/issues"
-private const val SUPPORT_URL = "https://jayed.me/support-kiebord"
+private const val GITHUB_REPO_URL = "https://github.com/salimshohan/Lipika"
+private const val GITHUB_ISSUES_URL = "https://github.com/salimshohan/Lipika/issues"
+private const val SUPPORT_URL = "https://github.com/salimshohan/Lipika"
 
 private data class OpenSourceLib(
     val name: String,
@@ -321,14 +321,14 @@ fun AboutScreen(
         ) {
             Image(
                 painter = painterResource(R.drawable.ic_launcher_foreground),
-                contentDescription = "Kiebord Logo",
+                contentDescription = "Lipika Logo",
                 modifier = Modifier.size(84.dp)
             )
 
             Spacer(modifier = Modifier.height(14.dp))
 
             Text(
-                text = "Kiebord",
+                text = "Lipika",
                 fontSize = 28.sp,
                 fontWeight = FontWeight.Bold,
                 color = colors.textPrimary
@@ -345,7 +345,7 @@ fun AboutScreen(
             Spacer(modifier = Modifier.height(14.dp))
 
             Text(
-                text = "Kiebord (Borno Community Edition) is a FREE, Open Source IME for Android",
+                text = "Lipika is a fresh, clean, and super-fast open-source keyboard for Android",
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Medium,
                 color = colors.textSecondary,
@@ -361,10 +361,10 @@ fun AboutScreen(
         SettingsGroup {
             SettingsNavigationItem(
                 title = "Maintainer",
-                subtitle = "Jayed Ahsan Saad (Codepotro)",
+                subtitle = "Salim Shohan",
                 icon = Icons.Outlined.Person,
                 position = GroupPosition.TOP,
-                onClick = { openUrl(context, "https://jayed.me") }
+                onClick = { openUrl(context, "https://github.com/salimshohan") }
             )
 
             SettingsNavigationItem(

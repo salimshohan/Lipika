@@ -293,7 +293,7 @@ private fun WelcomeStep(
         // App Icon
         Image(
             painter = painterResource(id = R.drawable.ic_launcher),
-            contentDescription = "Kiebord Logo",
+            contentDescription = "Lipika Logo",
             modifier = Modifier
                 .size(108.dp)
                 .clip(RoundedCornerShape(26.dp))
@@ -368,7 +368,7 @@ private fun EnableStep(
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = "Enable Kiebord",
+            text = "Enable Lipika",
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
             color = colors.textPrimary
@@ -377,7 +377,7 @@ private fun EnableStep(
         Spacer(modifier = Modifier.height(6.dp))
 
         Text(
-            text = "Turn on Kiebord in your device's language and input settings to activate keyboard services.",
+            text = "Turn on Lipika in your device's language and input settings to activate keyboard services.",
             fontSize = 13.sp,
             lineHeight = 18.sp,
             color = colors.textSecondary
@@ -400,7 +400,7 @@ private fun EnableStep(
                 )
                 Spacer(modifier = Modifier.height(10.dp))
                 Text(
-                    text = "1. Tap 'Enable in Settings' below\n2. Find 'Kiebord' in the keyboard list\n3. Toggle the switch to ON\n4. Return to this screen to continue",
+                    text = "1. Tap 'Enable in Settings' below\n2. Find 'Lipika' in the keyboard list\n3. Toggle the switch to ON\n4. Return to this screen to continue",
                     fontSize = 13.sp,
                     lineHeight = 22.sp,
                     color = colors.textSecondary
@@ -413,7 +413,7 @@ private fun EnableStep(
         // Morph Action Button
         MorphActionButton(
             text = "Enable in Settings",
-            successText = "Kiebord Enabled!",
+            successText = "Lipika Enabled!",
             icon = Icons.Outlined.Settings,
             isCompleted = isImeEnabled,
             onClick = onOpenSettings,
@@ -453,7 +453,7 @@ private fun SelectStep(
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = "Select Kiebord",
+            text = "Select Lipika",
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
             color = colors.textPrimary
@@ -462,7 +462,7 @@ private fun SelectStep(
         Spacer(modifier = Modifier.height(6.dp))
 
         Text(
-            text = "Choose Kiebord as your active input method so you can type in all your favorite apps.",
+            text = "Choose Lipika as your active input method so you can type in all your favorite apps.",
             fontSize = 13.sp,
             lineHeight = 18.sp,
             color = colors.textSecondary
@@ -484,7 +484,7 @@ private fun SelectStep(
                 )
                 Spacer(modifier = Modifier.height(10.dp))
                 Text(
-                    text = "1. Tap 'Switch Input Method' below\n2. Select 'Kiebord' from the list\n",
+                    text = "1. Tap 'Switch Input Method' below\n2. Select 'Lipika' from the list\n",
                     fontSize = 13.sp,
                     lineHeight = 22.sp,
                     color = colors.textSecondary
@@ -497,7 +497,7 @@ private fun SelectStep(
         // Morph Action Button
         MorphActionButton(
             text = "Switch Input Method",
-            successText = "Kiebord Selected!",
+            successText = "Lipika Selected!",
             icon = Icons.Outlined.SwapHoriz,
             isCompleted = isImeSelected,
             onClick = onSwitchIme,

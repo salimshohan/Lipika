@@ -35,16 +35,17 @@ import java.text.BreakIterator
 @Composable
 fun MorphGreetingText(
     words: List<String> = listOf(
-        "Free",
-        "Open Source",
-        "Multilingual",
+        "Lipika",
+        "লিপিকা",
+        "Super Fast",
+        "Fresh & Clean",
         "Privacy Focused"
     ),
     textColor: Color = if (isSystemInDarkTheme()) Color.White else Color.Black,
     fontSize: androidx.compose.ui.unit.TextUnit = 38.sp,
     height: androidx.compose.ui.unit.Dp = 72.dp,
     centerAligned: Boolean = true,
-    holdDurationMs: Long = 2200L,
+    holdDurationMs: Long = 1800L,
     modifier: Modifier = Modifier
 ) {
     if (words.isEmpty()) return
@@ -59,7 +60,7 @@ fun MorphGreetingText(
             progress.snapTo(0f)
             progress.animateTo(
                 targetValue = 1f,
-                animationSpec = tween(durationMillis = 650, easing = CubicBezierEasing(0.2f, 0.0f, 0.0f, 1.0f))
+                animationSpec = tween(durationMillis = 500, easing = CubicBezierEasing(0.2f, 0.0f, 0.0f, 1.0f))
             )
             currentIndex = nextIndex
             nextIndex = (currentIndex + 1) % words.size

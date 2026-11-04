@@ -23,7 +23,7 @@ data class KiebordPreferences(
     val vibrationType: String = VIBRATION_TYPE_HAPTIC,
     val vibrationStrength: Int = 50, // 0 - 100%
     val soundOnKeypress: Boolean = false,
-    val longPressDelayMs: Int = 300, // 150 - 600 ms
+    val longPressDelayMs: Int = 220, // 150 - 600 ms
     val cursorTrackpadEnabled: Boolean = true,
     val oneHandedMode: String = ONE_HANDED_OFF,
     val longPressDeleteEnabled: Boolean = true,
