@@ -271,20 +271,6 @@ fun KiebordSettingsApp(
     onSwitchIme: () -> Unit
 ) {
     val context = androidx.compose.ui.platform.LocalContext.current
-    val isMainScreen = currentScreen == SettingsScreen.Main
-
-    val view = androidx.compose.ui.platform.LocalView.current
-    val isDark = isSystemInDarkTheme()
-    if (!view.isInEditMode) {
-        SideEffect {
-            val window = (view.context as? android.app.Activity)?.window
-            if (window != null) {
-                val insetsController = androidx.core.view.WindowCompat.getInsetsController(window, view)
-                insetsController.isAppearanceLightStatusBars = if (isMainScreen) false else !isDark
-                insetsController.isAppearanceLightNavigationBars = !isDark
-            }
-        }
-    }
 
     val isSetupFinished = preferences.setupCompleted || preferencesRepo.isSetupCompletedSync() || (isImeEnabled && isImeSelected)
 
@@ -314,6 +300,21 @@ fun KiebordSettingsApp(
     }
     var currentScreen by remember(initialScreen) { mutableStateOf<SettingsScreen>(initialScreen) }
     var backStack by remember { mutableStateOf<List<SettingsScreen>>(emptyList()) }
+
+    val isMainScreen = currentScreen == SettingsScreen.Main
+
+    val view = androidx.compose.ui.platform.LocalView.current
+    val isDark = isSystemInDarkTheme()
+    if (!view.isInEditMode) {
+        SideEffect {
+            val window = (view.context as? android.app.Activity)?.window
+            if (window != null) {
+                val insetsController = androidx.core.view.WindowCompat.getInsetsController(window, view)
+                insetsController.isAppearanceLightStatusBars = if (isMainScreen) false else !isDark
+                insetsController.isAppearanceLightNavigationBars = !isDark
+            }
+        }
+    }
 
     LaunchedEffect(navigationTarget) {
         if (navigationTarget != null) {
