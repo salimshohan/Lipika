@@ -205,6 +205,14 @@ class KiebordPreferencesRepository private constructor(private val context: Cont
         context.kiebordDataStore.edit { it[PreferencesKeys.THEME] = theme }
     }
 
+    suspend fun updateSelectedFont(font: String) {
+        context.kiebordDataStore.edit { it[PreferencesKeys.SELECTED_FONT] = font }
+    }
+
+    suspend fun updateCustomFontPath(path: String) {
+        context.kiebordDataStore.edit { it[PreferencesKeys.CUSTOM_FONT_PATH] = path }
+    }
+
     suspend fun updateKeyboardHeightScale(scale: Float) {
         context.kiebordDataStore.edit { it[PreferencesKeys.KEYBOARD_HEIGHT_SCALE] = scale }
     }

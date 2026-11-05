@@ -1,4 +1,6 @@
 package io.kiebord.app.ui.settings
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Card
 
 import android.content.Intent
 import android.net.Uri
@@ -385,10 +387,8 @@ fun AppearanceThemesScreen(
                 }
             }
         }
-    }
-
-        }
-    }
+        } // closes else {
+    } // closes outer Column
 
     previewThemeOption?.let { currentPreview ->
         var previewShowKeyBorders by remember(currentPreview.id, preferences.showKeyBorders) {
