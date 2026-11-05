@@ -47,6 +47,8 @@ import io.kiebord.feature.ime.translit.BornoTransliterationManager
 import io.kiebord.feature.ime.translit.GenericTransliterationManager
 import io.kiebord.feature.ime.translit.TransliterationManager
 import io.kiebord.feature.ime.ui.emoji.EmojiFontManager
+import io.kiebord.feature.ime.ui.emoji.EmojiPredictionEngine
+import io.kiebord.feature.ime.filter.OffensiveWordsFilter
 import androidx.compose.ui.unit.dp
 import io.kiebord.data.prefs.KiebordPreferences
 import io.kiebord.data.prefs.KiebordPreferencesRepository
@@ -1073,7 +1075,8 @@ class KiebordService : InputMethodService() {
                 }
                 val translitMgr = getTransliterationManager()
                 if (translitMgr.isComposing) {
-                    val committed = translitMgr.currentTransliteration
+                    val candidateToCommit = if (preferencesState.autoCorrection && activeSuggestions.isNotEmpty() && activeSuggestions.first().isPrimary) activeSuggestions.first().text else translitMgr.currentTransliteration
+                    val committed = candidateToCommit
                     val cleanCommitted = committed.trim()
                     if (preferencesState.learnedWordsEnabled && cleanCommitted.length >= UserDictionaryRepository.MIN_LEARN_LENGTH) {
                         val prevWord = getPrecedingWord(excludeComposing = true).takeIf { it.isNotBlank() }
@@ -1083,7 +1086,8 @@ class KiebordService : InputMethodService() {
                     translitMgr.reset()
                     lastSpaceTapTime = SystemClock.uptimeMillis()
                 } else if (composingBuffer.isNotEmpty()) {
-                    val committed = BengaliBstiEngine.cleanPending(composingBuffer.toString())
+                    val candidateToCommit = if (preferencesState.autoCorrection && activeSuggestions.isNotEmpty() && activeSuggestions.first().isPrimary) activeSuggestions.first().text else BengaliBstiEngine.cleanPending(composingBuffer.toString())
+                    val committed = candidateToCommit
                     val cleanCommitted = committed.trim()
                     if (preferencesState.learnedWordsEnabled && cleanCommitted.length >= UserDictionaryRepository.MIN_LEARN_LENGTH) {
                         val prevWord = getPrecedingWord(excludeComposing = true).takeIf { it.isNotBlank() }
@@ -2144,7 +2148,7 @@ class KiebordService : InputMethodService() {
 
         if (isGestureAlternativeActive && lastGestureCommittedWord.isNotEmpty()) {
             val prevWord = getPrecedingWord(excludeComposing = true)
-            if (preferencesState.learnedWordsEnabled && candidateText.length >= UserDictionaryRepository.MIN_LEARN_LENGTH) {
+        if (!candidate.isEmoji && preferencesState.learnedWordsEnabled && candidateText.length >= UserDictionaryRepository.MIN_LEARN_LENGTH) {
                 repeat(3) {
                     userDictionaryRepo.recordWord(candidateText, prevWord, isGesture = true)
                 }
@@ -2158,7 +2162,7 @@ class KiebordService : InputMethodService() {
             return
         }
 
-        if (preferencesState.learnedWordsEnabled && candidateText.length >= UserDictionaryRepository.MIN_LEARN_LENGTH) {
+        if (!candidate.isEmoji && preferencesState.learnedWordsEnabled && candidateText.length >= UserDictionaryRepository.MIN_LEARN_LENGTH) {
             val prevWord = getPrecedingWord(excludeComposing = true)
             userDictionaryRepo.recordWord(candidateText, prevWord)
         }
@@ -2202,12 +2206,32 @@ class KiebordService : InputMethodService() {
             ?: (layoutId == "en_qwerty" || layoutId == "bn_borno" || layoutId == "bn_avro")
     }
 
+    private fun injectEmojiPredictions(candidates: List<SuggestionCandidate>, queryWord: String?): List<SuggestionCandidate> {
+        if (!preferencesState.emojiPredictionEnabled || queryWord.isNullOrBlank()) return candidates
+        val predicted = EmojiPredictionEngine.predictEmojis(queryWord, limit = 2)
+        if (predicted.isEmpty()) return candidates
+        val emojiCandidates = predicted.filter { e -> candidates.none { it.text == e } }
+            .map { SuggestionCandidate(text = it, isPrimary = false, isEmoji = true) }
+        if (emojiCandidates.isEmpty()) return candidates
+        return if (candidates.size <= 1) {
+            candidates + emojiCandidates
+        } else {
+            listOf(candidates[0]) + emojiCandidates + candidates.drop(1)
+        }
+    }
+
     private fun filterCandidatesForLayout(candidates: List<SuggestionCandidate>): List<SuggestionCandidate> {
         if (candidates.isEmpty()) return emptyList()
         val isBangla = isBanglaLayout()
         val isEnglish = isEnglishLayout()
         return candidates.filter { cand ->
             val text = cand.text
+            if (preferencesState.filterOffensiveWords && OffensiveWordsFilter.isOffensive(cand.text)) {
+                return@filter false
+            }
+            if (cand.isEmoji) {
+                return@filter true
+            }
             if (cand.rawInput != null && cand.text == cand.rawInput) {
                 true
             } else {
@@ -2220,8 +2244,9 @@ class KiebordService : InputMethodService() {
         }
     }
 
-    private fun filterAndMarkCandidates(candidates: List<SuggestionCandidate>): List<SuggestionCandidate> {
-        val filtered = filterCandidatesForLayout(candidates)
+    private fun filterAndMarkCandidates(candidates: List<SuggestionCandidate>, queryWord: String? = null): List<SuggestionCandidate> {
+        val withEmojis = if (queryWord != null) injectEmojiPredictions(candidates, queryWord) else candidates
+        val filtered = filterCandidatesForLayout(withEmojis)
         if (filtered.isEmpty()) return emptyList()
         val marked = markLearnedCandidates(filtered)
         val hasExplicitPrimary = marked.any { it.isPrimary }
@@ -2426,7 +2451,7 @@ class KiebordService : InputMethodService() {
                     }
                 }
 
-                activeSuggestions = filterAndMarkCandidates(list.take(12))
+                activeSuggestions = filterAndMarkCandidates(list.take(12), primaryWord.ifEmpty { raw })
             } else {
                 if (!preferencesState.nextWordPrediction || hasDoubleOrGreaterSpacing()) {
                     activeSuggestions = emptyList()
@@ -2442,7 +2467,7 @@ class KiebordService : InputMethodService() {
                 val merged = (learnedNext + predictions).distinct().take(12)
                 activeSuggestions = filterAndMarkCandidates(merged.mapIndexed { idx, word ->
                     SuggestionCandidate(text = word, isPrimary = idx == 0)
-                })
+                }, prev)
             }
             return
         }
@@ -2466,7 +2491,7 @@ class KiebordService : InputMethodService() {
                         if (!containsLatinText(prefix)) {
                             listOf(SuggestionCandidate(text = prefix, isPrimary = true))
                         } else emptyList()
-                    })
+                    }, prefix)
                 } else {
                     if (!preferencesState.nextWordPrediction || hasDoubleOrGreaterSpacing()) {
                         activeSuggestions = emptyList()
@@ -2480,9 +2505,9 @@ class KiebordService : InputMethodService() {
                         NativeEngine.queryNextWords(prev, activeLayout.id, 10).filter { !containsLatinText(it) }
                     } else emptyList()
                     val merged = (learnedNext + predictions).distinct().take(12)
-                    activeSuggestions = filterAndMarkCandidates(merged.mapIndexed { idx, word ->
+                activeSuggestions = filterAndMarkCandidates(merged.mapIndexed { idx, word ->
                         SuggestionCandidate(text = word, isPrimary = idx == 0)
-                    })
+                }, prev)
                 }
             }
             "en_qwerty" -> {
@@ -2502,7 +2527,7 @@ class KiebordService : InputMethodService() {
                         if (!containsBengaliText(prefix)) {
                             listOf(SuggestionCandidate(text = prefix, isPrimary = true))
                         } else emptyList()
-                    })
+                    }, prefix)
                 } else {
                     if (!preferencesState.nextWordPrediction || hasDoubleOrGreaterSpacing()) {
                         activeSuggestions = emptyList()
@@ -2516,9 +2541,9 @@ class KiebordService : InputMethodService() {
                         NativeEngine.queryNextWords(prev, activeLayout.id, 10).filter { !containsBengaliText(it) }
                     } else emptyList()
                     val merged = (learnedNext + predictions).distinct().take(12)
-                    activeSuggestions = filterAndMarkCandidates(merged.mapIndexed { idx, word ->
+                activeSuggestions = filterAndMarkCandidates(merged.mapIndexed { idx, word ->
                         SuggestionCandidate(text = word, isPrimary = idx == 0)
-                    })
+                }, prev)
                 }
             }
             else -> {

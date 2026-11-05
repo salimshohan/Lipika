@@ -227,6 +227,24 @@ class UserDictionaryRepository internal constructor(private val baseDir: File) {
     /**
      * Unlearns and deletes a word from frequencies, gesture history, and bigram models.
      */
+    /**
+     * Manually adds a custom word to the user dictionary and persists it.
+     */
+    fun addCustomWord(word: String): Boolean {
+        val clean = word.trim()
+        if (clean.length < MIN_LEARN_LENGTH || clean.length > MAX_WORD_LENGTH) return false
+        wordFrequencies[clean] = (wordFrequencies[clean] ?: 0).coerceAtLeast(MIN_LEARN_OCCURRENCES + 5)
+        scheduleDebouncedSave()
+        return true
+    }
+
+    /**
+     * Deletes a custom word from the user dictionary.
+     */
+    fun deleteCustomWord(word: String) {
+        unlearnWord(word)
+    }
+
     fun unlearnWord(word: String) {
         val clean = word.trim()
         if (clean.isEmpty()) return

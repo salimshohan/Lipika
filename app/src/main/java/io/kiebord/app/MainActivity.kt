@@ -59,6 +59,7 @@ import io.kiebord.app.ui.settings.BackupRestoreScreen
 import io.kiebord.app.ui.settings.ClipboardSettingsScreen
 import io.kiebord.app.ui.settings.FontsScreen
 import io.kiebord.app.ui.settings.CorrectionsSuggestionsScreen
+import io.kiebord.app.ui.settings.SmartTypingScreen
 import io.kiebord.app.ui.settings.DarkSettingsColors
 import io.kiebord.app.ui.settings.KeyboardLayoutsScreen
 import io.kiebord.app.ui.settings.LightSettingsColors
@@ -292,6 +293,8 @@ fun KiebordSettingsApp(
             SettingsScreen.Clipboard
         } else if (target == "preferences") {
             SettingsScreen.Preferences
+        } else if (target == "smart_typing" || target == "typing" || target == "corrections" || target == "suggestions") {
+            SettingsScreen.SmartTyping
         } else if (!isSetupFinished) {
             SettingsScreen.Onboarding
         } else {
@@ -341,6 +344,12 @@ fun KiebordSettingsApp(
                     if (currentScreen != SettingsScreen.Clipboard) {
                         backStack = listOf(SettingsScreen.Main)
                         currentScreen = SettingsScreen.Clipboard
+                    }
+                }
+                "smart_typing", "typing", "corrections", "suggestions" -> {
+                    if (currentScreen != SettingsScreen.SmartTyping) {
+                        backStack = listOf(SettingsScreen.Main)
+                        currentScreen = SettingsScreen.SmartTyping
                     }
                 }
             }
@@ -578,8 +587,8 @@ fun KiebordSettingsApp(
                         )
                     }
 
-                    is SettingsScreen.CorrectionsSuggestions -> {
-                        CorrectionsSuggestionsScreen(
+                    is SettingsScreen.SmartTyping, is SettingsScreen.CorrectionsSuggestions -> {
+                        SmartTypingScreen(
                             preferences = preferences,
                             onUpdateSuggestionsEnabled = { enabled ->
                                 scope.launch { preferencesRepo.updateSuggestionsEnabled(enabled) }
@@ -587,20 +596,44 @@ fun KiebordSettingsApp(
                             onUpdateNextWordPrediction = { enabled ->
                                 scope.launch { preferencesRepo.updateNextWordPrediction(enabled) }
                             },
+                            onUpdateEmojiPredictionEnabled = { enabled ->
+                                scope.launch { preferencesRepo.updateEmojiPredictionEnabled(enabled) }
+                            },
+                            onUpdateLearnedWordsEnabled = { enabled ->
+                                scope.launch { preferencesRepo.updateLearnedWordsEnabled(enabled) }
+                            },
+                            onUpdateFilterOffensiveWords = { enabled ->
+                                scope.launch { preferencesRepo.updateFilterOffensiveWords(enabled) }
+                            },
+                            onUpdateAutoCorrection = { enabled ->
+                                scope.launch { preferencesRepo.updateAutoCorrection(enabled) }
+                            },
                             onUpdatePhoneticAutoCorrect = { enabled ->
                                 scope.launch { preferencesRepo.updatePhoneticAutoCorrect(enabled) }
+                            },
+                            onUpdateSmartSpellChecker = { enabled ->
+                                scope.launch { preferencesRepo.updateSmartSpellChecker(enabled) }
+                            },
+                            onUpdateCustomWordLearning = { enabled ->
+                                scope.launch { preferencesRepo.updateCustomWordLearning(enabled) }
+                            },
+                            onAddCustomWord = { word ->
+                                UserDictionaryRepository.getInstance(context).addCustomWord(word)
+                            },
+                            onDeleteCustomWord = { word ->
+                                UserDictionaryRepository.getInstance(context).deleteCustomWord(word)
+                            },
+                            onDeleteLearnedWords = {
+                                UserDictionaryRepository.getInstance(context).clearAll()
+                            },
+                            getLearnedWords = {
+                                UserDictionaryRepository.getInstance(context).getAllLearnedWords(limit = 200)
                             },
                             onUpdateBengaliSmartPhonetic = { enabled ->
                                 scope.launch { preferencesRepo.updateBengaliSmartPhonetic(enabled) }
                             },
                             onUpdateBengaliShowRawInputCandidate = { enabled ->
                                 scope.launch { preferencesRepo.updateBengaliShowRawInputCandidate(enabled) }
-                            },
-                            onUpdateLearnedWordsEnabled = { enabled ->
-                                scope.launch { preferencesRepo.updateLearnedWordsEnabled(enabled) }
-                            },
-                            onDeleteLearnedWords = {
-                                UserDictionaryRepository.getInstance(context).clearAll()
                             },
                             onUpdateGestureTyping = { enabled ->
                                 scope.launch { preferencesRepo.updateGestureTypingEnabled(enabled) }
@@ -629,7 +662,6 @@ fun KiebordSettingsApp(
                             onBack = navigateBack
                         )
                     }
-
                     is SettingsScreen.Clipboard -> {
                         ClipboardSettingsScreen(
                             clipboardManager = SandboxedClipboardManager.getInstance(context),

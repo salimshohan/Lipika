@@ -47,7 +47,8 @@ data class SuggestionCandidate(
     val text: String,
     val isPrimary: Boolean = false,
     val rawInput: String? = null,
-    val isLearned: Boolean = false
+    val isLearned: Boolean = false,
+    val isEmoji: Boolean = false
 )
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -93,7 +94,7 @@ fun SuggestionStripView(
                     style = TextStyle(
                         fontSize = fontSize,
                         fontWeight = fontWeight,
-                        fontFamily = fontFamily,
+                        fontFamily = if (candidate.isEmoji) androidx.compose.ui.text.font.FontFamily.Default else fontFamily,
                         letterSpacing = 0.sp
                     ),
                     maxLines = 1
@@ -209,13 +210,14 @@ fun SuggestionStripView(
                                 Text(
                                     text = candidate.text,
                                     color = when {
+                                        candidate.isEmoji -> androidx.compose.ui.graphics.Color.Unspecified
                                         isPrimary -> primaryTextColor
                                         isRaw -> colorScheme.effectiveToolbarForeground.copy(alpha = 0.88f)
                                         else -> colorScheme.effectiveToolbarForeground.copy(alpha = 0.72f)
                                     },
                                     fontSize = if (isPrimary) 18.5.sp else 17.5.sp,
                                     fontWeight = if (isPrimary) FontWeight.SemiBold else FontWeight.Normal,
-                                    fontFamily = fontFamily,
+                                    fontFamily = if (candidate.isEmoji) androidx.compose.ui.text.font.FontFamily.Default else fontFamily,
                                     textAlign = TextAlign.Center,
                                     maxLines = 1,
                                     softWrap = false,
@@ -271,6 +273,7 @@ fun SuggestionStripView(
                                 Text(
                                     text = candidate.text,
                                     color = when {
+                                        candidate.isEmoji -> androidx.compose.ui.graphics.Color.Unspecified
                                         isPrimary -> primaryTextColor
                                         isRaw -> colorScheme.effectiveToolbarForeground.copy(alpha = 0.88f)
                                         else -> colorScheme.effectiveToolbarForeground.copy(alpha = 0.72f)

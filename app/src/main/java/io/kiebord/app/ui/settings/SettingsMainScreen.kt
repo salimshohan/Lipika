@@ -23,6 +23,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.outlined.Check
+import androidx.compose.material.icons.outlined.AutoAwesome
 import androidx.compose.material.icons.outlined.FontDownload
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Language
@@ -409,11 +410,17 @@ fun SettingsMainScreen(
                 modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(22.dp)
             ) {
-                // Row 1: [Fonts]  [Theme]  [Language]
+                // Row 1: [Smart Typing]  [Fonts]  [Theme]
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
+                    CircularDashboardButton(
+                        icon = Icons.Outlined.AutoAwesome,
+                        label = "Smart Typing",
+                        colors = colors,
+                        onClick = { onNavigate(SettingsScreen.SmartTyping) }
+                    )
                     CircularDashboardButton(
                         icon = Icons.Outlined.FontDownload,
                         label = "Fonts",
@@ -426,19 +433,19 @@ fun SettingsMainScreen(
                         colors = colors,
                         onClick = { onNavigate(SettingsScreen.AppearanceThemes(0)) }
                     )
+                }
+
+                // Row 2: [Language]  [Preferences]  [Clipboard]
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
                     CircularDashboardButton(
                         icon = Icons.Outlined.Language,
                         label = "Language",
                         colors = colors,
                         onClick = { onNavigate(SettingsScreen.KeyboardLayouts) }
                     )
-                }
-
-                // Row 2: [Preferences]  [Clipboard]  [About]
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceEvenly
-                ) {
                     CircularDashboardButton(
                         icon = Icons.Outlined.Tune,
                         label = "Preferences",
@@ -451,6 +458,13 @@ fun SettingsMainScreen(
                         colors = colors,
                         onClick = { onNavigate(SettingsScreen.Clipboard) }
                     )
+                }
+
+                // Row 3: [About]
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+                ) {
                     CircularDashboardButton(
                         icon = Icons.Outlined.Info,
                         label = "About",
@@ -461,7 +475,6 @@ fun SettingsMainScreen(
             }
 
             Spacer(modifier = Modifier.height(30.dp))
-
             // 4. Interactive Live Typing Sandbox Field
             Card(
                 modifier = Modifier.fillMaxWidth(),

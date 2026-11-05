@@ -64,7 +64,12 @@ class KiebordPreferencesRepository private constructor(private val context: Cont
 
         val SUGGESTIONS_ENABLED = booleanPreferencesKey("pref_suggestions_enabled")
         val NEXT_WORD_PREDICTION = booleanPreferencesKey("pref_next_word_prediction")
+        val EMOJI_PREDICTION_ENABLED = booleanPreferencesKey("pref_emoji_prediction_enabled")
+        val FILTER_OFFENSIVE_WORDS = booleanPreferencesKey("pref_filter_offensive_words")
+        val AUTO_CORRECTION = booleanPreferencesKey("pref_auto_correction")
         val PHONETIC_AUTO_CORRECT = booleanPreferencesKey("pref_phonetic_auto_correct")
+        val SMART_SPELL_CHECKER = booleanPreferencesKey("pref_smart_spell_checker")
+        val CUSTOM_WORD_LEARNING = booleanPreferencesKey("pref_custom_word_learning")
         val BENGALI_SMART_PHONETIC = booleanPreferencesKey("pref_bengali_smart_phonetic")
         val BENGALI_SHOW_RAW_INPUT_CANDIDATE = booleanPreferencesKey("pref_bengali_show_raw_input_candidate")
         val LEARNED_WORDS_ENABLED = booleanPreferencesKey("pref_learned_words_enabled")
@@ -140,7 +145,12 @@ class KiebordPreferencesRepository private constructor(private val context: Cont
 
                 suggestionsEnabled = prefs[PreferencesKeys.SUGGESTIONS_ENABLED] ?: true,
                 nextWordPrediction = prefs[PreferencesKeys.NEXT_WORD_PREDICTION] ?: true,
+                emojiPredictionEnabled = prefs[PreferencesKeys.EMOJI_PREDICTION_ENABLED] ?: true,
+                filterOffensiveWords = prefs[PreferencesKeys.FILTER_OFFENSIVE_WORDS] ?: true,
+                autoCorrection = prefs[PreferencesKeys.AUTO_CORRECTION] ?: true,
                 phoneticAutoCorrect = prefs[PreferencesKeys.PHONETIC_AUTO_CORRECT] ?: true,
+                smartSpellChecker = prefs[PreferencesKeys.SMART_SPELL_CHECKER] ?: true,
+                customWordLearning = prefs[PreferencesKeys.CUSTOM_WORD_LEARNING] ?: true,
                 bengaliSmartPhonetic = prefs[PreferencesKeys.BENGALI_SMART_PHONETIC] ?: true,
                 bengaliShowRawInputCandidate = prefs[PreferencesKeys.BENGALI_SHOW_RAW_INPUT_CANDIDATE] ?: true,
                 learnedWordsEnabled = prefs[PreferencesKeys.LEARNED_WORDS_ENABLED] ?: true,
@@ -372,6 +382,26 @@ class KiebordPreferencesRepository private constructor(private val context: Cont
 
     suspend fun updateNextWordPrediction(enabled: Boolean) {
         context.kiebordDataStore.edit { it[PreferencesKeys.NEXT_WORD_PREDICTION] = enabled }
+    }
+
+    suspend fun updateEmojiPredictionEnabled(enabled: Boolean) {
+        context.kiebordDataStore.edit { it[PreferencesKeys.EMOJI_PREDICTION_ENABLED] = enabled }
+    }
+
+    suspend fun updateFilterOffensiveWords(enabled: Boolean) {
+        context.kiebordDataStore.edit { it[PreferencesKeys.FILTER_OFFENSIVE_WORDS] = enabled }
+    }
+
+    suspend fun updateAutoCorrection(enabled: Boolean) {
+        context.kiebordDataStore.edit { it[PreferencesKeys.AUTO_CORRECTION] = enabled }
+    }
+
+    suspend fun updateSmartSpellChecker(enabled: Boolean) {
+        context.kiebordDataStore.edit { it[PreferencesKeys.SMART_SPELL_CHECKER] = enabled }
+    }
+
+    suspend fun updateCustomWordLearning(enabled: Boolean) {
+        context.kiebordDataStore.edit { it[PreferencesKeys.CUSTOM_WORD_LEARNING] = enabled }
     }
 
     suspend fun updatePhoneticAutoCorrect(enabled: Boolean) {

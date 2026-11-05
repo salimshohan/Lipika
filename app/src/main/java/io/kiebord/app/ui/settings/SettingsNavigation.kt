@@ -10,6 +10,7 @@ sealed class SettingsScreen {
     data class ThemeDesigner(val editingThemeId: String? = null) : SettingsScreen()
     data object KeyboardLayouts : SettingsScreen()
     data object Preferences : SettingsScreen()
+    data object SmartTyping : SettingsScreen()
     data object CorrectionsSuggestions : SettingsScreen()
     data object Clipboard : SettingsScreen()
     data object VoiceTyping : SettingsScreen()

@@ -40,13 +40,18 @@ data class KiebordPreferences(
         LAYOUT_BN_AVRO
     ),
 
-    // Corrections & Suggestions
+    // Smart Typing: Corrections & Suggestions
     val suggestionsEnabled: Boolean = true,
     val nextWordPrediction: Boolean = true,
+    val emojiPredictionEnabled: Boolean = true,
+    val learnedWordsEnabled: Boolean = true,
+    val filterOffensiveWords: Boolean = true,
+    val autoCorrection: Boolean = true,
     val phoneticAutoCorrect: Boolean = true,
+    val smartSpellChecker: Boolean = true,
+    val customWordLearning: Boolean = true,
     val bengaliSmartPhonetic: Boolean = true,
     val bengaliShowRawInputCandidate: Boolean = true,
-    val learnedWordsEnabled: Boolean = true,
     val gestureTypingEnabled: Boolean = true,
     val showGestureTrail: Boolean = true,
     val autoCapitalization: Boolean = true,
