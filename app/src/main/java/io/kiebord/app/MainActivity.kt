@@ -273,7 +273,7 @@ fun KiebordSettingsApp(
         if (target == "layouts") {
             SettingsScreen.KeyboardLayouts
         } else if (target == "themes" || target == "appearance" || pendingThemeImportUri != null) {
-            SettingsScreen.AppearanceThemes
+            SettingsScreen.AppearanceThemes()
         } else if (target == "clipboard") {
             SettingsScreen.Clipboard
         } else if (target == "preferences") {
@@ -291,9 +291,9 @@ fun KiebordSettingsApp(
         if (navigationTarget != null) {
             when (navigationTarget) {
                 "themes", "appearance" -> {
-                    if (currentScreen != SettingsScreen.AppearanceThemes) {
+                    if (currentScreen !is SettingsScreen.AppearanceThemes) {
                         backStack = listOf(SettingsScreen.Main)
-                        currentScreen = SettingsScreen.AppearanceThemes
+                        currentScreen = SettingsScreen.AppearanceThemes()
                     }
                 }
                 "layouts" -> {
