@@ -334,8 +334,7 @@ fun AppearanceThemesScreen(
                 }
             }
         }
-        } // closes else {
-    } // closes outer Column
+    }
 
     previewThemeOption?.let { currentPreview ->
         var previewShowKeyBorders by remember(currentPreview.id, preferences.showKeyBorders) {
