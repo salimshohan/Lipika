@@ -72,12 +72,12 @@ jobs:
           body: |
             ### 🌟 Lipika Keyboard ${{ github.ref_name }} Release
             
-            - **🌄 New Scenic Mountain Sunset Dashboard**: Modern floating status card with [Lipika Keyboard • Active], quick split Theme/Layout columns, and 6 circular action buttons (Shop, Theme, Customize, Settings, Clipboard, Survey) inspired by modern keyboard dashboards.
+            - **💎 Official Cyber Bengali Launcher Icon**: Full fidelity conversion of `docs/logo.svg` into Android Adaptive Icons (with safe-zone compliance against circular/squircle masks) and ultra-crisp legacy density mipmaps (`mdpi` through `xxxhdpi`).
+            - **🌄 Scenic Mountain Sunset Dashboard**: Modern floating status card with [Lipika Keyboard • Active], quick split Theme/Layout columns, and 6 circular action buttons (Shop, Theme, Customize, Settings, Clipboard, Survey) inspired by modern keyboard dashboards.
             - **🔑 Permanent Debug Keystore**: Fixed Android app update conflict (`INSTALL_FAILED_UPDATE_INCOMPATIBLE`) so updates install seamlessly over existing installations.
             - **🔤 App-Wide Dynamic Typography**: Selecting any font from Font Studio (Tw Cent MT, Kalpurush, Segoe UI, Georgia, Consolas, or custom font) instantly applies to the entire app interface.
             - **😀 Bottom Bar Emoji Key & iOS-Style Emoji Picker**: Language globe icon replaced with Emoji icon on the spacebar row (tap to toggle emoji, long-press to switch language) and spacious iOS-style emoji grid preview.
             - **✂️ English-Exclusive Shortcuts**: Direct Cut (`x`), Copy (`c`), Paste (`v`), and Select All (`z`) strictly active only in the English keyboard layout.
-            - **🎨 Synchronized Vector Logo**: Modern Bengali 'ল' & cyber keycap emblem unified across app icons, splash, and documentation.
             - **👤 Sole Developer**: Salim Hosen Shohan, University of Rajshahi.
           files: dist/Lipika.apk
         env:
