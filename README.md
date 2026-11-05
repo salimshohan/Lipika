@@ -51,10 +51,10 @@ Lipika features 5 carefully chosen layouts:
 | Layout | Description |
 |---|---|
 | **English (QWERTY)** | Standard English keyboard with direct copy/paste shortcuts and number flicking. |
-| **Provat (প্রভাত)** | Popular fixed traditional Bengali layout for fast typing. |
-| **Avro Phonetic (অভ্র)** | Intuitive phonetic typing (`ami` → `আমি`) powered by the native engine. |
+| **বাংলা (প্রভাত)** | Popular fixed traditional Bengali layout for fast typing. |
+| **বাংলা (অভ্র)** | Intuitive phonetic typing (`ami` → `আমি`) powered by the native engine. |
 | **Arabic (العربية)** | Standard Arabic layout with full Harakat diacritics. |
-| **Bangla Jatiyo (জাতীয়)** | Official National BSTI layout standard. |
+| **বাংলা (জাতীয়)** | Official National BSTI layout standard. |
 
 ---
 
@@ -71,4 +71,4 @@ Lipika features 5 carefully chosen layouts:
 
 Download the latest pre-built APK directly from GitHub Releases:
 
-👉 **[Download Lipika v0.1.9 APK](https://github.com/salimshohan/Lipika/releases/download/v0.1.9/Lipika.apk)**
+👉 **[Download Lipika v0.2.1 APK](https://github.com/salimshohan/Lipika/releases/download/v0.2.1/Lipika.apk)**
