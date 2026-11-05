@@ -418,13 +418,6 @@ fun KeyboardRootView(
         }
         if (key.type == KeyType.SWITCH_LANGUAGE) {
             isEmojiOpen = !isEmojiOpen
-            if (isEmojiOpen) {
-                isToolsDrawerOpen = false
-                isClipboardOpen = false
-                isResizerOpen = false
-                isTextEditOpen = false
-                isSuggestionsExpanded = false
-            }
         } else if (isEmojiSearchOpen) {
             when (key.type) {
                 KeyType.CHARACTER -> {
