@@ -198,31 +198,7 @@ fun KeyboardLayoutsScreen(
         availableMeta = loadedMeta
     }
 
-    val curatedIds = remember(englishCard, banglaCards, arabicCard) {
-        (listOf(englishCard.id) + banglaCards.map { it.id } + listOf(arabicCard.id)).toSet()
-    }
-    val otherBundledMeta = remember(availableMeta, curatedIds) {
-        emptyList()
-    }
-    var otherBundledCards by remember { mutableStateOf<List<LayoutCardData>>(emptyList()) }
-
-    LaunchedEffect(otherBundledMeta, reloadTrigger) {
-        val cards = withContext(Dispatchers.IO) {
-            otherBundledMeta.map { meta ->
-                val def = layoutRepo.getLayout(meta.id)
-                val badge = (meta.displayName ?: meta.language).uppercase().take(4)
-                val desc = "Bundled ${meta.displayName ?: meta.name} layout"
-                LayoutCardData(
-                    id = meta.id,
-                    name = meta.displayName ?: meta.name,
-                    badge = badge,
-                    description = desc,
-                    layoutDef = def
-                )
-            }
-        }
-        otherBundledCards = cards
-    }
+    val otherBundledCards = emptyList<LayoutCardData>()
 
     val customMeta = remember(availableMeta) { availableMeta.filter { it.isCustom } }
     var customCards by remember { mutableStateOf<List<LayoutCardData>>(emptyList()) }

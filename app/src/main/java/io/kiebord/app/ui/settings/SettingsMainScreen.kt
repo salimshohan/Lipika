@@ -366,8 +366,9 @@ private fun SmartSettingsTile(
 
     SettingsItemCard(
         position = position,
-        onClick = onClick,
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick)
     ) {
         Row(
             modifier = Modifier
