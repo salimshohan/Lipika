@@ -37,10 +37,10 @@
     {
       "keys": [
         { "type": "shift", "icon": "shift", "width": 1.5 },
-        { "label": "z", "flickUp": "_", "moreKeys": ["/", "ž", "ź", "ż"] },
-        { "label": "x", "flickUp": "\"", "moreKeys": ["\\", "×"] },
-        { "label": "c", "flickUp": "'", "moreKeys": ["ç", "ć", "č", "©", "¢"] },
-        { "label": "v", "flickUp": ":", "moreKeys": ["\"", "✓"] },
+        { "label": "z", "flickUp": "_", "moreKeys": ["ACTION_SELECT_ALL", "/", "ž", "ź", "ż"] },
+        { "label": "x", "flickUp": "\"", "moreKeys": ["ACTION_CUT", "\\", "×"] },
+        { "label": "c", "flickUp": "'", "moreKeys": ["ACTION_COPY", "ç", "ć", "č", "©", "¢"] },
+        { "label": "v", "flickUp": ":", "moreKeys": ["ACTION_PASTE", "\"", "✓"] },
         { "label": "b", "flickUp": ";", "moreKeys": ["[", "•"] },
         { "label": "n", "flickUp": "!", "moreKeys": ["]", "ñ", "ń", "ņ", "ň"] },
         { "label": "m", "flickUp": "?", "moreKeys": ["¿", "µ"] },

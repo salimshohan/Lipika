@@ -3,6 +3,8 @@ name: Build Lipika Debug APK
 on:
   push:
     branches: [ main ]
+    tags:
+      - 'v*'
   workflow_dispatch:
 
 permissions:
@@ -61,13 +63,20 @@ jobs:
           name: Lipika-APK
           path: dist/Lipika.apk
 
-      - name: Release Latest Lipika APK
+      - name: Release Lipika APK
         uses: softprops/action-gh-release@v2
-        if: github.ref == 'refs/heads/main'
         with:
-          tag_name: latest
-          name: "Lipika Latest Release"
-          body: "Automatic build for Lipika Keyboard (Android)."
+          tag_name: v0.1.5
+          name: "Lipika v0.1.5"
+          body: |
+            ### 🌟 Lipika Keyboard v0.1.5 Release
+            
+            - **Brand New Smart Home UI**: Redesigned home interface with live typing test area and quick settings.
+            - **New Lipika Logo**: Fresh vector app icon and launcher graphics.
+            - **Tw Cent MT & Custom Font Support**: 10 font choices plus direct `.ttf` / `.otf` custom font loader.
+            - **Curated Layouts**: English, Ovro, Bangla Jatiyo, Provat, and Arabic.
+            - **English Clipboard Shortcuts**: Quick Cut (x), Copy (c), and Paste (v) directly on keyboard keys.
+            - **Developer**: Salim Hosen Shohan, University of Rajshahi.
           files: dist/Lipika.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

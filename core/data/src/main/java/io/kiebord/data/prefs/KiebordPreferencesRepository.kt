@@ -33,6 +33,8 @@ class KiebordPreferencesRepository private constructor(private val context: Cont
 
     private object PreferencesKeys {
         val THEME = stringPreferencesKey("pref_theme")
+        val SELECTED_FONT = stringPreferencesKey("pref_selected_font")
+        val CUSTOM_FONT_PATH = stringPreferencesKey("pref_custom_font_path")
         val KEYBOARD_HEIGHT_SCALE = floatPreferencesKey("pref_keyboard_height_scale")
         val KEYBOARD_HEIGHT_SCALE_LANDSCAPE = floatPreferencesKey("pref_keyboard_height_scale_landscape")
         val CHIN_PADDING_PORTRAIT = floatPreferencesKey("pref_chin_padding_portrait")
@@ -93,6 +95,8 @@ class KiebordPreferencesRepository private constructor(private val context: Cont
         .map { prefs ->
             KiebordPreferences(
                 theme = prefs[PreferencesKeys.THEME] ?: KiebordPreferences.THEME_DEFAULT_DARK,
+                selectedFont = prefs[PreferencesKeys.SELECTED_FONT] ?: KiebordPreferences.FONT_DEFAULT,
+                customFontPath = prefs[PreferencesKeys.CUSTOM_FONT_PATH] ?: "",
                 keyboardHeightScale = prefs[PreferencesKeys.KEYBOARD_HEIGHT_SCALE] ?: 1.0f,
                 keyboardHeightScaleLandscape = prefs[PreferencesKeys.KEYBOARD_HEIGHT_SCALE_LANDSCAPE] ?: 1.0f,
                 chinPaddingPortraitDp = prefs[PreferencesKeys.CHIN_PADDING_PORTRAIT] ?: 8.0f,

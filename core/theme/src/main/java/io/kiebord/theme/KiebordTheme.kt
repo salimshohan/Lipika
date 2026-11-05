@@ -46,6 +46,42 @@ val LocalKeyboardFontFamily = staticCompositionLocalOf {
     KeyboardFontFamily
 }
 
+fun resolveKeyboardFontFamily(
+    selectedFont: String,
+    customFontPath: String? = null
+): FontFamily {
+    return when (selectedFont) {
+        "tw_cent_mt" -> FontFamily(
+            Font(R.font.tw_cent_mt, FontWeight.Normal),
+            Font(R.font.tw_cent_mt, FontWeight.Medium),
+            Font(R.font.tw_cent_mt, FontWeight.Bold)
+        )
+        "roboto" -> FontFamily.SansSerif
+        "inter" -> FontFamily.Default
+        "poppins" -> FontFamily.SansSerif
+        "serif", "kalpurush", "solaiman_lipi" -> FontFamily.Serif
+        "fira_code" -> FontFamily.Monospace
+        "cursive" -> FontFamily.Cursive
+        "outfit" -> FontFamily.SansSerif
+        "custom" -> {
+            if (!customFontPath.isNullOrBlank()) {
+                try {
+                    val file = java.io.File(customFontPath)
+                    if (file.exists() && file.isFile && file.canRead()) {
+                        val typeface = android.graphics.Typeface.createFromFile(file)
+                        if (typeface != null) FontFamily(typeface) else KeyboardFontFamily
+                    } else KeyboardFontFamily
+                } catch (_: Throwable) {
+                    KeyboardFontFamily
+                }
+            } else {
+                KeyboardFontFamily
+            }
+        }
+        else -> KeyboardFontFamily
+    }
+}
+
 object KiebordTheme {
     val colorScheme: KeyboardColorScheme
         @Composable
@@ -62,9 +98,13 @@ object KiebordTheme {
 fun KiebordTheme(
     colorScheme: KeyboardColorScheme = KeyboardColorScheme.DefaultDark,
     fontFamily: FontFamily? = null,
+    selectedFont: String = "default",
+    customFontPath: String = "",
     content: @Composable () -> Unit
 ) {
-    val resolvedFontFamily = fontFamily ?: colorScheme.effectiveFontFamily ?: KeyboardFontFamily
+    val resolvedFontFamily = fontFamily
+        ?: if (selectedFont != "default") resolveKeyboardFontFamily(selectedFont, customFontPath)
+        else colorScheme.effectiveFontFamily ?: KeyboardFontFamily
     CompositionLocalProvider(
         LocalKeyboardColorScheme provides colorScheme,
         LocalKeyboardFontFamily provides resolvedFontFamily,

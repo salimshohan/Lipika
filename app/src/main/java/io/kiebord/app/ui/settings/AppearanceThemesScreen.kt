@@ -38,6 +38,12 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material3.RadioButton
+import androidx.compose.material3.RadioButtonDefaults
+import androidx.compose.ui.text.font.FontFamily
+import io.kiebord.theme.resolveKeyboardFontFamily
+import io.kiebord.theme.KeyboardFontFamily
+import java.io.File
 import androidx.compose.material.icons.outlined.FileDownload
 import androidx.compose.material.icons.outlined.Palette
 import androidx.compose.material.icons.outlined.Share
@@ -112,6 +118,7 @@ fun AppearanceThemesScreen(
     var previewThemeOption by remember { mutableStateOf<ThemeOptionItem?>(null) }
     var pendingImportTheme by remember { mutableStateOf<PendingImportData?>(null) }
     var showCreatePopup by remember { mutableStateOf(false) }
+    var selectedTab by remember { mutableStateOf(0) }
     val colors = LocalSettingsColors.current
     val scope = rememberCoroutineScope()
 
@@ -135,7 +142,7 @@ fun AppearanceThemesScreen(
                             val previewItem = ThemeOptionItem(
                                 id = firstDef.id,
                                 name = firstDef.name,
-                                description = "Custom Borno theme (${if (richSpec?.schemaVersion == 2) "v2" else "v1"})",
+                                description = "Custom Lipika theme (${if (richSpec?.schemaVersion == 2) "v2" else "v1"})",
                                 scheme = scheme,
                                 isCustom = true,
                                 category = ThemeCategory.CUSTOM

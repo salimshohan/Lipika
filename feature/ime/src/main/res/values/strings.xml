@@ -1,8 +1,8 @@
 <resources>
     <string name="ime_service_name">Lipika Service</string>
     <string name="subtype_en_us">English (US)</string>
-    <string name="subtype_bn_borno">Bangla (Borno Phonetic)</string>
     <string name="subtype_bn_avro">Bangla (Avro Phonetic)</string>
     <string name="subtype_bn_national">Bangla (National BSTI)</string>
     <string name="subtype_bn_probhat">Bangla (Probhat)</string>
+    <string name="subtype_ar_arabic">Arabic (العربية)</string>
 </resources>

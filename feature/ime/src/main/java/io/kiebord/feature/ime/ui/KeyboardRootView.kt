@@ -53,6 +53,7 @@ import androidx.compose.material.icons.automirrored.outlined.KeyboardArrowRight
 import androidx.compose.ui.text.style.TextOverflow
 import io.kiebord.feature.ime.ui.onehanded.OneHandedSideBar
 import androidx.compose.material.icons.outlined.GridView
+import androidx.compose.material.icons.outlined.Home
 import androidx.compose.ui.res.painterResource
 import io.kiebord.feature.ime.R
 import androidx.compose.material3.Icon
@@ -1070,10 +1071,10 @@ fun KeyboardRootView(
                             )
                         } else {
                             Icon(
-                                painter = painterResource(R.drawable.ic_kiebord_top),
+                                imageVector = Icons.Outlined.Home,
                                 contentDescription = "All Tools",
                                 tint = colorScheme.effectiveToolbarForeground,
-                                modifier = Modifier.size((29 * scaleFactor).coerceAtLeast(21f).dp)
+                                modifier = Modifier.size((22 * scaleFactor).coerceAtLeast(18f).dp)
                             )
                         }
                     }

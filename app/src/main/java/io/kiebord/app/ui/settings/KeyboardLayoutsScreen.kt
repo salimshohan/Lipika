@@ -202,7 +202,7 @@ fun KeyboardLayoutsScreen(
         (listOf(englishCard.id) + banglaCards.map { it.id } + listOf(arabicCard.id)).toSet()
     }
     val otherBundledMeta = remember(availableMeta, curatedIds) {
-        availableMeta.filter { !it.isCustom && it.id !in curatedIds && !it.id.contains("symbols") }
+        emptyList()
     }
     var otherBundledCards by remember { mutableStateOf<List<LayoutCardData>>(emptyList()) }
 

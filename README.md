@@ -95,14 +95,3 @@ cd Lipika
 ```bash
 ./gradlew assembleDebug
 ```
-
----
-
-## 📜 Acknowledgments & License
-
-Lipika is licensed under the [GNU General Public License v3.0](LICENSE).
-
-Lipika proudly builds upon the foundational work and research of the open-source community:
-- **Kiebord** by [Jayed Ahsan](https://github.com/JayedAhsan/Kiebord) & **Borno Keyboard** transliteration architecture.
-- **AOSP LatinIME** for keyboard service foundation.
-- **Khipro** for touchscreen m17n rules.

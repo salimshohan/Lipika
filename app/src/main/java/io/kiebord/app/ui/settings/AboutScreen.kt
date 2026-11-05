@@ -30,6 +30,7 @@ import androidx.compose.material.icons.outlined.Code
 import androidx.compose.material.icons.outlined.Coffee
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Policy
+import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -281,7 +282,7 @@ fun AboutScreen(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Text(
-                        text = "Kiebord is the result of over 6 years of development on Borno Keyboard and heavily relies on its foundational source code and transliteration architecture, though Borno Keyboard itself is closed source. This codebase underwent an intensive AI-driven migration and heavy refactoring (transitioning from Java & C++ to modern Kotlin & Rust), with each change carefully reviewed and verified by me. Kiebord also proudly builds upon many remarkable open-source components. We gratefully acknowledge the following projects:",
+                        text = "Lipika is an ultra-fast, modern, privacy-focused open-source keyboard for Android with intelligent Bengali typing. We gratefully acknowledge the foundational open-source projects, algorithms, and community standards that make Lipika possible:",
                         fontSize = 12.sp,
                         color = colors.textSecondary,
                         lineHeight = 16.sp,
@@ -335,7 +336,7 @@ fun AboutScreen(
             )
 
             Text(
-                text = "Version 0.1.4",
+                text = "Version 0.1.5",
                 fontSize = 13.sp,
                 fontWeight = FontWeight.Medium,
                 color = colors.textSecondary,

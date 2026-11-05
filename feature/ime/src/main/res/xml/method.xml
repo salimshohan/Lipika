@@ -11,12 +11,6 @@
         android:label="@string/subtype_en_us" />
 
     <subtype
-        android:imeSubtypeExtraValue="KeyboardLayout=bn_borno"
-        android:imeSubtypeLocale="bn_BD"
-        android:imeSubtypeMode="keyboard"
-        android:label="@string/subtype_bn_borno" />
-
-    <subtype
         android:imeSubtypeExtraValue="KeyboardLayout=bn_avro"
         android:imeSubtypeLocale="bn_BD"
         android:imeSubtypeMode="keyboard"
@@ -33,5 +27,11 @@
         android:imeSubtypeLocale="bn_BD"
         android:imeSubtypeMode="keyboard"
         android:label="@string/subtype_bn_probhat" />
+
+    <subtype
+        android:imeSubtypeExtraValue="KeyboardLayout=ar_arabic"
+        android:imeSubtypeLocale="ar"
+        android:imeSubtypeMode="keyboard"
+        android:label="@string/subtype_ar_arabic" />
 
 </input-method>

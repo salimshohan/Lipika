@@ -6,6 +6,8 @@ package io.kiebord.data.prefs
 data class KiebordPreferences(
     // Appearance & Theming
     val theme: String = THEME_DEFAULT_DARK,
+    val selectedFont: String = FONT_DEFAULT,
+    val customFontPath: String = "",
     val keyboardHeightScale: Float = 1.0f,
     val keyboardHeightScaleLandscape: Float = 1.0f,
     val chinPaddingPortraitDp: Float = 8.0f,
@@ -76,6 +78,18 @@ data class KiebordPreferences(
 
     companion object {
         const val VOICE_PROVIDER_GOOGLE = "google"
+
+                const val FONT_DEFAULT = "default"
+        const val FONT_TW_CENT_MT = "tw_cent_mt"
+        const val FONT_ROBOTO = "roboto"
+        const val FONT_INTER = "inter"
+        const val FONT_POPPINS = "poppins"
+        const val FONT_KALPURUSH = "kalpurush"
+        const val FONT_SOLAIMAN_LIPI = "solaiman_lipi"
+        const val FONT_FIRA_CODE = "fira_code"
+        const val FONT_OUTFIT = "outfit"
+        const val FONT_NOTO_SANS_BN = "noto_sans_bn"
+        const val FONT_CUSTOM = "custom"
 
         const val THEME_DEFAULT_DARK = "default_dark"
         const val THEME_AMOLED_BLACK = "amoled_black"

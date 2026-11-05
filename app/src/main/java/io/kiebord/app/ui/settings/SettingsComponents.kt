@@ -164,7 +164,7 @@ fun SettingsUnifiedTopBar(
 ) {
     val colors = LocalSettingsColors.current
     val title = when (screen) {
-        is SettingsScreen.Main -> "Kiebord"
+        is SettingsScreen.Main -> "Lipika"
         is SettingsScreen.AppearanceThemes -> "Appearance & Themes"
         is SettingsScreen.ThemeDesigner -> "Theme Studio"
         is SettingsScreen.KeyboardLayouts -> "Keyboard Layouts"
@@ -173,7 +173,7 @@ fun SettingsUnifiedTopBar(
         is SettingsScreen.Clipboard -> "Clipboard"
         is SettingsScreen.VoiceTyping -> "Voice Typing"
         is SettingsScreen.BackupRestore -> "Backup & Restore"
-        is SettingsScreen.About -> "About Kiebord"
+        is SettingsScreen.About -> "About Lipika"
         is SettingsScreen.Onboarding -> "Setup Wizard"
     }
 

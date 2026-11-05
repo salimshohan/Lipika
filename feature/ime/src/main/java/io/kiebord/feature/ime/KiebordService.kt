@@ -343,7 +343,11 @@ class KiebordService : InputMethodService() {
                 layoutRepo.getAvailableLayouts().map { it.id }.toSet()
             }
 
-            KiebordTheme(colorScheme = colorScheme) {
+            KiebordTheme(
+                colorScheme = colorScheme,
+                selectedFont = preferences.selectedFont,
+                customFontPath = preferences.customFontPath
+            ) {
                 KeyboardRootView(
                     layout = activeLayout,
                     primaryAlphaLayout = primaryAlphaLayout,
