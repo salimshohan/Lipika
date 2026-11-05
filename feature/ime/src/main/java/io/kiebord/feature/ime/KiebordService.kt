@@ -345,8 +345,8 @@ class KiebordService : InputMethodService() {
 
             KiebordTheme(
                 colorScheme = colorScheme,
-                selectedFont = preferences.selectedFont,
-                customFontPath = preferences.customFontPath
+                selectedFont = preferencesState.selectedFont,
+                customFontPath = preferencesState.customFontPath
             ) {
                 KeyboardRootView(
                     layout = activeLayout,
