@@ -1,53 +1,53 @@
 package io.kiebord.app.ui.settings
 
-import android.widget.Toast
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
-import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
-import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
-import androidx.compose.foundation.lazy.staggeredgrid.items
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Check
-import androidx.compose.material.icons.outlined.Clear
-import androidx.compose.material.icons.outlined.Close
-import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.material.icons.filled.PushPin
+import androidx.compose.material.icons.outlined.Add
+import androidx.compose.material.icons.outlined.DeleteForever
+import androidx.compose.material.icons.outlined.DragHandle
+import androidx.compose.material.icons.outlined.Image
 import androidx.compose.material.icons.outlined.PushPin
-import androidx.compose.material.icons.outlined.Search
-import androidx.compose.material.icons.outlined.SelectAll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -56,504 +56,536 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.kiebord.feature.ime.clipboard.ClipboardEntry
 import io.kiebord.feature.ime.clipboard.SandboxedClipboardManager
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
-@OptIn(ExperimentalFoundationApi::class)
+private data class ClipPalette(
+    val screenBg: Color,
+    val cardBg: Color,
+    val sheetBg: Color,
+    val fieldBg: Color,
+    val border: Color,
+    val textPrimary: Color,
+    val textSecondary: Color,
+    val accent: Color,
+    val danger: Color
+)
+
+@Composable
+private fun clipPalette(): ClipPalette =
+    if (isSystemInDarkTheme()) {
+        ClipPalette(
+            screenBg = Color(0xFF121314),
+            cardBg = Color(0xFF1E2022),
+            sheetBg = Color(0xFF1E2022),
+            fieldBg = Color(0xFF26282B),
+            border = Color(0xFF3A3D40),
+            textPrimary = Color(0xFFEDEDED),
+            textSecondary = Color(0xFF9A9DA1),
+            accent = Color(0xFF4CAF50),
+            danger = Color(0xFFEF5350)
+        )
+    } else {
+        ClipPalette(
+            screenBg = Color(0xFFF0F1F3),
+            cardBg = Color.White,
+            sheetBg = Color.White,
+            fieldBg = Color(0xFFF9F9F9),
+            border = Color(0xFFDADCE0),
+            textPrimary = Color(0xFF1C1C1E),
+            textSecondary = Color(0xFF9A9A9F),
+            accent = Color(0xFF43A047),
+            danger = Color(0xFFC62828)
+        )
+    }
+
+private val dateFormat = SimpleDateFormat("MMM dd, HH:mm", Locale.getDefault())
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ClipboardSettingsScreen(
     clipboardManager: SandboxedClipboardManager,
     onBack: () -> Unit = {}
 ) {
     val context = LocalContext.current
-    val colors = LocalSettingsColors.current
+    val p = clipPalette()
 
     LaunchedEffect(Unit) {
         clipboardManager.syncFromSystemClipboard(context)
     }
 
-    var searchQuery by remember { mutableStateOf("") }
-    var isSelectionMode by remember { mutableStateOf(false) }
-    var selectedIds by remember { mutableStateOf<Set<String>>(emptySet()) }
+    var showNewSheet by remember { mutableStateOf(false) }
+    var editingId by remember { mutableStateOf<String?>(null) }
 
     val allClips = clipboardManager.clips
-    val filteredClips = if (searchQuery.isBlank()) {
-        allClips.toList()
-    } else {
-        allClips.filter { it.text.contains(searchQuery, ignoreCase = true) }
-    }
+    val pinnedClips = allClips.filter { it.isPinned }
+    val recentClips = allClips.filter { !it.isPinned }
+    val editingEntry = editingId?.let { id -> allClips.firstOrNull { it.id == id } }
 
-    val recentClips = filteredClips.filter { !it.isPinned }
-    val pinnedClips = filteredClips.filter { it.isPinned }
+    val listState = rememberLazyListState()
+    var draggingId by remember { mutableStateOf<String?>(null) }
+    var dragOffset by remember { mutableFloatStateOf(0f) }
 
-    Box(modifier = Modifier.fillMaxSize()) {
-        Column(
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(p.screenBg)
+    ) {
+        // ---------- Top bar ----------
+        Row(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 16.dp)
+                .fillMaxWidth()
+                .background(p.cardBg)
+                .statusBarsPadding()
+                .height(64.dp)
+                .padding(horizontal = 8.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            // Search Bar
-            OutlinedTextField(
-                value = searchQuery,
-                onValueChange = { searchQuery = it },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp),
-                placeholder = {
-                    Text(
-                        text = "Search clipboard…",
-                        color = colors.textSecondary,
-                        fontSize = 14.sp
-                    )
-                },
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Outlined.Search,
-                        contentDescription = null,
-                        tint = colors.textSecondary,
-                        modifier = Modifier.size(20.dp)
-                    )
-                },
-                trailingIcon = {
-                    if (searchQuery.isNotEmpty()) {
-                        IconButton(onClick = { searchQuery = "" }) {
-                            Icon(
-                                imageVector = Icons.Outlined.Clear,
-                                contentDescription = "Clear search",
-                                tint = colors.textSecondary,
-                                modifier = Modifier.size(18.dp)
-                            )
-                        }
-                    }
-                },
-                singleLine = true,
-                shape = CircleShape,
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = colors.accent,
-                    unfocusedBorderColor = colors.cardBorder,
-                    focusedTextColor = colors.textPrimary,
-                    unfocusedTextColor = colors.textPrimary,
-                    focusedContainerColor = colors.cardBackground,
-                    unfocusedContainerColor = colors.cardBackground
+            IconButton(onClick = onBack) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
+                    contentDescription = "Back",
+                    tint = p.textPrimary
                 )
+            }
+            Text(
+                text = "Clipboard",
+                color = p.textPrimary,
+                fontSize = 22.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(start = 8.dp)
             )
+            IconButton(onClick = { showNewSheet = true }) {
+                Icon(
+                    imageVector = Icons.Outlined.Add,
+                    contentDescription = "New clip",
+                    tint = p.textPrimary
+                )
+            }
+        }
 
-            // Content List / Staggered Grid
-            if (filteredClips.isEmpty()) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(bottom = 60.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = if (searchQuery.isNotEmpty()) "No matching clips" else "No copied clips yet",
-                        color = colors.textSecondary,
-                        fontSize = 15.sp,
-                        fontWeight = FontWeight.Medium
-                    )
-                }
-            } else {
-                LazyVerticalStaggeredGrid(
-                    columns = StaggeredGridCells.Fixed(2),
-                    modifier = Modifier.fillMaxSize(),
-                    horizontalArrangement = Arrangement.spacedBy(10.dp),
-                    verticalItemSpacing = 10.dp,
-                    contentPadding = PaddingValues(top = 4.dp, bottom = 96.dp)
-                ) {
-                    // Recent section first (above)
-                    if (recentClips.isNotEmpty()) {
-                        item(span = StaggeredGridItemSpan.FullLine) {
-                            Text(
-                                text = "Recent",
-                                color = colors.textSecondary,
-                                fontSize = 13.sp,
-                                fontWeight = FontWeight.Bold,
-                                modifier = Modifier.padding(start = 4.dp, top = 6.dp, bottom = 2.dp)
-                            )
-                        }
-                        items(recentClips, key = { it.id }) { entry ->
-                            SettingsClipCard(
-                                entry = entry,
-                                isSelectionMode = isSelectionMode,
-                                isSelected = entry.id in selectedIds,
-                                colors = colors,
-                                onSelectToggle = {
-                                    selectedIds = if (entry.id in selectedIds) {
-                                        selectedIds - entry.id
-                                    } else {
-                                        selectedIds + entry.id
-                                    }
-                                },
-                                onLongClick = {
-                                    if (!isSelectionMode) {
-                                        isSelectionMode = true
-                                        selectedIds = setOf(entry.id)
-                                    }
-                                },
-                                onTogglePin = { clipboardManager.togglePin(entry) },
-                                onDelete = { clipboardManager.deleteClip(entry) }
-                            )
-                        }
+        // ---------- Content ----------
+        if (allClips.isEmpty()) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(bottom = 80.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "No copied clips yet",
+                    color = p.textSecondary,
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.Medium
+                )
+            }
+        } else {
+            LazyColumn(
+                state = listState,
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = androidx.compose.foundation.layout.PaddingValues(
+                    start = 16.dp, end = 16.dp, top = 16.dp, bottom = 32.dp
+                ),
+                verticalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                if (pinnedClips.isNotEmpty()) {
+                    item(key = "header_pinned") { SectionLabel("PINNED", p) }
+                    items(pinnedClips, key = { it.id }) { entry ->
+                        ClipCard(
+                            entry = entry,
+                            p = p,
+                            isDragging = draggingId == entry.id,
+                            dragOffset = if (draggingId == entry.id) dragOffset else 0f,
+                            onClick = { editingId = entry.id },
+                            onDragStart = { draggingId = entry.id; dragOffset = 0f },
+                            onDrag = { dy ->
+                                dragOffset += dy
+                                handleDrag(
+                                    entry, listState, clipboardManager,
+                                    dragOffset
+                                ) { dragOffset += it }
+                            },
+                            onDragEnd = { draggingId = null; dragOffset = 0f }
+                        )
                     }
-
-                    // Pinned section second (below)
-                    if (pinnedClips.isNotEmpty()) {
-                        item(span = StaggeredGridItemSpan.FullLine) {
-                            Text(
-                                text = "Pinned",
-                                color = colors.accent,
-                                fontSize = 13.sp,
-                                fontWeight = FontWeight.Bold,
-                                modifier = Modifier.padding(start = 4.dp, top = 12.dp, bottom = 2.dp)
-                            )
-                        }
-                        items(pinnedClips, key = { it.id }) { entry ->
-                            SettingsClipCard(
-                                entry = entry,
-                                isSelectionMode = isSelectionMode,
-                                isSelected = entry.id in selectedIds,
-                                colors = colors,
-                                onSelectToggle = {
-                                    selectedIds = if (entry.id in selectedIds) {
-                                        selectedIds - entry.id
-                                    } else {
-                                        selectedIds + entry.id
-                                    }
-                                },
-                                onLongClick = {
-                                    if (!isSelectionMode) {
-                                        isSelectionMode = true
-                                        selectedIds = setOf(entry.id)
-                                    }
-                                },
-                                onTogglePin = { clipboardManager.togglePin(entry) },
-                                onDelete = { clipboardManager.deleteClip(entry) }
-                            )
-                        }
+                }
+                if (recentClips.isNotEmpty()) {
+                    item(key = "header_recent") {
+                        Spacer(Modifier.height(if (pinnedClips.isNotEmpty()) 6.dp else 0.dp))
+                        SectionLabel("RECENT", p)
+                    }
+                    items(recentClips, key = { it.id }) { entry ->
+                        ClipCard(
+                            entry = entry,
+                            p = p,
+                            isDragging = draggingId == entry.id,
+                            dragOffset = if (draggingId == entry.id) dragOffset else 0f,
+                            onClick = { editingId = entry.id },
+                            onDragStart = { draggingId = entry.id; dragOffset = 0f },
+                            onDrag = { dy ->
+                                dragOffset += dy
+                                handleDrag(
+                                    entry, listState, clipboardManager,
+                                    dragOffset
+                                ) { dragOffset += it }
+                            },
+                            onDragEnd = { draggingId = null; dragOffset = 0f }
+                        )
                     }
                 }
             }
         }
+    }
 
-        // Floating Bottom Toolbar
-        AnimatedVisibility(
-            visible = filteredClips.isNotEmpty() || isSelectionMode,
-            enter = slideInVertically { it } + fadeIn(),
-            exit = slideOutVertically { it } + fadeOut(),
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(horizontal = 16.dp, vertical = 14.dp)
+    // ---------- New clip sheet ----------
+    if (showNewSheet) {
+        val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+        var text by remember { mutableStateOf("") }
+
+        val imagePicker = rememberLauncherForActivityResult(
+            ActivityResultContracts.GetContent()
+        ) { uri: Uri? ->
+            if (uri != null) {
+                clipboardManager.addImageClip(context, uri)
+                showNewSheet = false
+            }
+        }
+
+        ModalBottomSheet(
+            onDismissRequest = { showNewSheet = false },
+            sheetState = sheetState,
+            containerColor = p.sheetBg,
+            shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp)
         ) {
-            Box(
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .shadow(12.dp, CircleShape)
-                    .clip(CircleShape)
-                    .background(colors.cardBackground)
-                    .border(BorderStroke(1.dp, colors.cardBorder), CircleShape)
-                    .padding(horizontal = 14.dp, vertical = 8.dp)
+                    .navigationBarsPadding()
+                    .imePadding()
+                    .padding(horizontal = 24.dp)
+                    .padding(bottom = 16.dp)
             ) {
-                if (isSelectionMode) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Text(
-                            text = "${selectedIds.size} selected",
-                            color = colors.textPrimary,
-                            fontSize = 13.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(8.dp)
-                        ) {
-                            // Select All / Deselect All
-                            Button(
-                                onClick = {
-                                    selectedIds = if (selectedIds.size == filteredClips.size) {
-                                        emptySet()
-                                    } else {
-                                        filteredClips.map { it.id }.toSet()
-                                    }
-                                },
-                                shape = CircleShape,
-                                colors = ButtonDefaults.buttonColors(
-                                    containerColor = colors.iconBackground,
-                                    contentColor = colors.textPrimary
-                                ),
-                                contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp),
-                                modifier = Modifier.height(34.dp)
-                            ) {
-                                Text(
-                                    text = if (selectedIds.size == filteredClips.size) "Deselect" else "Select All",
-                                    fontSize = 12.sp,
-                                    fontWeight = FontWeight.SemiBold
-                                )
-                            }
-
-                            // Delete Selected
-                            Button(
-                                onClick = {
-                                    if (selectedIds.isNotEmpty()) {
-                                        val count = selectedIds.size
-                                        clipboardManager.deleteClips(selectedIds)
-                                        selectedIds = emptySet()
-                                        isSelectionMode = false
-                                        Toast.makeText(context, "$count clips deleted", Toast.LENGTH_SHORT).show()
-                                    }
-                                },
-                                enabled = selectedIds.isNotEmpty(),
-                                shape = CircleShape,
-                                colors = ButtonDefaults.buttonColors(
-                                    containerColor = Color(0x33FF5252),
-                                    contentColor = Color(0xFFFF5252),
-                                    disabledContainerColor = Color(0x11FF5252),
-                                    disabledContentColor = Color(0x55FF5252)
-                                ),
-                                contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp),
-                                modifier = Modifier.height(34.dp)
-                            ) {
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.spacedBy(4.dp)
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Outlined.Delete,
-                                        contentDescription = null,
-                                        modifier = Modifier.size(15.dp)
-                                    )
-                                    Text(
-                                        text = "Delete",
-                                        fontSize = 12.sp,
-                                        fontWeight = FontWeight.Bold
-                                    )
-                                }
-                            }
-
-                            // Close selection mode
-                            Box(
-                                modifier = Modifier
-                                    .size(32.dp)
-                                    .clip(CircleShape)
-                                    .background(colors.iconBackground)
-                                    .clickable {
-                                        isSelectionMode = false
-                                        selectedIds = emptySet()
-                                    },
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Outlined.Close,
-                                    contentDescription = "Cancel selection",
-                                    tint = colors.textSecondary,
-                                    modifier = Modifier.size(16.dp)
-                                )
-                            }
-                        }
-                    }
-                } else {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Text(
-                            text = "${filteredClips.size} clips",
-                            color = colors.textSecondary,
-                            fontSize = 13.sp,
-                            fontWeight = FontWeight.Medium
-                        )
-
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(8.dp)
-                        ) {
-                            Button(
-                                onClick = { isSelectionMode = true },
-                                shape = CircleShape,
-                                colors = ButtonDefaults.buttonColors(
-                                    containerColor = colors.iconBackground,
-                                    contentColor = colors.textPrimary
-                                ),
-                                contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp),
-                                modifier = Modifier.height(34.dp)
-                            ) {
-                                Text(
-                                    text = "Select",
-                                    fontSize = 12.sp,
-                                    fontWeight = FontWeight.SemiBold
-                                )
-                            }
-
-                            if (recentClips.isNotEmpty()) {
-                                Button(
-                                    onClick = {
-                                        clipboardManager.clearAllUnpinned()
-                                        Toast.makeText(context, "Unpinned clips cleared", Toast.LENGTH_SHORT).show()
-                                    },
-                                    shape = CircleShape,
-                                    colors = ButtonDefaults.buttonColors(
-                                        containerColor = Color(0x22FF5252),
-                                        contentColor = Color(0xFFFF5252)
-                                    ),
-                                    contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp),
-                                    modifier = Modifier.height(34.dp)
-                                ) {
-                                    Text(
-                                        text = "Clear Unpinned",
-                                        fontSize = 12.sp,
-                                        fontWeight = FontWeight.SemiBold
-                                    )
-                                }
-                            }
-                        }
-                    }
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "New Clip",
+                        color = p.textPrimary,
+                        fontSize = 22.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.weight(1f)
+                    )
+                    SquareIconButton(
+                        icon = Icons.Outlined.Image,
+                        tint = p.accent,
+                        borderColor = p.border,
+                        onClick = { imagePicker.launch("image/*") }
+                    )
                 }
+                Spacer(Modifier.height(18.dp))
+                ClipTextField(
+                    value = text,
+                    onValueChange = { text = it },
+                    placeholder = "Type your clip text here...",
+                    p = p
+                )
+                Spacer(Modifier.height(20.dp))
+                SheetButtons(
+                    p = p,
+                    saveEnabled = text.isNotBlank(),
+                    onCancel = { showNewSheet = false },
+                    onSave = {
+                        clipboardManager.addClip(text.trim())
+                        showNewSheet = false
+                    }
+                )
+            }
+        }
+    }
+
+    // ---------- Edit clip sheet ----------
+    if (editingEntry != null) {
+        val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+        var text by remember(editingEntry.id) { mutableStateOf(editingEntry.text) }
+
+        ModalBottomSheet(
+            onDismissRequest = { editingId = null },
+            sheetState = sheetState,
+            containerColor = p.sheetBg,
+            shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp)
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .navigationBarsPadding()
+                    .imePadding()
+                    .padding(horizontal = 24.dp)
+                    .padding(bottom = 16.dp)
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    Text(
+                        text = "Edit Clip",
+                        color = p.textPrimary,
+                        fontSize = 22.sp,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.weight(1f)
+                    )
+                    SquareIconButton(
+                        icon = if (editingEntry.isPinned) Icons.Filled.PushPin else Icons.Outlined.PushPin,
+                        tint = if (editingEntry.isPinned) p.accent else p.textSecondary,
+                        borderColor = p.border,
+                        onClick = { clipboardManager.togglePin(editingEntry) }
+                    )
+                    SquareIconButton(
+                        icon = Icons.Outlined.DeleteForever,
+                        tint = p.danger,
+                        borderColor = p.danger.copy(alpha = 0.35f),
+                        onClick = {
+                            clipboardManager.deleteClip(editingEntry)
+                            editingId = null
+                        }
+                    )
+                }
+                Spacer(Modifier.height(18.dp))
+                ClipTextField(
+                    value = text,
+                    onValueChange = { text = it },
+                    placeholder = "Clip text",
+                    p = p
+                )
+                Spacer(Modifier.height(20.dp))
+                SheetButtons(
+                    p = p,
+                    saveEnabled = text.isNotBlank() && text != editingEntry.text,
+                    onCancel = { editingId = null },
+                    onSave = {
+                        clipboardManager.updateClip(editingEntry, text.trim())
+                        editingId = null
+                    }
+                )
             }
         }
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
-@Composable
-private fun SettingsClipCard(
+/** Drag-reorder helper: swaps with the item under the dragged card (same section only). */
+private fun handleDrag(
     entry: ClipboardEntry,
-    isSelectionMode: Boolean,
-    isSelected: Boolean,
-    colors: SettingsColors,
-    onSelectToggle: () -> Unit,
-    onLongClick: () -> Unit,
-    onTogglePin: () -> Unit,
-    onDelete: () -> Unit,
-    modifier: Modifier = Modifier
+    listState: androidx.compose.foundation.lazy.LazyListState,
+    manager: SandboxedClipboardManager,
+    dragOffset: Float,
+    adjustOffset: (Float) -> Unit
 ) {
-    Box(
-        modifier = modifier
+    val visible = listState.layoutInfo.visibleItemsInfo
+    val me = visible.firstOrNull { it.key == entry.id } ?: return
+    val center = me.offset + me.size / 2f + dragOffset
+    val target = visible.firstOrNull { item ->
+        val key = item.key as? String
+        key != null && key != entry.id &&
+            manager.clips.firstOrNull { it.id == key }?.isPinned == entry.isPinned &&
+            center >= item.offset && center <= item.offset + item.size
+    } ?: return
+    manager.moveClip(entry.id, target.key as String)
+    adjustOffset((me.offset - target.offset).toFloat())
+}
+
+@Composable
+private fun SectionLabel(text: String, p: ClipPalette) {
+    Text(
+        text = text,
+        color = p.textSecondary,
+        fontSize = 12.sp,
+        fontWeight = FontWeight.Bold,
+        letterSpacing = 0.8.sp,
+        modifier = Modifier.padding(start = 4.dp, bottom = 2.dp)
+    )
+}
+
+@Composable
+private fun ClipCard(
+    entry: ClipboardEntry,
+    p: ClipPalette,
+    isDragging: Boolean,
+    dragOffset: Float,
+    onClick: () -> Unit,
+    onDragStart: () -> Unit,
+    onDrag: (Float) -> Unit,
+    onDragEnd: () -> Unit
+) {
+    Row(
+        modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(16.dp))
-            .background(if (isSelected) colors.accent.copy(alpha = 0.12f) else colors.cardBackground)
-            .border(
-                BorderStroke(
-                    1.dp,
-                    if (isSelected) colors.accent else colors.cardBorder
-                ),
-                RoundedCornerShape(16.dp)
-            )
-            .combinedClickable(
-                onClick = {
-                    if (isSelectionMode) {
-                        onSelectToggle()
-                    }
-                },
-                onLongClick = onLongClick
-            )
-            .padding(10.dp)
+            .graphicsLayer { translationY = dragOffset }
+            .shadow(if (isDragging) 12.dp else 2.dp, RoundedCornerShape(18.dp))
+            .clip(RoundedCornerShape(18.dp))
+            .background(p.cardBg)
+            .clickable(onClick = onClick)
+            .padding(start = 18.dp, end = 10.dp, top = 16.dp, bottom = 14.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Column(modifier = Modifier.fillMaxWidth()) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                if (isSelectionMode) {
-                    Box(
-                        modifier = Modifier
-                            .size(22.dp)
-                            .clip(CircleShape)
-                            .background(if (isSelected) colors.accent else Color.Transparent)
-                            .border(
-                                BorderStroke(1.5.dp, if (isSelected) colors.accent else colors.textSecondary.copy(alpha = 0.5f)),
-                                CircleShape
-                            )
-                            .clickable { onSelectToggle() },
-                        contentAlignment = Alignment.Center
-                    ) {
-                        if (isSelected) {
-                            Icon(
-                                imageVector = Icons.Outlined.Check,
-                                contentDescription = null,
-                                tint = Color.White,
-                                modifier = Modifier.size(14.dp)
-                            )
-                        }
-                    }
-                } else if (entry.isOtp) {
-                    Box(
-                        modifier = Modifier
-                            .clip(CircleShape)
-                            .background(colors.accent.copy(alpha = 0.15f))
-                            .padding(horizontal = 6.dp, vertical = 2.dp)
-                    ) {
-                        Text(
-                            text = "OTP",
-                            color = colors.accent,
-                            fontSize = 10.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
-                } else {
-                    Spacer(modifier = Modifier.size(1.dp))
-                }
-
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(2.dp)
+        Column(modifier = Modifier.weight(1f)) {
+            if (entry.isOtp) {
+                Box(
+                    modifier = Modifier
+                        .padding(bottom = 6.dp)
+                        .clip(RoundedCornerShape(50))
+                        .background(p.accent.copy(alpha = 0.15f))
+                        .padding(horizontal = 8.dp, vertical = 2.dp)
                 ) {
-                    // Pin button
-                    Box(
-                        modifier = Modifier
-                            .size(28.dp)
-                            .clip(CircleShape)
-                            .clickable { onTogglePin() },
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Icon(
-                            imageVector = Icons.Outlined.PushPin,
-                            contentDescription = if (entry.isPinned) "Unpin" else "Pin",
-                            tint = if (entry.isPinned) colors.accent else colors.textSecondary.copy(alpha = 0.45f),
-                            modifier = Modifier.size(16.dp)
-                        )
-                    }
-
-                    // Delete button
-                    if (!isSelectionMode) {
-                        Box(
-                            modifier = Modifier
-                                .size(28.dp)
-                                .clip(CircleShape)
-                                .clickable { onDelete() },
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Icon(
-                                imageVector = Icons.Outlined.Delete,
-                                contentDescription = "Delete",
-                                tint = colors.textSecondary.copy(alpha = 0.45f),
-                                modifier = Modifier.size(16.dp)
-                            )
-                        }
-                    }
+                    Text("OTP", color = p.accent, fontSize = 10.sp, fontWeight = FontWeight.Bold)
                 }
             }
-
-            Spacer(modifier = Modifier.height(4.dp))
-
             Text(
                 text = entry.text,
-                color = colors.textPrimary,
-                fontSize = 13.sp,
-                lineHeight = 18.sp,
-                maxLines = 6,
+                color = p.textPrimary,
+                fontSize = 16.sp,
+                lineHeight = 23.sp,
+                maxLines = 3,
                 overflow = TextOverflow.Ellipsis
             )
+            Spacer(Modifier.height(8.dp))
+            Text(
+                text = dateFormat.format(Date(entry.timestamp)),
+                color = p.textSecondary,
+                fontSize = 13.sp,
+                fontFamily = FontFamily.Serif
+            )
+        }
+
+        if (entry.isPinned) {
+            Icon(
+                imageVector = Icons.Filled.PushPin,
+                contentDescription = "Pinned",
+                tint = p.accent,
+                modifier = Modifier
+                    .padding(horizontal = 6.dp)
+                    .size(20.dp)
+            )
+        }
+
+        Icon(
+            imageVector = Icons.Outlined.DragHandle,
+            contentDescription = "Reorder",
+            tint = p.textSecondary.copy(alpha = 0.6f),
+            modifier = Modifier
+                .size(40.dp)
+                .padding(8.dp)
+                .pointerInput(entry.id) {
+                    detectDragGestures(
+                        onDragStart = { onDragStart() },
+                        onDragEnd = { onDragEnd() },
+                        onDragCancel = { onDragEnd() },
+                        onDrag = { change, amount ->
+                            change.consume()
+                            onDrag(amount.y)
+                        }
+                    )
+                }
+        )
+    }
+}
+
+@Composable
+private fun SquareIconButton(
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    tint: Color,
+    borderColor: Color,
+    onClick: () -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .size(46.dp)
+            .clip(RoundedCornerShape(14.dp))
+            .border(BorderStroke(1.dp, borderColor), RoundedCornerShape(14.dp))
+            .clickable(onClick = onClick),
+        contentAlignment = Alignment.Center
+    ) {
+        Icon(icon, contentDescription = null, tint = tint, modifier = Modifier.size(22.dp))
+    }
+}
+
+@Composable
+private fun ClipTextField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    placeholder: String,
+    p: ClipPalette
+) {
+    OutlinedTextField(
+        value = value,
+        onValueChange = onValueChange,
+        modifier = Modifier.fillMaxWidth(),
+        placeholder = { Text(placeholder, color = p.textSecondary.copy(alpha = 0.7f), fontSize = 17.sp) },
+        textStyle = androidx.compose.ui.text.TextStyle(fontSize = 17.sp, lineHeight = 26.sp),
+        minLines = 5,
+        maxLines = 8,
+        shape = RoundedCornerShape(20.dp),
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedBorderColor = p.accent,
+            unfocusedBorderColor = p.border,
+            focusedTextColor = p.textPrimary,
+            unfocusedTextColor = p.textPrimary,
+            focusedContainerColor = p.fieldBg,
+            unfocusedContainerColor = p.fieldBg,
+            cursorColor = p.accent
+        )
+    )
+}
+
+@Composable
+private fun SheetButtons(
+    p: ClipPalette,
+    saveEnabled: Boolean,
+    onCancel: () -> Unit,
+    onSave: () -> Unit
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(14.dp)
+    ) {
+        OutlinedButton(
+            onClick = onCancel,
+            modifier = Modifier
+                .weight(1f)
+                .height(52.dp),
+            shape = RoundedCornerShape(18.dp),
+            border = BorderStroke(1.dp, p.border.copy(alpha = 0.5f))
+        ) {
+            Text("Cancel", color = p.textSecondary, fontSize = 17.sp)
+        }
+        Button(
+            onClick = onSave,
+            enabled = saveEnabled,
+            modifier = Modifier
+                .weight(1f)
+                .height(52.dp),
+            shape = RoundedCornerShape(18.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = p.accent,
+                contentColor = Color.White,
+                disabledContainerColor = p.border.copy(alpha = 0.6f),
+                disabledContentColor = p.textSecondary
+            )
+        ) {
+            Text("Save", fontSize = 17.sp, fontWeight = FontWeight.Bold)
         }
     }
 }
