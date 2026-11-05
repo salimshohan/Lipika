@@ -279,8 +279,15 @@ fun KeycapView(
                                 } else if (initialKey.type == KeyType.SPACE) {
                                     // Handled via spacebarDwellJob
                                 } else if (activeMoreKeys.isNotEmpty() && coords != null && coords.isAttached) {
-                                    isMoreKeysActive = true
-                                    currentOnShowMoreKeys.value(initialKey.copy(moreKeys = activeMoreKeys), coords)
+                                    val firstAction = activeMoreKeys.firstOrNull()
+                                    if (firstAction != null && firstAction.startsWith("ACTION_")) {
+                                        isLongPressTriggered = true
+                                        isMoreKeysActive = false
+                                        currentOnLongPress.value(initialKey.copy(moreKeys = listOf(firstAction)))
+                                    } else {
+                                        isMoreKeysActive = true
+                                        currentOnShowMoreKeys.value(initialKey.copy(moreKeys = activeMoreKeys), coords)
+                                    }
                                 } else {
                                     currentOnLongPress.value(initialKey)
                                 }

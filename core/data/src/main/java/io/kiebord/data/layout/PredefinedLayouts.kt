@@ -99,10 +99,10 @@ object PredefinedLayouts {
             KeyRow(
                 listOf(
                     KeyDef(type = KeyType.SHIFT, icon = "shift", widthWeight = 1.5f),
-                    KeyDef("z", "Z", flickUp = "*", moreKeys = listOf("ACTION_SELECT_ALL", "*")),
+                    KeyDef("z", "Z", flickUp = "ALL", moreKeys = listOf("ACTION_SELECT_ALL", "*")),
                     KeyDef("x", "X", flickUp = "\"", moreKeys = listOf("ACTION_CUT", "\"")),
-                    KeyDef("c", "C", flickUp = "'", moreKeys = listOf("ACTION_COPY", "'", "ç")),
-                    KeyDef("v", "V", flickUp = ":", moreKeys = listOf("ACTION_PASTE", ":")),
+                    KeyDef("c", "C", flickUp = "COPY", moreKeys = listOf("ACTION_COPY", "'", "ç")),
+                    KeyDef("v", "V", flickUp = "PASTE", moreKeys = listOf("ACTION_PASTE", ":")),
                     KeyDef("b", "B", flickUp = ";", moreKeys = listOf(";")),
                     KeyDef("n", "N", flickUp = "!", moreKeys = listOf("!", "ñ")),
                     KeyDef("m", "M", flickUp = "?", moreKeys = listOf("?")),
@@ -1076,7 +1076,7 @@ object PredefinedLayouts {
     }
 
     val allPredefined: List<KeyboardLayoutDef> by lazy {
-        listOf(EnglishQwerty, BengaliBorno, BengaliAvro, BengaliBornoEasy, BengaliNational, BengaliProbhat)
+        listOf(EnglishQwerty, BengaliProbhat, BengaliAvro, BengaliNational)
     }
 
     fun fromId(id: String): KeyboardLayoutDef {

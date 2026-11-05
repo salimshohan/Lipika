@@ -402,6 +402,12 @@ fun KiebordSettingsApp(
                             onUpdateShowKeyShadows = { enabled ->
                                 scope.launch { preferencesRepo.updateShowKeyShadows(enabled) }
                             },
+                            onUpdateSelectedFont = { font ->
+                                scope.launch { preferencesRepo.updateSelectedFont(font) }
+                            },
+                            onUpdateCustomFontPath = { path ->
+                                scope.launch { preferencesRepo.updateCustomFontPath(path) }
+                            },
                             pendingImportUri = pendingThemeImportUri,
                             onClearPendingImportUri = onClearPendingThemeImportUri,
                             onOpenThemeDesigner = { editingThemeId ->

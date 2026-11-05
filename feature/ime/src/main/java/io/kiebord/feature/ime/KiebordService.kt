@@ -1233,6 +1233,25 @@ class KiebordService : InputMethodService() {
         }
         if (charToInsert.isEmpty()) return
 
+        when (charToInsert) {
+            "ACTION_CUT", "action:cut", "CUT" -> {
+                handleTextAction(TextAction.CUT, false)
+                return
+            }
+            "ACTION_COPY", "action:copy", "COPY" -> {
+                handleTextAction(TextAction.COPY, false)
+                return
+            }
+            "ACTION_PASTE", "action:paste", "PASTE" -> {
+                handleTextAction(TextAction.PASTE, false)
+                return
+            }
+            "ACTION_SELECT_ALL", "action:select_all", "SELECT_ALL" -> {
+                handleTextAction(TextAction.SELECT_ALL, true)
+                return
+            }
+        }
+
         if (isTransliterationLayout() && (isTransliterableChar(charToInsert) || isBengaliOrModifier(charToInsert))) {
             getTransliterationManager().handleCharacter(charToInsert)
         } else {

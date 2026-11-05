@@ -94,8 +94,8 @@ class KiebordPreferencesRepository private constructor(private val context: Cont
         }
         .map { prefs ->
             KiebordPreferences(
-                theme = prefs[PreferencesKeys.THEME] ?: KiebordPreferences.THEME_DEFAULT_DARK,
-                selectedFont = prefs[PreferencesKeys.SELECTED_FONT] ?: KiebordPreferences.FONT_DEFAULT,
+                theme = prefs[PreferencesKeys.THEME] ?: KiebordPreferences.THEME_LIPIKA_GRADIENT,
+                selectedFont = prefs[PreferencesKeys.SELECTED_FONT] ?: KiebordPreferences.FONT_TW_CENT_MT,
                 customFontPath = prefs[PreferencesKeys.CUSTOM_FONT_PATH] ?: "",
                 keyboardHeightScale = prefs[PreferencesKeys.KEYBOARD_HEIGHT_SCALE] ?: 1.0f,
                 keyboardHeightScaleLandscape = prefs[PreferencesKeys.KEYBOARD_HEIGHT_SCALE_LANDSCAPE] ?: 1.0f,

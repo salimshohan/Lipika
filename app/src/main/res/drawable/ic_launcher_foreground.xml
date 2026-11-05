@@ -1,52 +1,50 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
     android:width="108dp"
     android:height="108dp"
-    android:viewportWidth="256"
-    android:viewportHeight="256">
+    android:viewportWidth="108"
+    android:viewportHeight="108">
 
-    <group
-        android:scaleX="0.88"
-        android:scaleY="0.88"
-        android:pivotX="128"
-        android:pivotY="128">
+    <!-- Center Radiant Backlight Glow -->
+    <path
+        android:pathData="M54,54 m-30,0 a30,30 0,1,0 60,0 a30,30 0,1,0 -60,0"
+        android:fillAlpha="0.28">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:centerX="54"
+                android:centerY="54"
+                android:gradientRadius="30"
+                android:endColor="#0006B6D4"
+                android:startColor="#06B6D4"
+                android:type="radial" />
+        </aapt:attr>
+    </path>
 
-        <!-- Outer Keycap Glow Layer -->
-        <path
-            android:fillColor="#38BDF8"
-            android:fillAlpha="0.18"
-            android:pathData="M52,38 h152 c16.5,0 30,13.5 30,30 v120 c0,16.5 -13.5,30 -30,30 h-152 c-16.5,0 -30,-13.5 -30,-30 v-120 c0,-16.5 13.5,-30 30,-30 Z" />
+    <!-- Top Keycap Matra Line -->
+    <path
+        android:pathData="M28,34 L80,34 L80,39 L28,39 Z"
+        android:fillColor="#FFFFFF" />
 
-        <!-- Keycap Surface Base -->
-        <path
-            android:fillColor="#0F172A"
-            android:pathData="M56,42 h144 c14.3,0 26,11.7 26,26 v116 c0,14.3 -11.7,26 -26,26 h-144 c-14.3,0 -26,-11.7 -26,-26 v-116 c0,-14.3 11.7,-26 26,-26 Z" />
+    <!-- Stylized Modern Bengali 'ল' Loops -->
+    <path
+        android:pathData="M32,65 C28,58 30,46 37,41 C43,37 50,39 52,46 C55,39 62,37 68,41 C75,46 77,58 73,65 C71,70 65,74 58,73 L58,67 C62,68 67,65 68,62 C71,57 69,48 64,45 C60,42 55,44 53,50 L50,50 C48,44 44,42 40,45 C35,48 33,57 36,62 C37,65 42,68 46,67 L46,73 C39,74 33,70 32,65 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:angle="90"
+                android:endColor="#38BDF8"
+                android:startColor="#06B6D4"
+                android:type="linear" />
+        </aapt:attr>
+    </path>
 
-        <!-- Cyan Accent Edge Highlight -->
-        <path
-            android:fillColor="#0284C7"
-            android:pathData="M56,42 h144 c14.3,0 26,11.7 26,26 v6 c0,-14.3 -11.7,-26 -26,-26 h-144 c-14.3,0 -26,11.7 -26,26 v-6 c0,-14.3 11.7,-26 26,-26 Z" />
+    <!-- Right Stem of 'ল' -->
+    <path
+        android:pathData="M75,34 L80,34 L80,75 C80,78 77,80 75,80 L72,80 C70,80 68,78 68,75 L68,70 L73,70 L73,75 L75,75 Z"
+        android:fillColor="#FFFFFF" />
 
-        <!-- Stylized Bengali 'ল' (L for Lipika) Glyph -->
-        <!-- Top Matra / Header Bar -->
-        <path
-            android:fillColor="#38BDF8"
-            android:pathData="M68,76 h120 v12 h-120 Z" />
+    <!-- Cyan Electric Dot / Accent -->
+    <path
+        android:pathData="M83,36 L86,36 L86,46 L83,46 Z"
+        android:fillColor="#06B6D4" />
 
-        <!-- Right Vertical Stem -->
-        <path
-            android:fillColor="#FFFFFF"
-            android:pathData="M158,76 h18 v104 h-18 Z" />
-
-        <!-- Left Fluid Loops of 'ল' -->
-        <path
-            android:fillColor="#FFFFFF"
-            android:pathData="M116,112 c-6,-12 -16,-18 -28,-18 c-18,0 -32,14 -32,32 c0,18 14,32 32,32 c12,0 22,-6 28,-18 c6,12 16,18 28,18 c4,0 8,-1 12,-3 v-18 c-4,2 -8,3 -12,3 c-11,0 -19,-8 -20,-19 h40 v-14 h-40 c1,-10 9,-18 20,-18 c4,0 8,1 12,3 v-18 c-4,-2 -8,-3 -12,-3 c-12,0 -22,6 -28,18 Z M88,142 c-8,0 -14,-6 -14,-14 c0,-8 6,-14 14,-14 c8,0 14,6 14,14 c0,8 -6,14 -14,14 Z" />
-
-        <!-- Subtle Keyboard Spacebar Accent at Bottom -->
-        <path
-            android:fillColor="#38BDF8"
-            android:fillAlpha="0.75"
-            android:pathData="M88,194 h80 c3,0 5,2 5,5 v2 c0,3 -2,5 -5,5 h-80 c-3,0 -5,-2 -5,-5 v-2 c0,-3 2,-5 5,-5 Z" />
-
-    </group>
 </vector>

@@ -64,19 +64,21 @@ jobs:
           path: dist/Lipika.apk
 
       - name: Release Lipika APK
+        if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: v0.1.5
-          name: "Lipika v0.1.5"
+          tag_name: ${{ github.ref_name }}
+          name: "Lipika ${{ github.ref_name }}"
           body: |
-            ### 🌟 Lipika Keyboard v0.1.5 Release
+            ### 🌟 Lipika Keyboard ${{ github.ref_name }} Release
             
-            - **Brand New Smart Home UI**: Redesigned home interface with live typing test area and quick settings.
-            - **New Lipika Logo**: Fresh vector app icon and launcher graphics.
-            - **Tw Cent MT & Custom Font Support**: 10 font choices plus direct `.ttf` / `.otf` custom font loader.
-            - **Curated Layouts**: English, Ovro, Bangla Jatiyo, Provat, and Arabic.
-            - **English Clipboard Shortcuts**: Quick Cut (x), Copy (c), and Paste (v) directly on keyboard keys.
-            - **Developer**: Salim Hosen Shohan, University of Rajshahi.
+            - **🎨 Luminous Aurora Gradient Theme**: Frosted glass gradient aesthetic now set as default.
+            - **🔤 Font Studio with 11+ Real Fonts**: Built-in real TTF typography with Tw Cent MT (default), Kalpurush, Segoe UI, Georgia, Consolas, Candara, Comic Sans, Trebuchet MS, Verdana, Calibri, Corbel, and custom font file loader.
+            - **✨ Brand New Lipika Logo**: Redesigned modern Bengali 'ল' & neon cyber keycap emblem.
+            - **✂️ Direct English Keyboard Shortcuts**: Instant Cut on 'x', Copy on 'c', Paste on 'v', Select All on 'z'.
+            - **🌐 Curated 5 Layouts**: English, Provat, Avro Phonetic, Arabic, and Bangla Jatiyo.
+            - **📱 All-English Modern Settings UI**: Clean, responsive Material 3 layout with live testing sandbox.
+            - **👤 Sole Developer**: Salim Hosen Shohan, University of Rajshahi.
           files: dist/Lipika.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -22,6 +22,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.CheckCircle
 import androidx.compose.material.icons.outlined.ContentPaste
@@ -30,7 +31,6 @@ import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Keyboard
 import androidx.compose.material.icons.outlined.Mic
 import androidx.compose.material.icons.outlined.Palette
-import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Spellcheck
 import androidx.compose.material.icons.outlined.SwapHoriz
 import androidx.compose.material.icons.outlined.Tune
@@ -39,6 +39,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
@@ -50,7 +51,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
@@ -84,7 +84,7 @@ fun SettingsMainScreen(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(24.dp),
             colors = CardDefaults.cardColors(containerColor = colors.cardBackground),
-            border = BorderStroke(1.dp, colors.accent.copy(alpha = 0.25f))
+            border = BorderStroke(1.dp, colors.accent.copy(alpha = 0.35f))
         ) {
             Column(
                 modifier = Modifier
@@ -111,19 +111,19 @@ fun SettingsMainScreen(
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
                             Text(
-                                text = "Lipika",
-                                fontSize = 22.sp,
+                                text = "Lipika Keyboard",
+                                fontSize = 21.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = colors.textPrimary
                             )
                             Box(
                                 modifier = Modifier
                                     .clip(RoundedCornerShape(8.dp))
-                                    .background(colors.accent.copy(alpha = 0.15f))
+                                    .background(colors.accent.copy(alpha = 0.18f))
                                     .padding(horizontal = 8.dp, vertical = 2.dp)
                             ) {
                                 Text(
-                                    text = "v0.1.5",
+                                    text = "v0.1.6",
                                     fontSize = 11.sp,
                                     fontWeight = FontWeight.Bold,
                                     color = colors.accent
@@ -132,7 +132,7 @@ fun SettingsMainScreen(
                         }
                         Spacer(modifier = Modifier.height(2.dp))
                         Text(
-                            text = "লিপিকা — দ্রুত, আধুনিক ও সুন্দর কীবোর্ড",
+                            text = "Fast, clean & modern multilingual keyboard",
                             fontSize = 13.sp,
                             color = colors.textSecondary
                         )
@@ -153,16 +153,16 @@ fun SettingsMainScreen(
             ) {
                 Column(modifier = Modifier.padding(18.dp)) {
                     Text(
-                        text = if (!isImeEnabled) "কীবোর্ড একটিভ করা প্রয়োজন" else "লিপিকা সিলেক্ট করুন",
+                        text = if (!isImeEnabled) "Keyboard Activation Required" else "Select Lipika as Default",
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = colors.warningCardText
                     )
                     Text(
                         text = if (!isImeEnabled) {
-                            "টাইপিং শুরু করতে অ্যান্ড্রয়েড সিস্টেম সেটিংস থেকে Lipika অন করুন।"
+                            "To start typing, please enable Lipika Keyboard in Android system settings."
                         } else {
-                            "Lipika অন আছে, কিন্তু ডিফল্ট ইনপুট মেথড হিসেবে সিলেক্ট করা হয়নি।"
+                            "Lipika is enabled, but not set as the default active input method."
                         },
                         fontSize = 13.sp,
                         lineHeight = 18.sp,
@@ -244,7 +244,7 @@ fun SettingsMainScreen(
                             modifier = Modifier.weight(1f)
                         )
                         Text(
-                            text = "সুপার স্পিড রেডি",
+                            text = "Super Speed Ready",
                             fontSize = 12.sp,
                             fontWeight = FontWeight.Medium,
                             color = Color(0xFF10B981)
@@ -253,16 +253,27 @@ fun SettingsMainScreen(
 
                     Spacer(modifier = Modifier.height(12.dp))
 
-                    // Live Interactive Keyboard Testing Box
+                    // Live Interactive Keyboard Testing Sandbox
                     OutlinedTextField(
                         value = testInputText,
                         onValueChange = { testInputText = it },
                         placeholder = {
                             Text(
-                                text = "এখানে টাইপ করে টেস্ট করুন...",
+                                text = "Type here to test keyboard response...",
                                 fontSize = 13.sp,
                                 color = colors.textSecondary.copy(alpha = 0.7f)
                             )
+                        },
+                        trailingIcon = {
+                            if (testInputText.isNotEmpty()) {
+                                IconButton(onClick = { testInputText = "" }) {
+                                    Icon(
+                                        imageVector = Icons.Filled.Clear,
+                                        contentDescription = "Clear",
+                                        tint = colors.textSecondary
+                                    )
+                                }
+                            }
                         },
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(14.dp),
@@ -282,29 +293,43 @@ fun SettingsMainScreen(
 
         Spacer(modifier = Modifier.height(18.dp))
 
-        // 3. Smart Navigation Items
-        SettingsCategoryHeader(title = "কাস্টমাইজেশন ও সেটিংস")
+        // 3. Smart Settings Navigation
+        SettingsCategoryHeader(title = "APPEARANCE & TYPOGRAPHY")
 
         SettingsGroup {
             SmartSettingsTile(
-                title = "Appearance, Themes & Fonts",
-                subtitle = "থিম এবং Tw Cent MT সহ কাস্টম ফন্ট সিলেকশন",
+                title = "Keyboard Themes",
+                subtitle = "Active: Lipika Gradient • Aurora glass, dark and light palettes",
                 icon = Icons.Outlined.Palette,
                 position = GroupPosition.TOP,
                 onClick = { onNavigate(SettingsScreen.AppearanceThemes) }
             )
 
             SmartSettingsTile(
+                title = "Font Studio",
+                subtitle = "Active: Tw Cent MT • 11+ fonts and custom font import",
+                icon = Icons.Outlined.FontDownload,
+                position = GroupPosition.BOTTOM,
+                onClick = { onNavigate(SettingsScreen.AppearanceThemes) }
+            )
+        }
+
+        Spacer(modifier = Modifier.height(18.dp))
+
+        SettingsCategoryHeader(title = "LANGUAGES & INPUT")
+
+        SettingsGroup {
+            SmartSettingsTile(
                 title = "Keyboard Layouts",
-                subtitle = "English, Ovro, জাতীয়, প্রভাত, Arabic",
+                subtitle = "English, Provat, Avro, Arabic, Bangla Jatiyo",
                 icon = Icons.Outlined.Keyboard,
-                position = GroupPosition.MIDDLE,
+                position = GroupPosition.TOP,
                 onClick = { onNavigate(SettingsScreen.KeyboardLayouts) }
             )
 
             SmartSettingsTile(
                 title = "Preferences & Speed",
-                subtitle = "২২০ms টাইপিং রেসপন্স, হ্যাপটিক ও লেআউট স্কেল",
+                subtitle = "Ultra-low latency, haptic vibration and layout scaling",
                 icon = Icons.Outlined.Tune,
                 position = GroupPosition.MIDDLE,
                 onClick = { onNavigate(SettingsScreen.Preferences) }
@@ -312,7 +337,7 @@ fun SettingsMainScreen(
 
             SmartSettingsTile(
                 title = "Corrections & Suggestions",
-                subtitle = "স্মার্ট সাজেশন, স্বয়ংক্রিয় স্পেস ও জেসচার টাইপিং",
+                subtitle = "Candidate completions, smart next-word prediction",
                 icon = Icons.Outlined.Spellcheck,
                 position = GroupPosition.MIDDLE,
                 onClick = { onNavigate(SettingsScreen.CorrectionsSuggestions) }
@@ -320,7 +345,7 @@ fun SettingsMainScreen(
 
             SmartSettingsTile(
                 title = "Clipboard Manager",
-                subtitle = "কপি হিস্ট্রি ও পিনড ক্লিপস",
+                subtitle = "Clipboard history, pinned clips and quick paste",
                 icon = Icons.Outlined.ContentPaste,
                 position = GroupPosition.MIDDLE,
                 onClick = { onNavigate(SettingsScreen.Clipboard) }
@@ -328,7 +353,7 @@ fun SettingsMainScreen(
 
             SmartSettingsTile(
                 title = "Voice Typing",
-                subtitle = "ভয়েস দিয়ে সহজে কথা বলে টাইপ করুন",
+                subtitle = "Voice input with speech-to-text integration",
                 icon = Icons.Outlined.Mic,
                 position = GroupPosition.BOTTOM,
                 onClick = { onNavigate(SettingsScreen.VoiceTyping) }
@@ -338,7 +363,7 @@ fun SettingsMainScreen(
         Spacer(modifier = Modifier.height(18.dp))
 
         // 4. Developer & About Card
-        SettingsCategoryHeader(title = "ডেভেলপার ও পরিচিতি")
+        SettingsCategoryHeader(title = "ABOUT & DEVELOPER")
 
         SettingsGroup {
             SmartSettingsTile(
@@ -403,7 +428,7 @@ private fun SmartSettingsTile(
                 Spacer(modifier = Modifier.height(2.dp))
                 Text(
                     text = subtitle,
-                    fontSize = 12.sp,
+                    fontSize = 12.5.sp,
                     color = colors.textSecondary,
                     lineHeight = 16.sp
                 )

@@ -51,6 +51,14 @@ class ThemeRepository private constructor(private val context: Context) {
         get() = File(context.filesDir, "themes").apply { if (!exists()) mkdirs() }
 
     private val originalThemes = linkedMapOf<String, ThemeOptionItem>(
+        "lipika_gradient" to ThemeOptionItem(
+            id = "lipika_gradient",
+            name = "Lipika Gradient",
+            description = "Luminous aurora glass gradient with frosted translucent keycaps and vivid cyan accents",
+            scheme = KeyboardColorScheme.DefaultDark,
+            category = ThemeCategory.BORNO_GRADIENT
+        ),
+
         "default_light" to ThemeOptionItem(
             id = "default_light",
             name = "Default Light",
@@ -82,6 +90,20 @@ class ThemeRepository private constructor(private val context: Context) {
     }
 
     private fun loadBundledThemes() {
+        try {
+            val gradStream = context.assets.open("themes/lipika_gradient.json")
+            val gradContent = gradStream.bufferedReader(Charsets.UTF_8).use { it.readText() }
+            val spec = json.decodeFromString<KeyboardThemeSpec>(gradContent)
+            bundledThemes["lipika_gradient"] = spec.toCustomThemeDef()
+            richThemes["lipika_gradient"] = spec
+            originalThemes["lipika_gradient"] = ThemeOptionItem(
+                id = "lipika_gradient",
+                name = "Lipika Gradient",
+                description = "Luminous aurora glass gradient with frosted translucent keycaps and vivid cyan accents",
+                scheme = spec.toKeyboardColorScheme(),
+                category = ThemeCategory.BORNO_GRADIENT
+            )
+        } catch (_: Exception) {}
         try {
             val assetStream = context.assets.open("themes/borno_themes.json")
             val content = assetStream.bufferedReader(Charsets.UTF_8).use { it.readText() }

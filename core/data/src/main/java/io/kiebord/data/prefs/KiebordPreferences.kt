@@ -5,8 +5,8 @@ package io.kiebord.data.prefs
  */
 data class KiebordPreferences(
     // Appearance & Theming
-    val theme: String = THEME_DEFAULT_DARK,
-    val selectedFont: String = FONT_DEFAULT,
+    val theme: String = THEME_LIPIKA_GRADIENT,
+    val selectedFont: String = FONT_TW_CENT_MT,
     val customFontPath: String = "",
     val keyboardHeightScale: Float = 1.0f,
     val keyboardHeightScaleLandscape: Float = 1.0f,
@@ -81,16 +81,19 @@ data class KiebordPreferences(
 
                 const val FONT_DEFAULT = "default"
         const val FONT_TW_CENT_MT = "tw_cent_mt"
-        const val FONT_ROBOTO = "roboto"
-        const val FONT_INTER = "inter"
-        const val FONT_POPPINS = "poppins"
         const val FONT_KALPURUSH = "kalpurush"
-        const val FONT_SOLAIMAN_LIPI = "solaiman_lipi"
-        const val FONT_FIRA_CODE = "fira_code"
-        const val FONT_OUTFIT = "outfit"
-        const val FONT_NOTO_SANS_BN = "noto_sans_bn"
+        const val FONT_SEGOE_UI = "segoe_ui"
+        const val FONT_GEORGIA = "georgia"
+        const val FONT_CONSOLAS = "consolas"
+        const val FONT_CANDARA = "candara"
+        const val FONT_COMIC_SANS = "comic_sans"
+        const val FONT_TREBUCHET = "trebuchet"
+        const val FONT_VERDANA = "verdana"
+        const val FONT_CALIBRI = "calibri"
+        const val FONT_CORBEL = "corbel"
         const val FONT_CUSTOM = "custom"
 
+        const val THEME_LIPIKA_GRADIENT = "lipika_gradient"
         const val THEME_DEFAULT_DARK = "default_dark"
         const val THEME_AMOLED_BLACK = "amoled_black"
         const val THEME_TOKYO_NIGHT = "tokyo_night"

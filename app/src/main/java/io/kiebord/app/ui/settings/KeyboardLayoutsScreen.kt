@@ -130,39 +130,25 @@ fun KeyboardLayoutsScreen(
     val banglaCards = remember {
         listOf(
             LayoutCardData(
-                id = KiebordPreferences.LAYOUT_BN_BORNO,
-                name = "বর্ণ ফোনেটিক",
-                badge = "বর্ণ",
-                description = "Phonetic (ami → আমি)",
-                layoutDef = PredefinedLayouts.BengaliBorno
+                id = KiebordPreferences.LAYOUT_BN_PROBHAT,
+                name = "Provat (প্রভাত)",
+                badge = "প্রভাত",
+                description = "Standard Provat fixed layout",
+                layoutDef = PredefinedLayouts.BengaliProbhat
             ),
             LayoutCardData(
                 id = KiebordPreferences.LAYOUT_BN_AVRO,
-                name = "অভ্র ফোনেটিক",
+                name = "Avro Phonetic (অভ্র)",
                 badge = "অভ্র",
-                description = "Phonetic (ami → আমি)",
+                description = "Phonetic transliteration (ami → আমি)",
                 layoutDef = PredefinedLayouts.BengaliAvro
             ),
             LayoutCardData(
-                id = KiebordPreferences.LAYOUT_BN_EASY,
-                name = "বর্ণ ইজি",
-                badge = "বর্ণ ইজি",
-                description = "Easy 5-row alphabetical layout",
-                layoutDef = PredefinedLayouts.BengaliBornoEasy
-            ),
-            LayoutCardData(
                 id = KiebordPreferences.LAYOUT_BN_NATIONAL,
-                name = "জাতীয় (BSTI)",
-                badge = "জাতীয়",
-                description = "National BSTI layout",
+                name = "Bangla Jatiyo (জাতীয় BSTI)",
+                badge = "জাতীয়",
+                description = "Official BSTI national standard layout",
                 layoutDef = PredefinedLayouts.BengaliNational
-            ),
-            LayoutCardData(
-                id = KiebordPreferences.LAYOUT_BN_PROBHAT,
-                name = "প্রভাত",
-                badge = "প্রভাত",
-                description = "Fixed traditional layout",
-                layoutDef = PredefinedLayouts.BengaliProbhat
             )
         )
     }

@@ -51,34 +51,33 @@ fun resolveKeyboardFontFamily(
     customFontPath: String? = null
 ): FontFamily {
     return when (selectedFont) {
-        "tw_cent_mt" -> FontFamily(
-            Font(R.font.tw_cent_mt, FontWeight.Normal),
-            Font(R.font.tw_cent_mt, FontWeight.Medium),
-            Font(R.font.tw_cent_mt, FontWeight.Bold)
-        )
-        "roboto" -> FontFamily.SansSerif
-        "inter" -> FontFamily.Default
-        "poppins" -> FontFamily.SansSerif
-        "serif", "kalpurush", "solaiman_lipi" -> FontFamily.Serif
-        "fira_code" -> FontFamily.Monospace
-        "cursive" -> FontFamily.Cursive
-        "outfit" -> FontFamily.SansSerif
+        "tw_cent_mt" -> FontFamily(Font(R.font.tw_cent_mt, FontWeight.Normal))
+        "kalpurush" -> FontFamily(Font(R.font.kalpurush, FontWeight.Normal))
+        "segoe_ui" -> FontFamily(Font(R.font.segoe_ui, FontWeight.Normal))
+        "georgia" -> FontFamily(Font(R.font.georgia, FontWeight.Normal))
+        "consolas" -> FontFamily(Font(R.font.consolas, FontWeight.Normal))
+        "candara" -> FontFamily(Font(R.font.candara, FontWeight.Normal))
+        "comic_sans" -> FontFamily(Font(R.font.comic_sans, FontWeight.Normal))
+        "trebuchet" -> FontFamily(Font(R.font.trebuchet, FontWeight.Normal))
+        "verdana" -> FontFamily(Font(R.font.verdana, FontWeight.Normal))
+        "calibri" -> FontFamily(Font(R.font.calibri, FontWeight.Normal))
+        "corbel" -> FontFamily(Font(R.font.corbel, FontWeight.Normal))
         "custom" -> {
             if (!customFontPath.isNullOrBlank()) {
                 try {
                     val file = java.io.File(customFontPath)
                     if (file.exists() && file.isFile && file.canRead()) {
                         val typeface = android.graphics.Typeface.createFromFile(file)
-                        if (typeface != null) FontFamily(typeface) else KeyboardFontFamily
-                    } else KeyboardFontFamily
+                        if (typeface != null) FontFamily(typeface) else FontFamily(Font(R.font.tw_cent_mt))
+                    } else FontFamily(Font(R.font.tw_cent_mt))
                 } catch (_: Throwable) {
-                    KeyboardFontFamily
+                    FontFamily(Font(R.font.tw_cent_mt))
                 }
             } else {
-                KeyboardFontFamily
+                FontFamily(Font(R.font.tw_cent_mt))
             }
         }
-        else -> KeyboardFontFamily
+        else -> FontFamily(Font(R.font.tw_cent_mt, FontWeight.Normal))
     }
 }
 

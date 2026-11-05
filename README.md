@@ -1,97 +1,74 @@
-# Lipika (লিপিকা)
+# Lipika Keyboard (লিপিকা)
 
 <p align="center">
-  <img width="128" height="128" alt="Lipika Logo" src="https://github.com/user-attachments/assets/346d3099-7f42-462a-931c-959a216ebccc" />
+  <img width="140" height="140" alt="Lipika Logo" src="docs/logo.svg" />
 </p>
 
 <p align="center">
-  <strong>A fresh, clean, and super-fast open-source Bengali & Multilingual keyboard for Android.</strong>
+  <strong>A fresh, clean, and super-fast open-source Bengali, English & Multilingual keyboard for Android.</strong>
 </p>
 
 ---
 
-[![Repo](https://img.shields.io/badge/GitHub-salimshohan%2FLipika-blue?logo=github)](https://github.com/salimshohan/Lipika)
-[![Android](https://img.shields.io/badge/Platform-Android%208.0%2B%20(API%2024%2B)-blue)](https://developer.android.com)
-[![Rust](https://img.shields.io/badge/Engine-Rust%20NDK-orange)](https://www.rust-lang.org)
-[![Kotlin](https://img.shields.io/badge/UI-Jetpack%20Compose-purple)](https://developer.android.com/jetpack/compose)
-[![License](https://img.shields.io/badge/License-GPL%203.0-green.svg)](https://www.gnu.org/licenses/gpl-3.0)
+<p align="center">
+  <a href="https://github.com/salimshohan/Lipika/releases/tag/v0.1.6">
+    <img src="https://img.shields.io/badge/Release-v0.1.6-06B6D4?style=for-the-badge&logo=android&logoColor=white" alt="Version 0.1.6" />
+  </a>
+  <a href="https://github.com/salimshohan/Lipika">
+    <img src="https://img.shields.io/badge/GitHub-salimshohan%2FLipika-8B5CF6?style=for-the-badge&logo=github&logoColor=white" alt="GitHub" />
+  </a>
+  <a href="mailto:salimshohan@proton.me">
+    <img src="https://img.shields.io/badge/Developer-Salim%20Hosen%20Shohan-38BDF8?style=for-the-badge&logo=protonmail&logoColor=white" alt="Developer" />
+  </a>
+</p>
 
 ---
 
 ## 🌟 Overview
 
-**Lipika (লিপিকা)** is a modern, high-performance input method editor (IME) designed for effortless typing in Bengali, English, and Arabic. Built on modern Android architecture with **Jetpack Compose** for an ultra-clean UI and a high-speed **Rust native core** for spatial touch prediction and instant transliteration.
-
-### Key Highlights
-- **⚡ Super Speed & Low Latency**: Optimized touch response and reduced delay for fluid, instant typing.
-- **🎨 Fresh & Clean Vibe**: Modern slate-cyan aesthetic, elegant keycaps, refined contrast, and streamlined settings.
-- **🔒 Privacy First**: Completely offline by design. No background telemetry or analytics.
-- **🇧🇩 Rich Bangla Support**: Full phonetic, Avro, Borno, National (BSTI), and Probhat layouts.
+**Lipika (লিপিকা)** is a modern, high-performance input method editor (IME) engineered for fast and elegant typing on Android. Built with modern Android architecture using **Jetpack Compose** for a fluid UI, bundled with an ultra-responsive **Rust native core** for spatial touch prediction and instant phonetic transliteration.
 
 ---
 
-## ✨ Features
+## ✨ Key Highlights
 
-### Supported Layouts
-| Language | Layouts |
+- **🎨 Luminous Aurora Gradient Theme (Default)**: Out-of-the-box frosted glass gradient styling with translucent keycaps and vivid accents.
+- **🔤 Font Studio with Tw Cent MT & 11+ Fonts**: Built-in real TTF typography selection including **Tw Cent MT**, **Kalpurush (বাংলা)**, Segoe UI, Georgia, Consolas, Candara, Comic Sans, Trebuchet MS, Verdana, Calibri, Corbel, plus direct custom font file loader (`.ttf` / `.otf`).
+- **✂️ Direct Cut, Copy & Paste Shortcuts**: Integrated shortcuts directly on the English keyboard:
+  - **`x` key**: Cut (✂️)
+  - **`c` key**: Copy (📋)
+  - **`v` key**: Paste (📄)
+  - **`z` key**: Select All (🔘)
+- **⚡ Super Speed & Low Latency**: Fine-tuned touch latency and spatial distance matching for seamless typing.
+- **🔒 Privacy First & 100% Offline**: Zero analytics, zero tracking, completely offline.
+
+---
+
+## ⌨️ Curated Language Layouts
+
+Lipika features 5 carefully chosen layouts:
+
+| Layout | Description |
 |---|---|
-| **Bangla** | Borno Phonetic, Avro Phonetic, Borno Easy, National (BSTI), Probhat, Khipro |
-| **English** | QWERTY, Math symbols |
-| **Arabic** | Arabic (with dedicated Harakat / diacritics row) |
-
-*Custom layouts can be added by placing JSON layout files in `assets/layouts/`.*
-
-### Input & Editing
-* **Gesture Typing**: Swipe-to-type support across supported layouts.
-* **Smart Next-Word Predictions**: On-device candidate completions and next-word suggestions.
-* **Spacebar & Backspace Gestures**: Slide across the spacebar to navigate the cursor; slide left from the backspace key to quickly erase words.
-* **Clipboard Manager**: History of copied text with pin/unpin support.
-* **Text Editing Panel**: Dedicated directional arrows, text selection handles, copy, cut, paste, undo, and redo.
-* **Emoji Picker**: Built-in emoji panel with search and category tabs.
-* **Voice Typing**: Direct speech-to-text input via system voice recognizer.
-* **One-Handed Mode & Resizing**: Toggleable left/right one-handed modes and adjustable keyboard height.
-* **Haptic Feedback**: Keypress vibration support with configurable intensity.
-* **Modern Themes**: Clean Dark & Light themes with vibrant accents, AMOLED Black, Tokyo Night, and customizable palettes.
+| **English (QWERTY)** | Standard English keyboard with direct copy/paste shortcuts and number flicking. |
+| **Provat (প্রভাত)** | Popular fixed traditional Bengali layout for fast typing. |
+| **Avro Phonetic (অভ্র)** | Intuitive phonetic typing (`ami` → `আমি`) powered by the native engine. |
+| **Arabic (العربية)** | Standard Arabic layout with full Harakat diacritics. |
+| **Bangla Jatiyo (জাতীয়)** | Official National BSTI layout standard. |
 
 ---
 
-## 📁 Project Structure
+## 👤 Author & Maintainer
 
-```
-Lipika/
-├── app/                  # Application entry point, onboarding, and settings UI
-├── core/
-│   ├── common/           # Shared models (KeyDef, KeyType, etc.)
-│   ├── data/             # Preferences datastore and layout repositories
-│   └── theme/            # Theme models, color schemes, and theme parser
-├── feature/
-│   ├── ime/              # InputMethodService implementation, Compose canvas, and JNI bindings
-│   └── themedesigner/    # Theme creator and custom styling studio
-├── native/
-│   └── kiebord-engine/   # Rust native library (spatial model, trie dictionaries, transliteration)
-└── docs/                 # Layout and theme development specifications
-```
+- **Developer**: **Salim Hosen Shohan**
+- **Email**: [salimshohan@proton.me](mailto:salimshohan@proton.me)
+- **Institution**: Department of Information Science and Library Management, **University of Rajshahi**
+- **GitHub**: [@salimshohan](https://github.com/salimshohan)
 
 ---
 
-## 🛠️ Building from Source
+## 📥 Download
 
-### Prerequisites
-* Android Studio (Ladybug / Meerkat or newer) or Android SDK command-line tools
-* JDK 17 or 21
-* Android SDK Platform 35 / 36
-* Android NDK `26.2.11394342`
-* Rust 1.75+ with `cargo-ndk` (only required if compiling native Rust sources)
+Download the latest pre-built APK directly from GitHub Releases:
 
-### Build Commands
-
-1. Clone the repository:
-```bash
-git clone https://github.com/salimshohan/Lipika.git
-cd Lipika
-```
-
-2. Build the debug APK:
-```bash
-./gradlew assembleDebug
-```
+👉 **[Download Lipika v0.1.6 APK](https://github.com/salimshohan/Lipika/releases/download/v0.1.6/Lipika.apk)**
