@@ -1,42 +1,53 @@
 package io.kiebord.app.ui.settings
 
+import android.content.ClipData
+import android.graphics.BitmapFactory
 import android.net.Uri
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.ContentCopy
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.DragHandle
+import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.PushPin
-import androidx.compose.material.icons.outlined.Add
-import androidx.compose.material.icons.outlined.DeleteForever
-import androidx.compose.material.icons.outlined.DragHandle
-import androidx.compose.material.icons.outlined.Image
-import androidx.compose.material.icons.outlined.PushPin
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ModalBottomSheet
@@ -57,16 +68,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.kiebord.feature.ime.clipboard.ClipboardEntry
 import io.kiebord.feature.ime.clipboard.SandboxedClipboardManager
+import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -84,32 +98,35 @@ private data class ClipPalette(
 )
 
 @Composable
-private fun clipPalette(): ClipPalette =
-    if (isSystemInDarkTheme()) {
+private fun clipPalette(): ClipPalette {
+    val sysDark = isSystemInDarkTheme()
+    val settingsColors = LocalSettingsColors.current
+    return if (settingsColors.isDark || sysDark) {
         ClipPalette(
-            screenBg = Color(0xFF121314),
-            cardBg = Color(0xFF1E2022),
-            sheetBg = Color(0xFF1E2022),
-            fieldBg = Color(0xFF26282B),
-            border = Color(0xFF3A3D40),
-            textPrimary = Color(0xFFEDEDED),
-            textSecondary = Color(0xFF9A9DA1),
-            accent = Color(0xFF4CAF50),
+            screenBg = settingsColors.background,
+            cardBg = settingsColors.cardBackground,
+            sheetBg = settingsColors.cardBackground,
+            fieldBg = settingsColors.inputBackground,
+            border = settingsColors.cardBorder,
+            textPrimary = settingsColors.textPrimary,
+            textSecondary = settingsColors.textSecondary,
+            accent = settingsColors.accent,
             danger = Color(0xFFEF5350)
         )
     } else {
         ClipPalette(
-            screenBg = Color(0xFFF0F1F3),
-            cardBg = Color.White,
+            screenBg = settingsColors.background,
+            cardBg = settingsColors.cardBackground,
             sheetBg = Color.White,
-            fieldBg = Color(0xFFF9F9F9),
-            border = Color(0xFFDADCE0),
-            textPrimary = Color(0xFF1C1C1E),
-            textSecondary = Color(0xFF9A9A9F),
-            accent = Color(0xFF43A047),
-            danger = Color(0xFFC62828)
+            fieldBg = settingsColors.inputBackground,
+            border = settingsColors.cardBorder,
+            textPrimary = settingsColors.textPrimary,
+            textSecondary = settingsColors.textSecondary,
+            accent = settingsColors.accent,
+            danger = Color(0xFFE53935)
         )
     }
+}
 
 private val dateFormat = SimpleDateFormat("MMM dd, HH:mm", Locale.getDefault())
 
@@ -126,128 +143,250 @@ fun ClipboardSettingsScreen(
         clipboardManager.syncFromSystemClipboard(context)
     }
 
+    var searchQuery by remember { mutableStateOf("") }
     var showNewSheet by remember { mutableStateOf(false) }
     var editingId by remember { mutableStateOf<String?>(null) }
 
     val allClips = clipboardManager.clips
-    val pinnedClips = allClips.filter { it.isPinned }
-    val recentClips = allClips.filter { !it.isPinned }
+    val filteredClips = if (searchQuery.isBlank()) {
+        allClips
+    } else {
+        allClips.filter { it.text.contains(searchQuery, ignoreCase = true) }
+    }
+
+    val pinnedClips = filteredClips.filter { it.isPinned }
+    val recentClips = filteredClips.filter { !it.isPinned }
     val editingEntry = editingId?.let { id -> allClips.firstOrNull { it.id == id } }
 
     val listState = rememberLazyListState()
     var draggingId by remember { mutableStateOf<String?>(null) }
     var dragOffset by remember { mutableFloatStateOf(0f) }
 
-    Column(
+    val imagePicker = rememberLauncherForActivityResult(
+        ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        if (uri != null) {
+            clipboardManager.addImageClip(context, uri)
+            Toast.makeText(context, "Picture saved to clipboard", Toast.LENGTH_SHORT).show()
+            showNewSheet = false
+        }
+    }
+
+    Box(
         modifier = Modifier
             .fillMaxSize()
             .background(p.screenBg)
     ) {
-        // ---------- Top bar ----------
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(p.cardBg)
-                .statusBarsPadding()
-                .height(64.dp)
-                .padding(horizontal = 8.dp),
-            verticalAlignment = Alignment.CenterVertically
+        Column(
+            modifier = Modifier.fillMaxSize()
         ) {
-            IconButton(onClick = onBack) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
-                    contentDescription = "Back",
-                    tint = p.textPrimary
-                )
-            }
-            Text(
-                text = "Clipboard",
-                color = p.textPrimary,
-                fontSize = 22.sp,
-                fontWeight = FontWeight.Bold,
+            // Compact Search & Action Bar (single header only, unified bar sits above this)
+            Row(
                 modifier = Modifier
-                    .weight(1f)
-                    .padding(start = 8.dp)
-            )
-            IconButton(onClick = { showNewSheet = true }) {
-                Icon(
-                    imageVector = Icons.Outlined.Add,
-                    contentDescription = "New clip",
-                    tint = p.textPrimary
+                    .fillMaxWidth()
+                    .padding(horizontal = 14.dp, vertical = 6.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                OutlinedTextField(
+                    value = searchQuery,
+                    onValueChange = { searchQuery = it },
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(48.dp),
+                    placeholder = {
+                        Text(
+                            text = "Search clips...",
+                            color = p.textSecondary.copy(alpha = 0.7f),
+                            fontSize = 13.sp
+                        )
+                    },
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Filled.Search,
+                            contentDescription = "Search",
+                            tint = p.textSecondary,
+                            modifier = Modifier.size(18.dp)
+                        )
+                    },
+                    trailingIcon = {
+                        if (searchQuery.isNotEmpty()) {
+                            IconButton(
+                                onClick = { searchQuery = "" },
+                                modifier = Modifier.size(28.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Filled.Clear,
+                                    contentDescription = "Clear",
+                                    tint = p.textSecondary,
+                                    modifier = Modifier.size(16.dp)
+                                )
+                            }
+                        }
+                    },
+                    singleLine = true,
+                    shape = RoundedCornerShape(12.dp),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = p.accent,
+                        unfocusedBorderColor = p.border,
+                        focusedTextColor = p.textPrimary,
+                        unfocusedTextColor = p.textPrimary,
+                        focusedContainerColor = p.fieldBg,
+                        unfocusedContainerColor = p.fieldBg,
+                        cursorColor = p.accent
+                    )
                 )
+
+                // Quick image picker button
+                IconButton(
+                    onClick = { imagePicker.launch("image/*") },
+                    modifier = Modifier
+                        .size(44.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(p.cardBg)
+                        .border(BorderStroke(1.dp, p.border), RoundedCornerShape(12.dp))
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Image,
+                        contentDescription = "Add image",
+                        tint = p.accent,
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
+
+                // Delete all unpinned clips
+                if (recentClips.isNotEmpty()) {
+                    IconButton(
+                        onClick = {
+                            clipboardManager.clearAllUnpinned()
+                            Toast.makeText(context, "Unpinned clips cleared", Toast.LENGTH_SHORT).show()
+                        },
+                        modifier = Modifier
+                            .size(44.dp)
+                            .clip(RoundedCornerShape(12.dp))
+                            .background(p.cardBg)
+                            .border(BorderStroke(1.dp, p.border), RoundedCornerShape(12.dp))
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Delete,
+                            contentDescription = "Clear unpinned",
+                            tint = p.textSecondary,
+                            modifier = Modifier.size(19.dp)
+                        )
+                    }
+                }
+            }
+
+            // Clips List
+            if (filteredClips.isEmpty()) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(bottom = 60.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.ContentCopy,
+                            contentDescription = null,
+                            tint = p.textSecondary.copy(alpha = 0.4f),
+                            modifier = Modifier.size(44.dp)
+                        )
+                        Text(
+                            text = if (searchQuery.isNotEmpty()) "No matching clips" else "No copied clips yet",
+                            color = p.textSecondary,
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Medium
+                        )
+                    }
+                }
+            } else {
+                LazyColumn(
+                    state = listState,
+                    modifier = Modifier.fillMaxSize(),
+                    contentPadding = PaddingValues(
+                        start = 14.dp,
+                        end = 14.dp,
+                        top = 6.dp,
+                        bottom = 88.dp
+                    ),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    if (pinnedClips.isNotEmpty()) {
+                        item(key = "header_pinned") { SectionBadge("PINNED (${pinnedClips.size})", p) }
+                        items(pinnedClips, key = { it.id }) { entry ->
+                            ClipCard(
+                                entry = entry,
+                                p = p,
+                                isDragging = draggingId == entry.id,
+                                dragOffset = if (draggingId == entry.id) dragOffset else 0f,
+                                onClick = { editingId = entry.id },
+                                onCopy = {
+                                    val cm = context.getSystemService(android.content.Context.CLIPBOARD_SERVICE) as? android.content.ClipboardManager
+                                    cm?.setPrimaryClip(ClipData.newPlainText("Copied", entry.text))
+                                    Toast.makeText(context, "Copied to clipboard", Toast.LENGTH_SHORT).show()
+                                },
+                                onTogglePin = { clipboardManager.togglePin(entry) },
+                                onDragStart = { draggingId = entry.id; dragOffset = 0f },
+                                onDrag = { dy ->
+                                    dragOffset += dy
+                                    handleDrag(entry, listState, clipboardManager, dragOffset) { dragOffset += it }
+                                },
+                                onDragEnd = { draggingId = null; dragOffset = 0f }
+                            )
+                        }
+                    }
+
+                    if (recentClips.isNotEmpty()) {
+                        item(key = "header_recent") {
+                            Spacer(Modifier.height(if (pinnedClips.isNotEmpty()) 4.dp else 0.dp))
+                            SectionBadge("RECENT (${recentClips.size})", p)
+                        }
+                        items(recentClips, key = { it.id }) { entry ->
+                            ClipCard(
+                                entry = entry,
+                                p = p,
+                                isDragging = draggingId == entry.id,
+                                dragOffset = if (draggingId == entry.id) dragOffset else 0f,
+                                onClick = { editingId = entry.id },
+                                onCopy = {
+                                    val cm = context.getSystemService(android.content.Context.CLIPBOARD_SERVICE) as? android.content.ClipboardManager
+                                    cm?.setPrimaryClip(ClipData.newPlainText("Copied", entry.text))
+                                    Toast.makeText(context, "Copied to clipboard", Toast.LENGTH_SHORT).show()
+                                },
+                                onTogglePin = { clipboardManager.togglePin(entry) },
+                                onDragStart = { draggingId = entry.id; dragOffset = 0f },
+                                onDrag = { dy ->
+                                    dragOffset += dy
+                                    handleDrag(entry, listState, clipboardManager, dragOffset) { dragOffset += it }
+                                },
+                                onDragEnd = { draggingId = null; dragOffset = 0f }
+                            )
+                        }
+                    }
+                }
             }
         }
 
-        // ---------- Content ----------
-        if (allClips.isEmpty()) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(bottom = 80.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = "No copied clips yet",
-                    color = p.textSecondary,
-                    fontSize = 15.sp,
-                    fontWeight = FontWeight.Medium
-                )
-            }
-        } else {
-            LazyColumn(
-                state = listState,
-                modifier = Modifier.fillMaxSize(),
-                contentPadding = androidx.compose.foundation.layout.PaddingValues(
-                    start = 16.dp, end = 16.dp, top = 16.dp, bottom = 32.dp
-                ),
-                verticalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
-                if (pinnedClips.isNotEmpty()) {
-                    item(key = "header_pinned") { SectionLabel("PINNED", p) }
-                    items(pinnedClips, key = { it.id }) { entry ->
-                        ClipCard(
-                            entry = entry,
-                            p = p,
-                            isDragging = draggingId == entry.id,
-                            dragOffset = if (draggingId == entry.id) dragOffset else 0f,
-                            onClick = { editingId = entry.id },
-                            onDragStart = { draggingId = entry.id; dragOffset = 0f },
-                            onDrag = { dy ->
-                                dragOffset += dy
-                                handleDrag(
-                                    entry, listState, clipboardManager,
-                                    dragOffset
-                                ) { dragOffset += it }
-                            },
-                            onDragEnd = { draggingId = null; dragOffset = 0f }
-                        )
-                    }
-                }
-                if (recentClips.isNotEmpty()) {
-                    item(key = "header_recent") {
-                        Spacer(Modifier.height(if (pinnedClips.isNotEmpty()) 6.dp else 0.dp))
-                        SectionLabel("RECENT", p)
-                    }
-                    items(recentClips, key = { it.id }) { entry ->
-                        ClipCard(
-                            entry = entry,
-                            p = p,
-                            isDragging = draggingId == entry.id,
-                            dragOffset = if (draggingId == entry.id) dragOffset else 0f,
-                            onClick = { editingId = entry.id },
-                            onDragStart = { draggingId = entry.id; dragOffset = 0f },
-                            onDrag = { dy ->
-                                dragOffset += dy
-                                handleDrag(
-                                    entry, listState, clipboardManager,
-                                    dragOffset
-                                ) { dragOffset += it }
-                            },
-                            onDragEnd = { draggingId = null; dragOffset = 0f }
-                        )
-                    }
-                }
-            }
+        // Modern Solid Floating Action Button
+        FloatingActionButton(
+            onClick = { showNewSheet = true },
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .navigationBarsPadding()
+                .padding(end = 20.dp, bottom = 20.dp),
+            shape = RoundedCornerShape(16.dp),
+            containerColor = p.accent,
+            contentColor = Color.White
+        ) {
+            Icon(
+                imageVector = Icons.Filled.Add,
+                contentDescription = "New clip",
+                modifier = Modifier.size(24.dp)
+            )
         }
     }
 
@@ -256,27 +395,18 @@ fun ClipboardSettingsScreen(
         val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
         var text by remember { mutableStateOf("") }
 
-        val imagePicker = rememberLauncherForActivityResult(
-            ActivityResultContracts.GetContent()
-        ) { uri: Uri? ->
-            if (uri != null) {
-                clipboardManager.addImageClip(context, uri)
-                showNewSheet = false
-            }
-        }
-
         ModalBottomSheet(
             onDismissRequest = { showNewSheet = false },
             sheetState = sheetState,
             containerColor = p.sheetBg,
-            shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp)
+            shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
         ) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .navigationBarsPadding()
                     .imePadding()
-                    .padding(horizontal = 24.dp)
+                    .padding(horizontal = 20.dp)
                     .padding(bottom = 16.dp)
             ) {
                 Row(
@@ -286,25 +416,25 @@ fun ClipboardSettingsScreen(
                     Text(
                         text = "New Clip",
                         color = p.textPrimary,
-                        fontSize = 22.sp,
+                        fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.weight(1f)
                     )
-                    SquareIconButton(
-                        icon = Icons.Outlined.Image,
+                    SolidIconButton(
+                        icon = Icons.Filled.Image,
                         tint = p.accent,
                         borderColor = p.border,
                         onClick = { imagePicker.launch("image/*") }
                     )
                 }
-                Spacer(Modifier.height(18.dp))
+                Spacer(Modifier.height(14.dp))
                 ClipTextField(
                     value = text,
                     onValueChange = { text = it },
-                    placeholder = "Type your clip text here...",
+                    placeholder = "Type or paste clip text here...",
                     p = p
                 )
-                Spacer(Modifier.height(20.dp))
+                Spacer(Modifier.height(16.dp))
                 SheetButtons(
                     p = p,
                     saveEnabled = text.isNotBlank(),
@@ -327,36 +457,46 @@ fun ClipboardSettingsScreen(
             onDismissRequest = { editingId = null },
             sheetState = sheetState,
             containerColor = p.sheetBg,
-            shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp)
+            shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
         ) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .navigationBarsPadding()
                     .imePadding()
-                    .padding(horizontal = 24.dp)
+                    .padding(horizontal = 20.dp)
                     .padding(bottom = 16.dp)
             ) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    horizontalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
                     Text(
-                        text = "Edit Clip",
+                        text = if (!editingEntry.imagePath.isNullOrBlank()) "Image Clip" else "Edit Clip",
                         color = p.textPrimary,
-                        fontSize = 22.sp,
+                        fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.weight(1f)
                     )
-                    SquareIconButton(
-                        icon = if (editingEntry.isPinned) Icons.Filled.PushPin else Icons.Outlined.PushPin,
+                    SolidIconButton(
+                        icon = Icons.Filled.ContentCopy,
+                        tint = p.textPrimary,
+                        borderColor = p.border,
+                        onClick = {
+                            val cm = context.getSystemService(android.content.Context.CLIPBOARD_SERVICE) as? android.content.ClipboardManager
+                            cm?.setPrimaryClip(ClipData.newPlainText("Copied", editingEntry.text))
+                            Toast.makeText(context, "Copied to clipboard", Toast.LENGTH_SHORT).show()
+                        }
+                    )
+                    SolidIconButton(
+                        icon = Icons.Filled.PushPin,
                         tint = if (editingEntry.isPinned) p.accent else p.textSecondary,
                         borderColor = p.border,
                         onClick = { clipboardManager.togglePin(editingEntry) }
                     )
-                    SquareIconButton(
-                        icon = Icons.Outlined.DeleteForever,
+                    SolidIconButton(
+                        icon = Icons.Filled.Delete,
                         tint = p.danger,
                         borderColor = p.danger.copy(alpha = 0.35f),
                         onClick = {
@@ -365,23 +505,63 @@ fun ClipboardSettingsScreen(
                         }
                     )
                 }
-                Spacer(Modifier.height(18.dp))
-                ClipTextField(
-                    value = text,
-                    onValueChange = { text = it },
-                    placeholder = "Clip text",
-                    p = p
-                )
-                Spacer(Modifier.height(20.dp))
-                SheetButtons(
-                    p = p,
-                    saveEnabled = text.isNotBlank() && text != editingEntry.text,
-                    onCancel = { editingId = null },
-                    onSave = {
-                        clipboardManager.updateClip(editingEntry, text.trim())
-                        editingId = null
+                Spacer(Modifier.height(14.dp))
+
+                // Show preview if image
+                val imageBitmap = remember(editingEntry.imagePath, editingEntry.text) {
+                    runCatching {
+                        val path = editingEntry.imagePath
+                        if (!path.isNullOrBlank() && File(path).exists()) {
+                            BitmapFactory.decodeFile(path)?.asImageBitmap()
+                        } else if (editingEntry.text.startsWith("content://")) {
+                            context.contentResolver.openInputStream(Uri.parse(editingEntry.text))?.use {
+                                BitmapFactory.decodeStream(it)?.asImageBitmap()
+                            }
+                        } else null
+                    }.getOrNull()
+                }
+
+                if (imageBitmap != null) {
+                    Image(
+                        bitmap = imageBitmap,
+                        contentDescription = "Preview",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(180.dp)
+                            .clip(RoundedCornerShape(14.dp))
+                    )
+                    Spacer(Modifier.height(14.dp))
+                }
+
+                if (editingEntry.imagePath.isNullOrBlank() && !editingEntry.text.startsWith("content://")) {
+                    ClipTextField(
+                        value = text,
+                        onValueChange = { text = it },
+                        placeholder = "Clip text",
+                        p = p
+                    )
+                    Spacer(Modifier.height(16.dp))
+                    SheetButtons(
+                        p = p,
+                        saveEnabled = text.isNotBlank() && text != editingEntry.text,
+                        onCancel = { editingId = null },
+                        onSave = {
+                            clipboardManager.updateClip(editingEntry, text.trim())
+                            editingId = null
+                        }
+                    )
+                } else {
+                    OutlinedButton(
+                        onClick = { editingId = null },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(48.dp),
+                        shape = RoundedCornerShape(14.dp)
+                    ) {
+                        Text("Close", color = p.textPrimary, fontSize = 15.sp)
                     }
-                )
+                }
             }
         }
     }
@@ -409,14 +589,14 @@ private fun handleDrag(
 }
 
 @Composable
-private fun SectionLabel(text: String, p: ClipPalette) {
+private fun SectionBadge(text: String, p: ClipPalette) {
     Text(
         text = text,
         color = p.textSecondary,
-        fontSize = 12.sp,
+        fontSize = 11.sp,
         fontWeight = FontWeight.Bold,
-        letterSpacing = 0.8.sp,
-        modifier = Modifier.padding(start = 4.dp, bottom = 2.dp)
+        letterSpacing = 0.6.sp,
+        modifier = Modifier.padding(start = 2.dp, bottom = 2.dp)
     )
 }
 
@@ -427,68 +607,130 @@ private fun ClipCard(
     isDragging: Boolean,
     dragOffset: Float,
     onClick: () -> Unit,
+    onCopy: () -> Unit,
+    onTogglePin: () -> Unit,
     onDragStart: () -> Unit,
     onDrag: (Float) -> Unit,
     onDragEnd: () -> Unit
 ) {
+    val context = LocalContext.current
+
+    // Resolve Image if entry has imagePath or content URI
+    val imageBitmap = remember(entry.imagePath, entry.text) {
+        runCatching {
+            val path = entry.imagePath
+            if (!path.isNullOrBlank() && File(path).exists()) {
+                BitmapFactory.decodeFile(path)?.asImageBitmap()
+            } else if (entry.text.startsWith("content://")) {
+                context.contentResolver.openInputStream(Uri.parse(entry.text))?.use {
+                    BitmapFactory.decodeStream(it)?.asImageBitmap()
+                }
+            } else null
+        }.getOrNull()
+    }
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .graphicsLayer { translationY = dragOffset }
-            .shadow(if (isDragging) 12.dp else 2.dp, RoundedCornerShape(18.dp))
-            .clip(RoundedCornerShape(18.dp))
+            .shadow(if (isDragging) 8.dp else 1.dp, RoundedCornerShape(12.dp))
+            .clip(RoundedCornerShape(12.dp))
             .background(p.cardBg)
+            .border(BorderStroke(1.dp, p.border.copy(alpha = 0.65f)), RoundedCornerShape(12.dp))
             .clickable(onClick = onClick)
-            .padding(start = 18.dp, end = 10.dp, top = 16.dp, bottom = 14.dp),
+            .padding(horizontal = 12.dp, vertical = 9.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Column(modifier = Modifier.weight(1f)) {
             if (entry.isOtp) {
                 Box(
                     modifier = Modifier
-                        .padding(bottom = 6.dp)
-                        .clip(RoundedCornerShape(50))
+                        .padding(bottom = 4.dp)
+                        .clip(RoundedCornerShape(6.dp))
                         .background(p.accent.copy(alpha = 0.15f))
-                        .padding(horizontal = 8.dp, vertical = 2.dp)
+                        .padding(horizontal = 6.dp, vertical = 2.dp)
                 ) {
-                    Text("OTP", color = p.accent, fontSize = 10.sp, fontWeight = FontWeight.Bold)
+                    Text("OTP", color = p.accent, fontSize = 9.sp, fontWeight = FontWeight.Bold)
                 }
             }
-            Text(
-                text = entry.text,
-                color = p.textPrimary,
-                fontSize = 16.sp,
-                lineHeight = 23.sp,
-                maxLines = 3,
-                overflow = TextOverflow.Ellipsis
-            )
-            Spacer(Modifier.height(8.dp))
+
+            // Image Preview or Text
+            if (imageBitmap != null) {
+                Image(
+                    bitmap = imageBitmap,
+                    contentDescription = "Clipboard Image",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(110.dp)
+                        .clip(RoundedCornerShape(8.dp))
+                )
+                if (entry.text.isNotBlank() && entry.text != "[Image]" && !entry.text.startsWith("content://")) {
+                    Spacer(Modifier.height(4.dp))
+                    Text(
+                        text = entry.text,
+                        color = p.textPrimary,
+                        fontSize = 13.sp,
+                        lineHeight = 18.sp,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+            } else {
+                Text(
+                    text = entry.text,
+                    color = p.textPrimary,
+                    fontSize = 14.sp,
+                    lineHeight = 19.sp,
+                    maxLines = 3,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
+
+            Spacer(Modifier.height(5.dp))
             Text(
                 text = dateFormat.format(Date(entry.timestamp)),
                 color = p.textSecondary,
-                fontSize = 13.sp,
-                fontFamily = FontFamily.Serif
+                fontSize = 11.sp
             )
         }
 
-        if (entry.isPinned) {
+        Spacer(Modifier.width(8.dp))
+
+        // Quick Pin Toggle
+        IconButton(
+            onClick = onTogglePin,
+            modifier = Modifier.size(32.dp)
+        ) {
             Icon(
                 imageVector = Icons.Filled.PushPin,
-                contentDescription = "Pinned",
-                tint = p.accent,
-                modifier = Modifier
-                    .padding(horizontal = 6.dp)
-                    .size(20.dp)
+                contentDescription = if (entry.isPinned) "Unpin" else "Pin",
+                tint = if (entry.isPinned) p.accent else p.textSecondary.copy(alpha = 0.35f),
+                modifier = Modifier.size(17.dp)
             )
         }
 
+        // Quick Copy Button
+        IconButton(
+            onClick = onCopy,
+            modifier = Modifier.size(32.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Filled.ContentCopy,
+                contentDescription = "Copy",
+                tint = p.textSecondary.copy(alpha = 0.55f),
+                modifier = Modifier.size(16.dp)
+            )
+        }
+
+        // Solid Reorder Drag Handle
         Icon(
-            imageVector = Icons.Outlined.DragHandle,
+            imageVector = Icons.Filled.DragHandle,
             contentDescription = "Reorder",
-            tint = p.textSecondary.copy(alpha = 0.6f),
+            tint = p.textSecondary.copy(alpha = 0.45f),
             modifier = Modifier
-                .size(40.dp)
-                .padding(8.dp)
+                .size(32.dp)
+                .padding(6.dp)
                 .pointerInput(entry.id) {
                     detectDragGestures(
                         onDragStart = { onDragStart() },
@@ -505,21 +747,21 @@ private fun ClipCard(
 }
 
 @Composable
-private fun SquareIconButton(
-    icon: androidx.compose.ui.graphics.vector.ImageVector,
+private fun SolidIconButton(
+    icon: ImageVector,
     tint: Color,
     borderColor: Color,
     onClick: () -> Unit
 ) {
     Box(
         modifier = Modifier
-            .size(46.dp)
-            .clip(RoundedCornerShape(14.dp))
-            .border(BorderStroke(1.dp, borderColor), RoundedCornerShape(14.dp))
+            .size(40.dp)
+            .clip(RoundedCornerShape(10.dp))
+            .border(BorderStroke(1.dp, borderColor), RoundedCornerShape(10.dp))
             .clickable(onClick = onClick),
         contentAlignment = Alignment.Center
     ) {
-        Icon(icon, contentDescription = null, tint = tint, modifier = Modifier.size(22.dp))
+        Icon(icon, contentDescription = null, tint = tint, modifier = Modifier.size(18.dp))
     }
 }
 
@@ -534,11 +776,11 @@ private fun ClipTextField(
         value = value,
         onValueChange = onValueChange,
         modifier = Modifier.fillMaxWidth(),
-        placeholder = { Text(placeholder, color = p.textSecondary.copy(alpha = 0.7f), fontSize = 17.sp) },
-        textStyle = androidx.compose.ui.text.TextStyle(fontSize = 17.sp, lineHeight = 26.sp),
-        minLines = 5,
-        maxLines = 8,
-        shape = RoundedCornerShape(20.dp),
+        placeholder = { Text(placeholder, color = p.textSecondary.copy(alpha = 0.6f), fontSize = 14.sp) },
+        textStyle = androidx.compose.ui.text.TextStyle(fontSize = 14.sp, lineHeight = 20.sp),
+        minLines = 4,
+        maxLines = 7,
+        shape = RoundedCornerShape(14.dp),
         colors = OutlinedTextFieldDefaults.colors(
             focusedBorderColor = p.accent,
             unfocusedBorderColor = p.border,
@@ -560,33 +802,33 @@ private fun SheetButtons(
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(14.dp)
+        horizontalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         OutlinedButton(
             onClick = onCancel,
             modifier = Modifier
                 .weight(1f)
-                .height(52.dp),
-            shape = RoundedCornerShape(18.dp),
-            border = BorderStroke(1.dp, p.border.copy(alpha = 0.5f))
+                .height(46.dp),
+            shape = RoundedCornerShape(12.dp),
+            border = BorderStroke(1.dp, p.border)
         ) {
-            Text("Cancel", color = p.textSecondary, fontSize = 17.sp)
+            Text("Cancel", color = p.textSecondary, fontSize = 14.sp)
         }
         Button(
             onClick = onSave,
             enabled = saveEnabled,
             modifier = Modifier
                 .weight(1f)
-                .height(52.dp),
-            shape = RoundedCornerShape(18.dp),
+                .height(46.dp),
+            shape = RoundedCornerShape(12.dp),
             colors = ButtonDefaults.buttonColors(
                 containerColor = p.accent,
                 contentColor = Color.White,
-                disabledContainerColor = p.border.copy(alpha = 0.6f),
+                disabledContainerColor = p.border.copy(alpha = 0.5f),
                 disabledContentColor = p.textSecondary
             )
         ) {
-            Text("Save", fontSize = 17.sp, fontWeight = FontWeight.Bold)
+            Text("Save", fontSize = 14.sp, fontWeight = FontWeight.Bold)
         }
     }
 }

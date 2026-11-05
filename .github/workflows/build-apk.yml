@@ -72,6 +72,9 @@ jobs:
           body: |
             ### 🌟 Lipika Keyboard ${{ github.ref_name }} Release
             
+            - **📋 Single Unified Header**: Fixed duplicate header on the Clipboard settings screen.
+            - **🖼️ Persistent Image Clips**: Selected pictures are safely copied to app storage and rendered as real preview thumbnails in both clipboard settings and keyboard quick-paste bar.
+            - **✨ Compact Modern Look & Solid Icons**: Refined compact card margins/padding with solid modern Material icons (FAB, Pin, Copy, Drag, Image).
             - **💎 Official Cyber Bengali Launcher Icon**: Full fidelity conversion of `docs/logo.svg` into Android Adaptive Icons (with safe-zone compliance against circular/squircle masks) and ultra-crisp legacy density mipmaps (`mdpi` through `xxxhdpi`).
             - **🌄 Scenic Mountain Sunset Dashboard**: Modern floating status card with [Lipika Keyboard • Active], quick split Theme/Layout columns, and 6 circular action buttons (Shop, Theme, Customize, Settings, Clipboard, Survey) inspired by modern keyboard dashboards.
             - **🔑 Permanent Debug Keystore**: Fixed Android app update conflict (`INSTALL_FAILED_UPDATE_INCOMPATIBLE`) so updates install seamlessly over existing installations.

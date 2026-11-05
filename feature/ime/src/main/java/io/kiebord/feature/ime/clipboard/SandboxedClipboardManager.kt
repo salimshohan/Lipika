@@ -17,7 +17,8 @@ data class ClipboardEntry(
     val text: String,
     val timestamp: Long = System.currentTimeMillis(),
     val isPinned: Boolean = false,
-    val isOtp: Boolean = false
+    val isOtp: Boolean = false,
+    val imagePath: String? = null
 )
 
 class SandboxedClipboardManager(context: Context) {
@@ -160,6 +161,7 @@ class SandboxedClipboardManager(context: Context) {
     }
 
     fun deleteClip(entry: ClipboardEntry) {
+        entry.imagePath?.let { path -> runCatching { File(path).delete() } }
         clips.removeAll { it.id == entry.id }
         if (quickPasteClip?.id == entry.id) {
             quickPasteClip = null
@@ -179,8 +181,38 @@ class SandboxedClipboardManager(context: Context) {
 
     
     fun addImageClip(context: Context, uri: Uri) {
-        val pathOrUri = uri.toString()
-        addClip(pathOrUri)
+        ioScope.launch {
+            try {
+                val imagesDir = File(appContext.filesDir, "clipboard_images")
+                if (!imagesDir.exists()) imagesDir.mkdirs()
+                val imageId = java.util.UUID.randomUUID().toString()
+                val targetFile = File(imagesDir, "clip_" + imageId + ".jpg")
+
+                context.contentResolver.openInputStream(uri)?.use { input ->
+                    targetFile.outputStream().use { output ->
+                        input.copyTo(output)
+                    }
+                }
+
+                if (targetFile.exists() && targetFile.length() > 0) {
+                    val entry = ClipboardEntry(
+                        id = imageId,
+                        text = "[Image]",
+                        timestamp = System.currentTimeMillis(),
+                        isPinned = false,
+                        isOtp = false,
+                        imagePath = targetFile.absolutePath
+                    )
+                    kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.Main) {
+                        clips.add(0, entry)
+                        quickPasteClip = entry
+                        saveClipsToDisk()
+                    }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
     }
 
     fun updateClip(entry: ClipboardEntry, newText: String) {
@@ -356,6 +388,7 @@ class SandboxedClipboardManager(context: Context) {
                     put("timestamp", entry.timestamp)
                     put("isPinned", entry.isPinned)
                     put("isOtp", entry.isOtp)
+                    if (!entry.imagePath.isNullOrBlank()) { put("imagePath", entry.imagePath) }
                 }
                 jsonArray.put(obj)
             }
@@ -400,6 +433,7 @@ class SandboxedClipboardManager(context: Context) {
                 val timestamp = obj.optLong("timestamp", System.currentTimeMillis())
                 val isPinned = obj.optBoolean("isPinned", false)
                 val isOtp = obj.optBoolean("isOtp", false)
+                val imagePath = obj.optString("imagePath", "").takeIf { it.isNotBlank() }
                 if (text.isNotBlank()) {
                     loaded.add(
                         ClipboardEntry(
