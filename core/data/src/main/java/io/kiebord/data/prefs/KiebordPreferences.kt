@@ -8,6 +8,7 @@ data class KiebordPreferences(
     val theme: String = THEME_LIPIKA_GRADIENT,
     val selectedFont: String = FONT_TW_CENT_MT,
     val customFontPath: String = "",
+    val accentColor: String = ACCENT_CYAN,
     val keyboardHeightScale: Float = 1.0f,
     val keyboardHeightScaleLandscape: Float = 1.0f,
     val chinPaddingPortraitDp: Float = 8.0f,
@@ -21,11 +22,11 @@ data class KiebordPreferences(
     val showSecondaryKeys: Boolean = true,
 
     // Preferences & Haptics
-    val vibrateOnKeypress: Boolean = true,
+    val vibrateOnKeypress: Boolean = false,
     val vibrationType: String = VIBRATION_TYPE_HAPTIC,
     val vibrationStrength: Int = 50, // 0 - 100%
     val soundOnKeypress: Boolean = false,
-    val longPressDelayMs: Int = 220, // 150 - 600 ms
+    val longPressDelayMs: Int = 220, // 100 - 600 ms
     val cursorTrackpadEnabled: Boolean = true,
     val oneHandedMode: String = ONE_HANDED_OFF,
     val longPressDeleteEnabled: Boolean = true,
@@ -35,10 +36,8 @@ data class KiebordPreferences(
     val primaryLayoutId: String = LAYOUT_EN_QWERTY,
     val enabledLayoutIds: Set<String> = linkedSetOf(
         LAYOUT_EN_QWERTY,
-        LAYOUT_BN_BORNO,
-        LAYOUT_BN_AVRO,
-        LAYOUT_BN_EASY,
-        LAYOUT_BN_NATIONAL
+        LAYOUT_BN_PROBHAT,
+        LAYOUT_BN_AVRO
     ),
 
     // Corrections & Suggestions
@@ -79,7 +78,7 @@ data class KiebordPreferences(
     companion object {
         const val VOICE_PROVIDER_GOOGLE = "google"
 
-                const val FONT_DEFAULT = "default"
+        const val FONT_DEFAULT = "default"
         const val FONT_TW_CENT_MT = "tw_cent_mt"
         const val FONT_KALPURUSH = "kalpurush"
         const val FONT_SEGOE_UI = "segoe_ui"
@@ -92,6 +91,13 @@ data class KiebordPreferences(
         const val FONT_CALIBRI = "calibri"
         const val FONT_CORBEL = "corbel"
         const val FONT_CUSTOM = "custom"
+
+        const val ACCENT_CYAN = "CYAN"
+        const val ACCENT_EMERALD = "EMERALD"
+        const val ACCENT_ORANGE = "ORANGE"
+        const val ACCENT_VIOLET = "VIOLET"
+        const val ACCENT_ROSE = "ROSE"
+        const val ACCENT_AMBER = "AMBER"
 
         const val THEME_LIPIKA_GRADIENT = "lipika_gradient"
         const val THEME_DEFAULT_DARK = "default_dark"

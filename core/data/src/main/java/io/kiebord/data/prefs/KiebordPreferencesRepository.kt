@@ -34,6 +34,7 @@ class KiebordPreferencesRepository private constructor(private val context: Cont
     private object PreferencesKeys {
         val THEME = stringPreferencesKey("pref_theme")
         val SELECTED_FONT = stringPreferencesKey("pref_selected_font")
+        val ACCENT_COLOR = stringPreferencesKey("pref_accent_color")
         val CUSTOM_FONT_PATH = stringPreferencesKey("pref_custom_font_path")
         val KEYBOARD_HEIGHT_SCALE = floatPreferencesKey("pref_keyboard_height_scale")
         val KEYBOARD_HEIGHT_SCALE_LANDSCAPE = floatPreferencesKey("pref_keyboard_height_scale_landscape")
@@ -96,6 +97,7 @@ class KiebordPreferencesRepository private constructor(private val context: Cont
             KiebordPreferences(
                 theme = prefs[PreferencesKeys.THEME] ?: KiebordPreferences.THEME_LIPIKA_GRADIENT,
                 selectedFont = prefs[PreferencesKeys.SELECTED_FONT] ?: KiebordPreferences.FONT_TW_CENT_MT,
+                accentColor = prefs[PreferencesKeys.ACCENT_COLOR] ?: KiebordPreferences.ACCENT_CYAN,
                 customFontPath = prefs[PreferencesKeys.CUSTOM_FONT_PATH] ?: "",
                 keyboardHeightScale = prefs[PreferencesKeys.KEYBOARD_HEIGHT_SCALE] ?: 1.0f,
                 keyboardHeightScaleLandscape = prefs[PreferencesKeys.KEYBOARD_HEIGHT_SCALE_LANDSCAPE] ?: 1.0f,
@@ -109,7 +111,7 @@ class KiebordPreferencesRepository private constructor(private val context: Cont
                 showKeyPopups = prefs[PreferencesKeys.SHOW_KEY_POPUPS] ?: true,
                 showSecondaryKeys = prefs[PreferencesKeys.SHOW_SECONDARY_KEYS] ?: true,
 
-                vibrateOnKeypress = prefs[PreferencesKeys.VIBRATE_ON_KEYPRESS] ?: true,
+                vibrateOnKeypress = prefs[PreferencesKeys.VIBRATE_ON_KEYPRESS] ?: false,
                 vibrationType = prefs[PreferencesKeys.VIBRATION_TYPE] ?: KiebordPreferences.VIBRATION_TYPE_HAPTIC,
                 vibrationStrength = prefs[PreferencesKeys.VIBRATION_STRENGTH] ?: 50,
                 soundOnKeypress = prefs[PreferencesKeys.SOUND_ON_KEYPRESS] ?: false,
@@ -123,10 +125,8 @@ class KiebordPreferencesRepository private constructor(private val context: Cont
                 enabledLayoutIds = run {
                     val rawSet = prefs[PreferencesKeys.ENABLED_LAYOUT_IDS] ?: linkedSetOf(
                         KiebordPreferences.LAYOUT_EN_QWERTY,
-                        KiebordPreferences.LAYOUT_BN_BORNO,
-                        KiebordPreferences.LAYOUT_BN_AVRO,
-                        KiebordPreferences.LAYOUT_BN_EASY,
-                        KiebordPreferences.LAYOUT_BN_NATIONAL
+                        KiebordPreferences.LAYOUT_BN_PROBHAT,
+                        KiebordPreferences.LAYOUT_BN_AVRO
                     )
                     val orderRaw = prefs[PreferencesKeys.ENABLED_LAYOUT_ORDER]
                     if (!orderRaw.isNullOrBlank()) {
@@ -201,6 +201,10 @@ class KiebordPreferencesRepository private constructor(private val context: Cont
         }
 
     // Appearance & Theming mutators
+    suspend fun updateAccentColor(accent: String) {
+        context.kiebordDataStore.edit { it[PreferencesKeys.ACCENT_COLOR] = accent }
+    }
+
     suspend fun updateTheme(theme: String) {
         context.kiebordDataStore.edit { it[PreferencesKeys.THEME] = theme }
     }

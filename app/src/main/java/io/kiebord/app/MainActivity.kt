@@ -57,6 +57,7 @@ import io.kiebord.app.ui.settings.AboutScreen
 import io.kiebord.app.ui.settings.AppearanceThemesScreen
 import io.kiebord.app.ui.settings.BackupRestoreScreen
 import io.kiebord.app.ui.settings.ClipboardSettingsScreen
+import io.kiebord.app.ui.settings.FontsScreen
 import io.kiebord.app.ui.settings.CorrectionsSuggestionsScreen
 import io.kiebord.app.ui.settings.DarkSettingsColors
 import io.kiebord.app.ui.settings.KeyboardLayoutsScreen
@@ -102,7 +103,19 @@ class MainActivity : ComponentActivity() {
             )
 
             val isDark = isSystemInDarkTheme()
-            val settingsColors = if (isDark) DarkSettingsColors else LightSettingsColors
+            val dynamicAccent = when (preferences.accentColor) {
+                KiebordPreferences.ACCENT_EMERALD -> Color(0xFF10B981)
+                KiebordPreferences.ACCENT_ORANGE -> Color(0xFFF97316)
+                KiebordPreferences.ACCENT_VIOLET -> Color(0xFF8B5CF6)
+                KiebordPreferences.ACCENT_ROSE -> Color(0xFFEC4899)
+                KiebordPreferences.ACCENT_AMBER -> Color(0xFFF59E0B)
+                else -> if (isDark) Color(0xFF38BDF8) else Color(0xFF0284C7)
+            }
+            val baseColors = if (isDark) DarkSettingsColors else LightSettingsColors
+            val settingsColors = baseColors.copy(
+                accent = dynamicAccent,
+                sectionTitle = dynamicAccent
+            )
 
             val view = LocalView.current
             if (!view.isInEditMode) {
@@ -258,6 +271,21 @@ fun KiebordSettingsApp(
     onSwitchIme: () -> Unit
 ) {
     val context = androidx.compose.ui.platform.LocalContext.current
+    val isMainScreen = currentScreen == SettingsScreen.Main
+
+    val view = androidx.compose.ui.platform.LocalView.current
+    val isDark = isSystemInDarkTheme()
+    if (!view.isInEditMode) {
+        SideEffect {
+            val window = (view.context as? android.app.Activity)?.window
+            if (window != null) {
+                val insetsController = androidx.core.view.WindowCompat.getInsetsController(window, view)
+                insetsController.isAppearanceLightStatusBars = if (isMainScreen) false else !isDark
+                insetsController.isAppearanceLightNavigationBars = !isDark
+            }
+        }
+    }
+
     val isSetupFinished = preferences.setupCompleted || preferencesRepo.isSetupCompletedSync() || (isImeEnabled && isImeSelected)
 
     LaunchedEffect(isImeEnabled, isImeSelected) {
@@ -368,11 +396,11 @@ fun KiebordSettingsApp(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .statusBarsPadding()
+            .then(if (!isMainScreen && currentScreen != SettingsScreen.Onboarding) Modifier.statusBarsPadding() else Modifier)
             .navigationBarsPadding()
     ) {
         // Persistent Top Bar that stays anchored, only transitioning title/back-icon smoothly
-        if (currentScreen != SettingsScreen.Onboarding) {
+        if (!isMainScreen && currentScreen != SettingsScreen.Onboarding) {
             SettingsUnifiedTopBar(
                 screen = currentScreen,
                 onBack = navigateBack
@@ -427,16 +455,23 @@ fun KiebordSettingsApp(
                             onUpdateShowKeyShadows = { enabled ->
                                 scope.launch { preferencesRepo.updateShowKeyShadows(enabled) }
                             },
+                            pendingImportUri = pendingThemeImportUri,
+                            onClearPendingImportUri = onClearPendingThemeImportUri,
+                            onOpenThemeDesigner = { editingThemeId ->
+                                navigateTo(SettingsScreen.ThemeDesigner(editingThemeId))
+                            },
+                            onBack = navigateBack
+                        )
+                    }
+
+                                        is SettingsScreen.Fonts -> {
+                        FontsScreen(
+                            preferences = preferences,
                             onUpdateSelectedFont = { font ->
                                 scope.launch { preferencesRepo.updateSelectedFont(font) }
                             },
                             onUpdateCustomFontPath = { path ->
                                 scope.launch { preferencesRepo.updateCustomFontPath(path) }
-                            },
-                            pendingImportUri = pendingThemeImportUri,
-                            onClearPendingImportUri = onClearPendingThemeImportUri,
-                            onOpenThemeDesigner = { editingThemeId ->
-                                navigateTo(SettingsScreen.ThemeDesigner(editingThemeId))
                             },
                             onBack = navigateBack
                         )
@@ -513,6 +548,9 @@ fun KiebordSettingsApp(
                             },
                             onUpdateLongPressDelay = { delayMs ->
                                 scope.launch { preferencesRepo.updateLongPressDelayMs(delayMs) }
+                            },
+                            onUpdateAccentColor = { color ->
+                                scope.launch { preferencesRepo.updateAccentColor(color) }
                             },
                             onUpdateShowNumberRow = { enabled ->
                                 scope.launch { preferencesRepo.updateShowNumberRow(enabled) }

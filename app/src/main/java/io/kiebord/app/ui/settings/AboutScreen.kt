@@ -27,8 +27,15 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.BugReport
 import androidx.compose.material.icons.outlined.Code
 import androidx.compose.material.icons.outlined.Email
+import androidx.compose.material.icons.outlined.FontDownload
+import androidx.compose.material.icons.outlined.Keyboard
+import androidx.compose.material.icons.outlined.Lock
+import androidx.compose.material.icons.outlined.Memory
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.School
+import androidx.compose.material.icons.outlined.Speed
+import androidx.compose.material.icons.outlined.TouchApp
+import androidx.compose.material.icons.outlined.Translate
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -86,6 +93,7 @@ fun AboutScreen(
             .fillMaxSize()
             .verticalScroll(scrollState)
             .padding(horizontal = 18.dp, vertical = 16.dp)
+            .padding(bottom = 32.dp)
     ) {
         // 1. Hero Brand Card
         Card(
@@ -97,7 +105,7 @@ fun AboutScreen(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(24.dp),
+                .padding(24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Image(
@@ -125,7 +133,7 @@ fun AboutScreen(
                         .padding(horizontal = 12.dp, vertical = 4.dp)
                 ) {
                     Text(
-                        text = "Version 0.1.9",
+                        text = "Version 0.2.0",
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Bold,
                         color = colors.accent
@@ -135,7 +143,7 @@ fun AboutScreen(
                 Spacer(modifier = Modifier.height(12.dp))
 
                 Text(
-                    text = "A fresh, clean, and super-fast open-source multilingual keyboard engineered for effortless typing in English, Bengali, and Arabic.",
+                    text = "A next-generation, high-performance multilingual keyboard engineered with a hybrid Rust-Kotlin engine for ultra-fast Bengali, English, and Arabic typing.",
                     fontSize = 13.5.sp,
                     color = colors.textSecondary,
                     textAlign = TextAlign.Center,
@@ -146,8 +154,57 @@ fun AboutScreen(
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        // 2. Developer Profile Card
-        SettingsCategoryHeader(title = "LEAD DEVELOPER")
+        // 2. Architectural Highlights & Features
+        SettingsCategoryHeader(title = "CORE ARCHITECTURE & FEATURES")
+
+        SettingsGroup {
+            AboutFeatureItem(
+                icon = Icons.Outlined.Speed,
+                title = "Hybrid Rust Phonetic Engine",
+                description = "Zero-allocation native Rust core delivering microsecond-latency candidate prediction and transliteration for Avro & Provat.",
+                position = GroupPosition.TOP
+            )
+
+            AboutFeatureItem(
+                icon = Icons.Outlined.Lock,
+                title = "100% Offline & Private",
+                description = "Zero internet permissions requested. Keystrokes, clipboard items, and learned vocabulary never leave your device storage.",
+                position = GroupPosition.MIDDLE
+            )
+
+            AboutFeatureItem(
+                icon = Icons.Outlined.Translate,
+                title = "Comprehensive Multilingual Layouts",
+                description = "Built-in English (QWERTY), Bengali Provat (প্রভাত), Bengali Avro (অভ্র), Bengali National (জাতীয় BSTI), and Arabic (العربية).",
+                position = GroupPosition.MIDDLE
+            )
+
+            AboutFeatureItem(
+                icon = Icons.Outlined.FontDownload,
+                title = "Universal Font Studio",
+                description = "Custom typography renderer supporting built-in and external TTF/OTF fonts with full preview across all Bengali and Latin scripts.",
+                position = GroupPosition.MIDDLE
+            )
+
+            AboutFeatureItem(
+                icon = Icons.Outlined.TouchApp,
+                title = "Spacebar Cursor Trackpad & Gestures",
+                description = "Fluid horizontal thumb navigation on spacebar and selective word/character swipe delete from backspace.",
+                position = GroupPosition.MIDDLE
+            )
+
+            AboutFeatureItem(
+                icon = Icons.Outlined.Memory,
+                title = "Permanent Sandboxed Clipboard",
+                description = "Persistent clipboard storage supporting text clips and rich image thumbnails safely preserved across reboots.",
+                position = GroupPosition.BOTTOM
+            )
+        }
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        // 3. Developer Profile Card
+        SettingsCategoryHeader(title = "LEAD DEVELOPER & CREATOR")
 
         Card(
             modifier = Modifier.fillMaxWidth(),
@@ -271,13 +328,13 @@ fun AboutScreen(
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        // 3. Quick Links
-        SettingsCategoryHeader(title = "PROJECT & LINKS")
+        // 4. Quick Links
+        SettingsCategoryHeader(title = "PROJECT & REPOSITORY")
 
         SettingsGroup {
             SettingsNavigationItem(
                 title = "GitHub Repository",
-                subtitle = "Source code, releases, and roadmap",
+                subtitle = "Source code, release notes, and documentation",
                 icon = Icons.Outlined.Code,
                 position = GroupPosition.TOP,
                 onClick = { openUrl(context, GITHUB_REPO_URL) }
@@ -285,13 +342,63 @@ fun AboutScreen(
 
             SettingsNavigationItem(
                 title = "Report an Issue",
-                subtitle = "Submit bugs, crashes or feature requests",
+                subtitle = "Submit bugs, crashes or request new features",
                 icon = Icons.Outlined.BugReport,
                 position = GroupPosition.BOTTOM,
                 onClick = { openUrl(context, GITHUB_ISSUES_URL) }
             )
         }
+    }
+}
 
-        Spacer(modifier = Modifier.height(32.dp))
+@Composable
+private fun AboutFeatureItem(
+    icon: ImageVector,
+    title: String,
+    description: String,
+    position: GroupPosition
+) {
+    val colors = LocalSettingsColors.current
+
+    SettingsItemCard(position = position) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalAlignment = Alignment.Top
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(38.dp)
+                    .clip(RoundedCornerShape(10.dp))
+                    .background(colors.accent.copy(alpha = 0.12f)),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = null,
+                    tint = colors.accent,
+                    modifier = Modifier.size(20.dp)
+                )
+            }
+
+            Spacer(modifier = Modifier.width(14.dp))
+
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = title,
+                    fontSize = 14.5.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = colors.textPrimary
+                )
+                Spacer(modifier = Modifier.height(2.dp))
+                Text(
+                    text = description,
+                    fontSize = 12.sp,
+                    color = colors.textSecondary,
+                    lineHeight = 16.sp
+                )
+            }
+        }
     }
 }

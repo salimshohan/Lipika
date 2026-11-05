@@ -14,9 +14,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.outlined.ColorLens
 import androidx.compose.material.icons.outlined.TouchApp
 import androidx.compose.material.icons.outlined.Vibration
 import androidx.compose.material3.Icon
@@ -30,6 +33,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.kiebord.data.prefs.KiebordPreferences
+import kotlin.math.roundToInt
 
 @Composable
 fun PreferencesScreen(
@@ -39,6 +43,7 @@ fun PreferencesScreen(
     onUpdateVibrationStrength: (Int) -> Unit,
     onUpdateSound: (Boolean) -> Unit,
     onUpdateLongPressDelay: (Int) -> Unit,
+    onUpdateAccentColor: (String) -> Unit = {},
     onUpdateShowNumberRow: (Boolean) -> Unit,
     onUpdateShowKeyPopups: (Boolean) -> Unit,
     onUpdateShowSecondaryKeys: (Boolean) -> Unit = {},
@@ -49,6 +54,7 @@ fun PreferencesScreen(
     onBack: () -> Unit = {}
 ) {
     val scrollState = rememberScrollState()
+    val colors = LocalSettingsColors.current
 
     Column(
         modifier = Modifier
@@ -56,6 +62,104 @@ fun PreferencesScreen(
             .verticalScroll(scrollState)
             .padding(bottom = 32.dp)
     ) {
+        // 1. Dynamic Accent Color Customization
+        SettingsCategoryHeader(title = "App Accent Color")
+
+        SettingsGroup(modifier = Modifier.padding(horizontal = 16.dp)) {
+            SettingsItemCard(position = GroupPosition.ALONE) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.ColorLens,
+                            contentDescription = "Accent",
+                            tint = colors.accent,
+                            modifier = Modifier.size(20.dp)
+                        )
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                text = "Dynamic Accent Theme",
+                                fontSize = 15.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                color = colors.textPrimary
+                            )
+                            Text(
+                                text = "Personalize colors across controls, toggles & sliders",
+                                fontSize = 12.sp,
+                                color = colors.textSecondary
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    val accentPresets = listOf(
+                        Triple(KiebordPreferences.ACCENT_CYAN, "Cyan", Color(0xFF06B6D4)),
+                        Triple(KiebordPreferences.ACCENT_EMERALD, "Emerald", Color(0xFF10B981)),
+                        Triple(KiebordPreferences.ACCENT_ORANGE, "Orange", Color(0xFFF97316)),
+                        Triple(KiebordPreferences.ACCENT_VIOLET, "Violet", Color(0xFF8B5CF6)),
+                        Triple(KiebordPreferences.ACCENT_ROSE, "Rose", Color(0xFFEC4899)),
+                        Triple(KiebordPreferences.ACCENT_AMBER, "Amber", Color(0xFFF59E0B))
+                    )
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        accentPresets.forEach { (key, name, color) ->
+                            val isSelected = preferences.accentColor == key
+
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier
+                                    .clickable { onUpdateAccentColor(key) }
+                                    .padding(vertical = 4.dp)
+                            ) {
+                                Box(
+                                    modifier = Modifier
+                                        .size(38.dp)
+                                        .clip(CircleShape)
+                                        .background(color)
+                                        .border(
+                                            width = if (isSelected) 3.dp else 1.dp,
+                                            color = if (isSelected) Color.White else Color.Transparent,
+                                            shape = CircleShape
+                                        ),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    if (isSelected) {
+                                        Icon(
+                                            imageVector = Icons.Filled.Check,
+                                            contentDescription = "Selected",
+                                            tint = Color.White,
+                                            modifier = Modifier.size(20.dp)
+                                        )
+                                    }
+                                }
+                                Spacer(modifier = Modifier.height(4.dp))
+                                Text(
+                                    text = name,
+                                    fontSize = 11.sp,
+                                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
+                                    color = if (isSelected) colors.accent else colors.textSecondary
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        // 2. Haptic & Acoustic Feedback
         SettingsCategoryHeader(title = "Haptic & Acoustic Feedback")
 
         SettingsGroup(modifier = Modifier.padding(horizontal = 16.dp)) {
@@ -69,7 +173,6 @@ fun PreferencesScreen(
 
             if (preferences.vibrateOnKeypress) {
                 // Feedback Type Selector: Haptic vs Vibration
-                val colors = LocalSettingsColors.current
                 SettingsItemCard(position = GroupPosition.MIDDLE) {
                     Row(
                         modifier = Modifier
@@ -217,13 +320,13 @@ fun PreferencesScreen(
 
             SettingsSliderItem(
                 title = "Long-Press Delay",
-                subtitle = "Hold duration required to trigger more-keys and symbols",
-                value = delayMs.toFloat(),
-                valueRange = 150f..600f,
-                steps = 8,
+                subtitle = "Hold duration required to trigger more-keys and symbols (100–600 ms)",
+                value = delayMs.toFloat().coerceIn(100f, 600f),
+                valueRange = 100f..600f,
+                steps = 0,
                 valueLabel = delayLabel,
                 position = GroupPosition.ALONE,
-                onValueChange = { onUpdateLongPressDelay(it.toInt()) }
+                onValueChange = { onUpdateLongPressDelay(it.roundToInt()) }
             )
         }
 

@@ -486,316 +486,38 @@ fun KeyboardLayoutsScreen(
 
         SettingsCategoryHeader(title = "Available Keyboard Layouts")
 
-        SettingsGroup(modifier = Modifier.padding(horizontal = 16.dp)) {
-            // 1. English Item
-            SettingsItemCard(
-                position = GroupPosition.TOP,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Column {
-                    LanguageSectionHeader(
-                        title = "English",
-                        subtitle = "Standard Latin layout with gesture typing",
-                        badgeText = "EN",
-                        activeCount = if (isEnglishEnabled) 1 else 0,
-                        totalCount = 1,
-                        isExpanded = isEnglishExpanded,
-                        onToggleExpand = { isEnglishExpanded = !isEnglishExpanded },
-                        directToggleState = isEnglishEnabled,
-                        onDirectToggle = { handleToggleLayout(englishCard) }
-                    )
-
-                    AnimatedVisibility(
-                        visible = isEnglishExpanded,
-                        enter = expandVertically() + fadeIn(),
-                        exit = shrinkVertically() + fadeOut()
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(start = 16.dp, end = 16.dp, bottom = 18.dp, top = 4.dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            KeyboardLayoutPreviewItem(
-                                cardData = englishCard,
-                                preferences = preferences,
-                                isEnabled = isEnglishEnabled,
-                                isPrimary = preferences.primaryLayoutId == englishCard.id && isEnglishEnabled,
-                                onToggle = { handleToggleLayout(englishCard) }
-                            )
-                        }
-                    }
-                }
-            }
-
-            // 2. Bangla Item with Horizontal Carousel
-            SettingsItemCard(
-                position = GroupPosition.MIDDLE,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                val activeBanglaCount = banglaCards.count { preferences.enabledLayoutIds.contains(it.id) }
-
-                Column {
-                    LanguageSectionHeader(
-                        title = "Bangla (বাংলা)",
-                        subtitle = "বর্ণ ফোনেটিক, অভ্র, জাতীয় (BSTI), প্রভাত",
-                        badgeText = "বাংলা",
-                        activeCount = activeBanglaCount,
-                        totalCount = banglaCards.size,
-                        isExpanded = isBanglaExpanded,
-                        onToggleExpand = { isBanglaExpanded = !isBanglaExpanded }
-                    )
-
-                    AnimatedVisibility(
-                        visible = isBanglaExpanded,
-                        enter = expandVertically() + fadeIn(),
-                        exit = shrinkVertically() + fadeOut()
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(bottom = 18.dp, top = 4.dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            LazyRow(
-                                modifier = Modifier.fillMaxWidth(),
-                                contentPadding = PaddingValues(horizontal = 16.dp),
-                                horizontalArrangement = Arrangement.spacedBy(14.dp)
-                            ) {
-                                items(
-                                    items = banglaCards,
-                                    key = { it.id }
-                                ) { cardData ->
-                                    val isEnabled = preferences.enabledLayoutIds.contains(cardData.id)
-
-                                    KeyboardLayoutPreviewItem(
-                                        cardData = cardData,
-                                        preferences = preferences,
-                                        isEnabled = isEnabled,
-                                        isPrimary = preferences.primaryLayoutId == cardData.id && isEnabled,
-                                        onToggle = { handleToggleLayout(cardData) }
-                                    )
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            // 3. Arabic Item
-            val hasOtherBundled = otherBundledCards.isNotEmpty()
-            val hasCustom = customCards.isNotEmpty()
-            SettingsItemCard(
-                position = if (hasOtherBundled || hasCustom) GroupPosition.MIDDLE else GroupPosition.BOTTOM,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Column {
-                    LanguageSectionHeader(
-                        title = "Arabic (العربية)",
-                        subtitle = "Standard Arabic with Harakat diacritics",
-                        badgeText = "عربي",
-                        activeCount = if (isArabicEnabled) 1 else 0,
-                        totalCount = 1,
-                        isExpanded = isArabicExpanded,
-                        onToggleExpand = { isArabicExpanded = !isArabicExpanded },
-                        directToggleState = isArabicEnabled,
-                        onDirectToggle = { handleToggleLayout(arabicCard) }
-                    )
-
-                    AnimatedVisibility(
-                        visible = isArabicExpanded,
-                        enter = expandVertically() + fadeIn(),
-                        exit = shrinkVertically() + fadeOut()
-                    ) {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(start = 16.dp, end = 16.dp, bottom = 18.dp, top = 4.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            KeyboardLayoutPreviewItem(
-                                cardData = arabicCard,
-                                preferences = preferences,
-                                isEnabled = isArabicEnabled,
-                                isPrimary = preferences.primaryLayoutId == arabicCard.id && isArabicEnabled,
-                                onToggle = { handleToggleLayout(arabicCard) }
-                            )
-
-                            // Dynamic Extra Rows options
-                            if (arabicCard.layoutDef.extraRows.isNotEmpty()) {
-                                Spacer(modifier = Modifier.height(12.dp))
-                                ExtraRowsOptionsSection(
-                                    cardData = arabicCard,
-                                    preferences = preferences,
-                                    isOpen = isArabicOptionsOpen,
-                                    onToggleOpen = { isArabicOptionsOpen = !isArabicOptionsOpen },
-                                    onToggleExtraRow = onToggleExtraRow
-                                )
-                            }
-                        }
-                    }
-                }
-            }
-
-            // 4. Other Bundled Layouts (e.g. Borno Math)
-            otherBundledCards.forEachIndexed { index, card ->
-                key(card.id) {
-                    val isLastBundled = index == otherBundledCards.lastIndex
-                    val itemPosition = if (isLastBundled && !hasCustom) GroupPosition.BOTTOM else GroupPosition.MIDDLE
-                    BundledLayoutSectionItem(
-                        card = card,
-                        preferences = preferences,
-                        onToggleLayout = handleToggleLayout,
-                        onToggleExtraRow = onToggleExtraRow,
-                        position = itemPosition
-                    )
-                }
-            }
-
-            // 5. Custom Imported Layouts (if present)
-            if (hasCustom) {
-                val activeCustomCount = customCards.count { preferences.enabledLayoutIds.contains(it.id) }
-                SettingsItemCard(
-                    position = GroupPosition.BOTTOM,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Column {
-                        LanguageSectionHeader(
-                            title = "Custom Layouts",
-                            subtitle = "${customCards.size} imported layout(s) installed",
-                            badgeText = "JSON",
-                            activeCount = activeCustomCount,
-                            totalCount = customCards.size,
-                            isExpanded = isCustomExpanded,
-                            onToggleExpand = { isCustomExpanded = !isCustomExpanded }
-                        )
-
-                        AnimatedVisibility(
-                            visible = isCustomExpanded,
-                            enter = expandVertically() + fadeIn(),
-                            exit = shrinkVertically() + fadeOut()
-                        ) {
-                            Column(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(bottom = 18.dp, top = 4.dp)
-                            ) {
-                                LazyRow(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    contentPadding = PaddingValues(horizontal = 16.dp),
-                                    horizontalArrangement = Arrangement.spacedBy(14.dp)
-                                ) {
-                                    items(
-                                        items = customCards,
-                                        key = { it.id }
-                                    ) { cardData ->
-                                        val isEnabled = preferences.enabledLayoutIds.contains(cardData.id)
-                                        val hasExtraRows = cardData.layoutDef.extraRows.isNotEmpty()
-                                        val isCardSettingsOpen = selectedCustomSettingsId == cardData.id
-
-                                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                            KeyboardLayoutPreviewItem(
-                                                cardData = cardData,
-                                                preferences = preferences,
-                                                isEnabled = isEnabled,
-                                                isPrimary = preferences.primaryLayoutId == cardData.id && isEnabled,
-                                                onToggle = { handleToggleLayout(cardData) }
-                                            )
-
-                                            Spacer(modifier = Modifier.height(8.dp))
-
-                                            Row(
-                                                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                                                verticalAlignment = Alignment.CenterVertically
-                                            ) {
-                                                if (hasExtraRows) {
-                                                    Row(
-                                                        modifier = Modifier
-                                                            .clip(CircleShape)
-                                                            .background(
-                                                                if (isCardSettingsOpen) colors.accent.copy(alpha = 0.15f)
-                                                                else colors.iconBackground
-                                                            )
-                                                            .clickable {
-                                                                selectedCustomSettingsId =
-                                                                    if (isCardSettingsOpen) null else cardData.id
-                                                            }
-                                                            .padding(horizontal = 10.dp, vertical = 6.dp),
-                                                        verticalAlignment = Alignment.CenterVertically
-                                                    ) {
-                                                        Icon(
-                                                            imageVector = Icons.Filled.Settings,
-                                                            contentDescription = "Options",
-                                                            tint = if (isCardSettingsOpen) colors.accent else colors.textSecondary,
-                                                            modifier = Modifier.size(14.dp)
-                                                        )
-                                                        Spacer(modifier = Modifier.width(4.dp))
-                                                        Text(
-                                                            text = "Options",
-                                                            fontSize = 11.sp,
-                                                            fontWeight = FontWeight.Medium,
-                                                            color = if (isCardSettingsOpen) colors.accent else colors.textSecondary
-                                                        )
-                                                    }
-                                                }
-
-                                                Row(
-                                                    modifier = Modifier
-                                                        .clip(CircleShape)
-                                                        .background(colors.iconBackground)
-                                                        .clickable { pendingDeleteCard = cardData }
-                                                        .padding(horizontal = 10.dp, vertical = 6.dp),
-                                                    verticalAlignment = Alignment.CenterVertically
-                                                ) {
-                                                    Icon(
-                                                        imageVector = Icons.Outlined.Delete,
-                                                        contentDescription = "Remove layout",
-                                                        tint = Color(0xFFEF4444),
-                                                        modifier = Modifier.size(14.dp)
-                                                    )
-                                                    Spacer(modifier = Modifier.width(4.dp))
-                                                    Text(
-                                                        text = "Remove",
-                                                        fontSize = 11.sp,
-                                                        fontWeight = FontWeight.Medium,
-                                                        color = Color(0xFFEF4444)
-                                                    )
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-
-                                val activeCustomSettingsCard = customCards.find { it.id == selectedCustomSettingsId }
-                                AnimatedVisibility(
-                                    visible = activeCustomSettingsCard != null && activeCustomSettingsCard.layoutDef.extraRows.isNotEmpty(),
-                                    enter = expandVertically() + fadeIn(),
-                                    exit = shrinkVertically() + fadeOut()
-                                ) {
-                                    if (activeCustomSettingsCard != null) {
-                                        Column(
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .padding(start = 16.dp, end = 16.dp, top = 12.dp)
-                                        ) {
-                                            ExtraRowsOptionsSection(
-                                                cardData = activeCustomSettingsCard,
-                                                preferences = preferences,
-                                                isOpen = true,
-                                                onToggleOpen = { selectedCustomSettingsId = null },
-                                                onToggleExtraRow = onToggleExtraRow
-                                            )
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+        val standardLayoutList = remember(englishCard, banglaCards, arabicCard) {
+            listOf(englishCard) + banglaCards + listOf(arabicCard)
         }
 
+        SettingsGroup(modifier = Modifier.padding(horizontal = 16.dp)) {
+            val totalCount = standardLayoutList.size + customCards.size
+            for ((index, card) in standardLayoutList.withIndex()) {
+                val position = when {
+                    totalCount == 1 -> GroupPosition.ALONE
+                    index == 0 -> GroupPosition.TOP
+                    index == totalCount - 1 -> GroupPosition.BOTTOM
+                    else -> GroupPosition.MIDDLE
+                }
+                DirectLanguageLayoutCard(
+                    card = card,
+                    preferences = preferences,
+                    onToggle = { handleToggleLayout(card) },
+                    position = position
+                )
+            }
 
+            for ((customIndex, card) in customCards.withIndex()) {
+                val globalIndex = standardLayoutList.size + customIndex
+                val position = if (globalIndex == totalCount - 1) GroupPosition.BOTTOM else GroupPosition.MIDDLE
+                DirectLanguageLayoutCard(
+                    card = card,
+                    preferences = preferences,
+                    onToggle = { handleToggleLayout(card) },
+                    position = position
+                )
+            }
+        }
     }
 }
 
@@ -1358,6 +1080,107 @@ private fun KeyboardMiniPreview(
                 }
 
                 currentX += keyWidth + keySpacingPx
+            }
+        }
+    }
+}
+
+@Composable
+private fun DirectLanguageLayoutCard(
+    card: LayoutCardData,
+    preferences: KiebordPreferences,
+    onToggle: () -> Unit,
+    position: GroupPosition
+) {
+    val isEnabled = preferences.enabledLayoutIds.contains(card.id)
+    val colors = LocalSettingsColors.current
+    val context = LocalContext.current
+    val currentScheme = remember(context, preferences.theme) {
+        io.kiebord.theme.ThemeRepository.getInstance(context).getColorScheme(preferences.theme)
+    }
+
+    SettingsItemCard(
+        position = position,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column(modifier = Modifier.weight(1f)) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            text = card.name,
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = colors.textPrimary
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Box(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(6.dp))
+                                .background(colors.accent.copy(alpha = 0.15f))
+                                .padding(horizontal = 6.dp, vertical = 2.dp)
+                        ) {
+                            Text(
+                                text = card.badge,
+                                fontSize = 10.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = colors.accent
+                            )
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(2.dp))
+                    Text(
+                        text = card.description,
+                        fontSize = 12.sp,
+                        color = colors.textSecondary
+                    )
+                }
+
+                Switch(
+                    checked = isEnabled,
+                    onCheckedChange = { onToggle() },
+                    colors = SwitchDefaults.colors(
+                        checkedThumbColor = Color.White,
+                        checkedTrackColor = colors.accent,
+                        uncheckedThumbColor = colors.textSecondary,
+                        uncheckedTrackColor = colors.iconBackground,
+                        uncheckedBorderColor = colors.inputBorder
+                    )
+                )
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            // Direct Visual Picture Preview
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(130.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(currentScheme.containerBackground)
+                    .border(
+                        width = if (isEnabled) 1.5.dp else 1.dp,
+                        color = if (isEnabled) colors.accent.copy(alpha = 0.5f) else colors.cardBorder,
+                        shape = RoundedCornerShape(12.dp)
+                    )
+                    .clickable { onToggle() }
+            ) {
+                KeyboardMiniPreview(
+                    layout = card.layoutDef,
+                    colorScheme = currentScheme,
+                    extraRowOverrides = preferences.extraRowOverrides,
+                    showKeyBorders = preferences.showKeyBorders,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .alpha(if (isEnabled) 1f else 0.55f)
+                )
             }
         }
     }

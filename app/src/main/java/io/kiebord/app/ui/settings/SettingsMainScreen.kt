@@ -23,6 +23,10 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.outlined.Check
+import androidx.compose.material.icons.outlined.FontDownload
+import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.Language
+import androidx.compose.material.icons.outlined.Tune
 import androidx.compose.material.icons.outlined.ContentPaste
 import androidx.compose.material.icons.outlined.DashboardCustomize
 import androidx.compose.material.icons.outlined.Keyboard
@@ -104,7 +108,7 @@ fun SettingsMainScreen(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(210.dp)
+                .height(230.dp)
         ) {
             Canvas(modifier = Modifier.fillMaxSize()) {
                 val canvasWidth = size.width
@@ -405,16 +409,16 @@ fun SettingsMainScreen(
                 modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(22.dp)
             ) {
-                // Row 1: [Shop/Font Studio]  [Theme]  [Customize]
+                // Row 1: [Fonts]  [Theme]  [Language]
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
                     CircularDashboardButton(
-                        icon = Icons.Outlined.Storefront,
-                        label = "Shop",
+                        icon = Icons.Outlined.FontDownload,
+                        label = "Fonts",
                         colors = colors,
-                        onClick = { onNavigate(SettingsScreen.AppearanceThemes(1)) }
+                        onClick = { onNavigate(SettingsScreen.Fonts) }
                     )
                     CircularDashboardButton(
                         icon = Icons.Outlined.Palette,
@@ -423,21 +427,21 @@ fun SettingsMainScreen(
                         onClick = { onNavigate(SettingsScreen.AppearanceThemes(0)) }
                     )
                     CircularDashboardButton(
-                        icon = Icons.Outlined.DashboardCustomize,
-                        label = "Customize",
+                        icon = Icons.Outlined.Language,
+                        label = "Language",
                         colors = colors,
                         onClick = { onNavigate(SettingsScreen.KeyboardLayouts) }
                     )
                 }
 
-                // Row 2: [Settings]  [Clipboard]  [Survey / About]
+                // Row 2: [Preferences]  [Clipboard]  [About]
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
                     CircularDashboardButton(
-                        icon = Icons.Outlined.Settings,
-                        label = "Settings",
+                        icon = Icons.Outlined.Tune,
+                        label = "Preferences",
                         colors = colors,
                         onClick = { onNavigate(SettingsScreen.Preferences) }
                     )
@@ -448,8 +452,8 @@ fun SettingsMainScreen(
                         onClick = { onNavigate(SettingsScreen.Clipboard) }
                     )
                     CircularDashboardButton(
-                        icon = Icons.Outlined.Poll,
-                        label = "Survey",
+                        icon = Icons.Outlined.Info,
+                        label = "About",
                         colors = colors,
                         onClick = { onNavigate(SettingsScreen.About) }
                     )

@@ -165,9 +165,10 @@ fun SettingsUnifiedTopBar(
     val colors = LocalSettingsColors.current
     val title = when (screen) {
         is SettingsScreen.Main -> "Lipika"
-        is SettingsScreen.AppearanceThemes -> "Appearance & Themes"
+        is SettingsScreen.AppearanceThemes -> "Theme"
+        is SettingsScreen.Fonts -> "Fonts"
         is SettingsScreen.ThemeDesigner -> "Theme Studio"
-        is SettingsScreen.KeyboardLayouts -> "Keyboard Layouts"
+        is SettingsScreen.KeyboardLayouts -> "Language"
         is SettingsScreen.Preferences -> "Preferences"
         is SettingsScreen.CorrectionsSuggestions -> "Corrections & Suggestions"
         is SettingsScreen.Clipboard -> "Clipboard"
@@ -180,6 +181,7 @@ fun SettingsUnifiedTopBar(
     val subtitle: String? = when (screen) {
         is SettingsScreen.Main -> null
         is SettingsScreen.AppearanceThemes -> "Themes & key styling"
+        is SettingsScreen.Fonts -> "Select keyboard typography"
         is SettingsScreen.ThemeDesigner -> if (screen.editingThemeId != null) "Edit custom theme" else "Create & customize theme"
         is SettingsScreen.KeyboardLayouts -> "Active layouts & preview"
         is SettingsScreen.Preferences -> "Haptics, smart gestures & ergonomics"
