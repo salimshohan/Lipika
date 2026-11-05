@@ -1213,6 +1213,17 @@ class KiebordService : InputMethodService() {
 
     private fun handleKeyLongPress(key: KeyDef) {
         if (key.type == KeyType.SWITCH_LANGUAGE) {
+            val availableMeta = layoutRepo.getAvailableLayouts().map { it.id }.toSet()
+            val enabledIds = preferencesState.enabledLayoutIds.toList().filter { id ->
+                id in availableMeta || id == KiebordPreferences.LAYOUT_AR_ARABIC
+            }.ifEmpty { listOf(KiebordPreferences.LAYOUT_EN_QWERTY) }
+
+            if (enabledIds.size > 1) {
+                val currentIndex = enabledIds.indexOf(primaryAlphaLayout.id)
+                val nextIndex = if (currentIndex >= 0) (currentIndex + 1) % enabledIds.size else 0
+                val nextId = enabledIds[nextIndex]
+                switchToLayout(nextId)
+            }
             return
         }
         if (key.type == KeyType.SPACE) {
@@ -1233,21 +1244,30 @@ class KiebordService : InputMethodService() {
         }
         if (charToInsert.isEmpty()) return
 
+        val isEnglish = primaryAlphaLayout.id == KiebordPreferences.LAYOUT_EN_QWERTY
         when (charToInsert) {
             "ACTION_CUT", "action:cut", "CUT" -> {
-                handleTextAction(TextAction.CUT, false)
+                if (isEnglish) {
+                    handleTextAction(TextAction.CUT, false)
+                }
                 return
             }
             "ACTION_COPY", "action:copy", "COPY" -> {
-                handleTextAction(TextAction.COPY, false)
+                if (isEnglish) {
+                    handleTextAction(TextAction.COPY, false)
+                }
                 return
             }
             "ACTION_PASTE", "action:paste", "PASTE" -> {
-                handleTextAction(TextAction.PASTE, false)
+                if (isEnglish) {
+                    handleTextAction(TextAction.PASTE, false)
+                }
                 return
             }
             "ACTION_SELECT_ALL", "action:select_all", "SELECT_ALL" -> {
-                handleTextAction(TextAction.SELECT_ALL, true)
+                if (isEnglish) {
+                    handleTextAction(TextAction.SELECT_ALL, true)
+                }
                 return
             }
         }

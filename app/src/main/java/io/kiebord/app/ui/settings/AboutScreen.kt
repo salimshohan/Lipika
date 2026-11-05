@@ -125,7 +125,7 @@ fun AboutScreen(
                         .padding(horizontal = 12.dp, vertical = 4.dp)
                 ) {
                     Text(
-                        text = "Version 0.1.6",
+                        text = "Version 0.1.7",
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Bold,
                         color = colors.accent

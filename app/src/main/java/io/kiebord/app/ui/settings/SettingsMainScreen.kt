@@ -1,7 +1,7 @@
 package io.kiebord.app.ui.settings
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -20,20 +21,15 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.KeyboardArrowRight
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.outlined.CheckCircle
+import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material.icons.outlined.ContentPaste
-import androidx.compose.material.icons.outlined.FontDownload
-import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.DashboardCustomize
 import androidx.compose.material.icons.outlined.Keyboard
-import androidx.compose.material.icons.outlined.Mic
 import androidx.compose.material.icons.outlined.Palette
-import androidx.compose.material.icons.outlined.Spellcheck
-import androidx.compose.material.icons.outlined.SwapHoriz
-import androidx.compose.material.icons.outlined.Tune
+import androidx.compose.material.icons.outlined.Poll
+import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material.icons.outlined.Storefront
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -51,13 +47,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import io.kiebord.app.R
 import io.kiebord.data.prefs.KiebordPreferences
 
 @Composable
@@ -73,195 +71,421 @@ fun SettingsMainScreen(
     val colors = LocalSettingsColors.current
     var testInputText by remember { mutableStateOf("") }
 
+    val activeThemeName = remember(preferences.theme) {
+        when (preferences.theme) {
+            "lipika_gradient" -> "Luminous Aurora"
+            "default_dark" -> "Default Dark"
+            "amoled_black" -> "AMOLED Black"
+            "tokyo_night" -> "Tokyo Night"
+            "nord" -> "Nord Frost"
+            else -> preferences.theme.replace("_", " ").split(" ")
+                .joinToString(" ") { it.replaceFirstChar { c -> c.uppercase() } }
+        }
+    }
+
+    val activeLayoutName = remember(preferences.primaryLayoutId) {
+        when (preferences.primaryLayoutId) {
+            "en_qwerty" -> "English"
+            "bn_probhat" -> "প্রভাত"
+            "bn_avro" -> "অভ্র"
+            "bn_national" -> "জাতীয়"
+            "ar_arabic" -> "العربية"
+            else -> "English"
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(scrollState)
-            .padding(horizontal = 18.dp, vertical = 14.dp)
+            .background(colors.background)
     ) {
-        // 1. Hero Brand Header
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(24.dp),
-            colors = CardDefaults.cardColors(containerColor = colors.cardBackground),
-            border = BorderStroke(1.dp, colors.accent.copy(alpha = 0.35f))
+        // 1. Scenic Mountain Sunset Header (Matching Reference Design)
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(210.dp)
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(20.dp)
-            ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Image(
-                        painter = painterResource(R.drawable.ic_launcher),
-                        contentDescription = "Lipika Logo",
-                        modifier = Modifier
-                            .size(54.dp)
-                            .clip(RoundedCornerShape(14.dp))
-                    )
+            Canvas(modifier = Modifier.fillMaxSize()) {
+                val canvasWidth = size.width
+                val canvasHeight = size.height
 
-                    Spacer(modifier = Modifier.width(14.dp))
+                // Sky Gradient: Deep Pine Teal to Forest Teal
+                val skyBrush = Brush.verticalGradient(
+                    colors = listOf(
+                        Color(0xFF092923),
+                        Color(0xFF103A32),
+                        Color(0xFF185346)
+                    ),
+                    startY = 0f,
+                    endY = canvasHeight * 0.85f
+                )
+                drawRect(brush = skyBrush)
 
-                    Column(modifier = Modifier.weight(1f)) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(8.dp)
-                        ) {
-                            Text(
-                                text = "Lipika Keyboard",
-                                fontSize = 21.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = colors.textPrimary
-                            )
-                            Box(
-                                modifier = Modifier
-                                    .clip(RoundedCornerShape(8.dp))
-                                    .background(colors.accent.copy(alpha = 0.18f))
-                                    .padding(horizontal = 8.dp, vertical = 2.dp)
-                            ) {
-                                Text(
-                                    text = "v0.1.6",
-                                    fontSize = 11.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = colors.accent
-                                )
-                            }
-                        }
-                        Spacer(modifier = Modifier.height(2.dp))
-                        Text(
-                            text = "Fast, clean & modern multilingual keyboard",
-                            fontSize = 13.sp,
-                            color = colors.textSecondary
-                        )
-                    }
+                // Glowing Sun: Warm Amber/Golden Sunset Disc
+                val sunCenter = Offset(canvasWidth * 0.44f, canvasHeight * 0.42f)
+                val sunRadius = canvasWidth * 0.16f
+                val sunBrush = Brush.radialGradient(
+                    colors = listOf(
+                        Color(0xFFFFEA79),
+                        Color(0xFFFFB300),
+                        Color(0xFFFF6F00)
+                    ),
+                    center = sunCenter,
+                    radius = sunRadius
+                )
+                drawCircle(
+                    brush = sunBrush,
+                    radius = sunRadius,
+                    center = sunCenter
+                )
+
+                // Layer 1: Distant Dark Crimson Mountains
+                val backMountain = Path().apply {
+                    moveTo(0f, canvasHeight * 0.65f)
+                    lineTo(canvasWidth * 0.18f, canvasHeight * 0.52f)
+                    lineTo(canvasWidth * 0.35f, canvasHeight * 0.58f)
+                    lineTo(canvasWidth * 0.52f, canvasHeight * 0.44f)
+                    lineTo(canvasWidth * 0.72f, canvasHeight * 0.56f)
+                    lineTo(canvasWidth * 0.88f, canvasHeight * 0.48f)
+                    lineTo(canvasWidth, canvasHeight * 0.54f)
+                    lineTo(canvasWidth, canvasHeight)
+                    lineTo(0f, canvasHeight)
+                    close()
                 }
+                drawPath(path = backMountain, color = Color(0xFF881422))
+
+                // Layer 2: Mid-ground Ruby Red Mountains
+                val midMountain = Path().apply {
+                    moveTo(0f, canvasHeight * 0.72f)
+                    lineTo(canvasWidth * 0.22f, canvasHeight * 0.60f)
+                    lineTo(canvasWidth * 0.42f, canvasHeight * 0.66f)
+                    lineTo(canvasWidth * 0.62f, canvasHeight * 0.50f)
+                    lineTo(canvasWidth * 0.82f, canvasHeight * 0.62f)
+                    lineTo(canvasWidth, canvasHeight * 0.58f)
+                    lineTo(canvasWidth, canvasHeight)
+                    lineTo(0f, canvasHeight)
+                    close()
+                }
+                drawPath(path = midMountain, color = Color(0xFFB71C1C))
+
+                // Layer 3: Foreground Bright Crimson Mountain Silhouette
+                val frontMountain = Path().apply {
+                    moveTo(0f, canvasHeight * 0.82f)
+                    lineTo(canvasWidth * 0.15f, canvasHeight * 0.72f)
+                    lineTo(canvasWidth * 0.38f, canvasHeight * 0.76f)
+                    lineTo(canvasWidth * 0.58f, canvasHeight * 0.60f)
+                    lineTo(canvasWidth * 0.78f, canvasHeight * 0.74f)
+                    lineTo(canvasWidth, canvasHeight * 0.68f)
+                    lineTo(canvasWidth, canvasHeight)
+                    lineTo(0f, canvasHeight)
+                    close()
+                }
+                drawPath(path = frontMountain, color = Color(0xFFC62828))
             }
         }
 
-        Spacer(modifier = Modifier.height(14.dp))
-
-        // 2. Activation Status & Live Typing Test Card
-        if (!isImeEnabled || !isImeSelected) {
+        // 2. Floating Status & Quick Action Card (Overlapping scenic header)
+        Column(
+            modifier = Modifier
+                .offset(y = (-32).dp)
+                .padding(horizontal = 16.dp)
+        ) {
             Card(
                 modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(20.dp),
-                colors = CardDefaults.cardColors(containerColor = colors.warningCardBg),
-                border = BorderStroke(1.dp, colors.warningCardBorder)
+                shape = RoundedCornerShape(26.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = colors.cardBackground
+                ),
+                border = BorderStroke(1.dp, colors.accent.copy(alpha = 0.25f)),
+                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
             ) {
-                Column(modifier = Modifier.padding(18.dp)) {
-                    Text(
-                        text = if (!isImeEnabled) "Keyboard Activation Required" else "Select Lipika as Default",
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = colors.warningCardText
-                    )
-                    Text(
-                        text = if (!isImeEnabled) {
-                            "To start typing, please enable Lipika Keyboard in Android system settings."
-                        } else {
-                            "Lipika is enabled, but not set as the default active input method."
-                        },
-                        fontSize = 13.sp,
-                        lineHeight = 18.sp,
-                        color = colors.warningCardSubtext,
-                        modifier = Modifier.padding(top = 4.dp, bottom = 14.dp)
-                    )
-
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(18.dp)
+                ) {
+                    // Header Row: [Lipika Keyboard]  [• Active]
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(10.dp)
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Button(
-                            onClick = if (!isImeEnabled) onOpenSettings else onSwitchIme,
+                        Text(
+                            text = "Lipika Keyboard",
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = colors.textPrimary
+                        )
+
+                        // Status Pill
+                        val isActive = isImeEnabled && isImeSelected
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(6.dp),
                             modifier = Modifier
-                                .weight(1f)
-                                .height(44.dp),
-                            shape = CircleShape,
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = colors.warningBtnBg,
-                                contentColor = colors.warningBtnText
-                            )
+                                .clip(RoundedCornerShape(12.dp))
+                                .clickable {
+                                    if (!isImeEnabled) onOpenSettings()
+                                    else if (!isImeSelected) onSwitchIme()
+                                }
+                                .padding(horizontal = 8.dp, vertical = 4.dp)
                         ) {
-                            Icon(
-                                imageVector = if (!isImeEnabled) Icons.Filled.Settings else Icons.Outlined.SwapHoriz,
-                                contentDescription = null,
-                                modifier = Modifier.size(18.dp)
+                            Box(
+                                modifier = Modifier
+                                    .size(8.dp)
+                                    .clip(CircleShape)
+                                    .background(if (isActive) Color(0xFF16A34A) else Color(0xFFF59E0B))
                             )
-                            Spacer(modifier = Modifier.width(6.dp))
                             Text(
-                                text = if (!isImeEnabled) "Turn On in Settings" else "Select Lipika",
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 13.sp
+                                text = if (isActive) "Active" else "Enable",
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                color = if (isActive) Color(0xFF16A34A) else Color(0xFFF59E0B)
                             )
                         }
+                    }
 
+                    Spacer(modifier = Modifier.height(14.dp))
+
+                    // Split Sub-Card: [Theme] | [Layout]
+                    Card(
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(18.dp),
+                        colors = CardDefaults.cardColors(containerColor = colors.inputBackground),
+                        border = BorderStroke(1.dp, colors.cardBorder)
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 12.dp, horizontal = 14.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            // Left Column: Theme
+                            Row(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .clip(RoundedCornerShape(12.dp))
+                                    .clickable { onNavigate(SettingsScreen.AppearanceThemes(0)) }
+                                    .padding(vertical = 4.dp, horizontal = 6.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(10.dp)
+                            ) {
+                                Box(
+                                    modifier = Modifier
+                                        .size(38.dp)
+                                        .clip(CircleShape)
+                                        .background(Color(0xFF10B981).copy(alpha = 0.15f)),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Outlined.Palette,
+                                        contentDescription = "Theme",
+                                        tint = Color(0xFF10B981),
+                                        modifier = Modifier.size(20.dp)
+                                    )
+                                }
+                                Column {
+                                    Text(
+                                        text = "Theme",
+                                        fontSize = 15.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = colors.textPrimary
+                                    )
+                                    Text(
+                                        text = activeThemeName,
+                                        fontSize = 12.sp,
+                                        color = colors.textSecondary,
+                                        maxLines = 1
+                                    )
+                                }
+                            }
+
+                            // Subtle Vertical Divider
+                            Box(
+                                modifier = Modifier
+                                    .width(1.dp)
+                                    .height(38.dp)
+                                    .background(colors.cardBorder)
+                            )
+
+                            // Right Column: Layout
+                            Row(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .clip(RoundedCornerShape(12.dp))
+                                    .clickable { onNavigate(SettingsScreen.KeyboardLayouts) }
+                                    .padding(vertical = 4.dp, horizontal = 6.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(10.dp)
+                            ) {
+                                Box(
+                                    modifier = Modifier
+                                        .size(38.dp)
+                                        .clip(CircleShape)
+                                        .background(Color(0xFF10B981).copy(alpha = 0.15f)),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Outlined.Keyboard,
+                                        contentDescription = "Layout",
+                                        tint = Color(0xFF10B981),
+                                        modifier = Modifier.size(20.dp)
+                                    )
+                                }
+                                Column {
+                                    Text(
+                                        text = "Layout",
+                                        fontSize = 15.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = colors.textPrimary
+                                    )
+                                    Text(
+                                        text = activeLayoutName,
+                                        fontSize = 12.sp,
+                                        color = colors.textSecondary,
+                                        maxLines = 1
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Quick Setup Alert (if not active)
+            if (!isImeEnabled || !isImeSelected) {
+                Spacer(modifier = Modifier.height(14.dp))
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(18.dp),
+                    colors = CardDefaults.cardColors(containerColor = colors.warningCardBg),
+                    border = BorderStroke(1.dp, colors.warningCardBorder)
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(14.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                text = if (!isImeEnabled) "Lipika is not enabled" else "Lipika is not selected",
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = colors.warningCardText
+                            )
+                            Text(
+                                text = if (!isImeEnabled) "Enable in System Settings" else "Tap to choose default keyboard",
+                                fontSize = 12.sp,
+                                color = colors.warningCardText.copy(alpha = 0.8f)
+                            )
+                        }
                         Button(
-                            onClick = { onNavigate(SettingsScreen.Onboarding) },
-                            modifier = Modifier.height(44.dp),
-                            shape = CircleShape,
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = colors.warningSecondaryBtnBg,
-                                contentColor = colors.warningSecondaryBtnText
-                            ),
-                            border = BorderStroke(1.dp, colors.warningSecondaryBtnBorder)
+                            onClick = if (!isImeEnabled) onOpenSettings else onSwitchIme,
+                            colors = ButtonDefaults.buttonColors(containerColor = colors.accent),
+                            shape = RoundedCornerShape(12.dp)
                         ) {
                             Text(
-                                text = "Setup Wizard",
-                                fontWeight = FontWeight.SemiBold,
-                                fontSize = 13.sp
+                                text = if (!isImeEnabled) "Enable" else "Select",
+                                fontSize = 13.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.White
                             )
                         }
                     }
                 }
             }
-        } else {
+
+            Spacer(modifier = Modifier.height(28.dp))
+
+            // 3. Grid of 6 Circular Buttons (Exact 3 x 2 layout from screenshot)
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(22.dp)
+            ) {
+                // Row 1: [Shop/Font Studio]  [Theme]  [Customize]
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    CircularDashboardButton(
+                        icon = Icons.Outlined.Storefront,
+                        label = "Shop",
+                        colors = colors,
+                        onClick = { onNavigate(SettingsScreen.AppearanceThemes(1)) }
+                    )
+                    CircularDashboardButton(
+                        icon = Icons.Outlined.Palette,
+                        label = "Theme",
+                        colors = colors,
+                        onClick = { onNavigate(SettingsScreen.AppearanceThemes(0)) }
+                    )
+                    CircularDashboardButton(
+                        icon = Icons.Outlined.DashboardCustomize,
+                        label = "Customize",
+                        colors = colors,
+                        onClick = { onNavigate(SettingsScreen.KeyboardLayouts) }
+                    )
+                }
+
+                // Row 2: [Settings]  [Clipboard]  [Survey / About]
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    CircularDashboardButton(
+                        icon = Icons.Outlined.Settings,
+                        label = "Settings",
+                        colors = colors,
+                        onClick = { onNavigate(SettingsScreen.Preferences) }
+                    )
+                    CircularDashboardButton(
+                        icon = Icons.Outlined.ContentPaste,
+                        label = "Clipboard",
+                        colors = colors,
+                        onClick = { onNavigate(SettingsScreen.Clipboard) }
+                    )
+                    CircularDashboardButton(
+                        icon = Icons.Outlined.Poll,
+                        label = "Survey",
+                        colors = colors,
+                        onClick = { onNavigate(SettingsScreen.About) }
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(30.dp))
+
+            // 4. Interactive Live Typing Sandbox Field
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(20.dp),
                 colors = CardDefaults.cardColors(containerColor = colors.cardBackground),
-                border = BorderStroke(1.dp, Color(0xFF10B981).copy(alpha = 0.35f))
+                border = BorderStroke(1.dp, colors.cardBorder)
             ) {
-                Column(modifier = Modifier.padding(18.dp)) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .size(10.dp)
-                                .clip(CircleShape)
-                                .background(Color(0xFF10B981))
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(
-                            text = "Lipika is Active & Ready",
-                            fontSize = 15.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = colors.textPrimary,
-                            modifier = Modifier.weight(1f)
-                        )
-                        Text(
-                            text = "Super Speed Ready",
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Medium,
-                            color = Color(0xFF10B981)
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.height(12.dp))
-
-                    // Live Interactive Keyboard Testing Sandbox
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                ) {
+                    Text(
+                        text = "Live Keyboard Testing Sandbox",
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = colors.textPrimary
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
                     OutlinedTextField(
                         value = testInputText,
                         onValueChange = { testInputText = it },
+                        modifier = Modifier.fillMaxWidth(),
                         placeholder = {
                             Text(
-                                text = "Type here to test keyboard response...",
+                                text = "Tap here to test typing • লিপিকা টাইপ করুন...",
                                 fontSize = 13.sp,
-                                color = colors.textSecondary.copy(alpha = 0.7f)
+                                color = colors.textSecondary
                             )
                         },
                         trailingIcon = {
@@ -275,7 +499,6 @@ fun SettingsMainScreen(
                                 }
                             }
                         },
-                        modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(14.dp),
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedContainerColor = colors.inputBackground,
@@ -285,161 +508,56 @@ fun SettingsMainScreen(
                             focusedTextColor = colors.textPrimary,
                             unfocusedTextColor = colors.textPrimary
                         ),
-                        singleLine = true
+                        singleLine = false,
+                        maxLines = 3
                     )
                 }
             }
+
+            Spacer(modifier = Modifier.height(24.dp))
         }
-
-        Spacer(modifier = Modifier.height(18.dp))
-
-        // 3. Smart Settings Navigation
-        SettingsCategoryHeader(title = "APPEARANCE & TYPOGRAPHY")
-
-        SettingsGroup {
-            SmartSettingsTile(
-                title = "Keyboard Themes",
-                subtitle = "Active: Lipika Gradient • Aurora glass, dark and light palettes",
-                icon = Icons.Outlined.Palette,
-                position = GroupPosition.TOP,
-                onClick = { onNavigate(SettingsScreen.AppearanceThemes) }
-            )
-
-            SmartSettingsTile(
-                title = "Font Studio",
-                subtitle = "Active: Tw Cent MT • 11+ fonts and custom font import",
-                icon = Icons.Outlined.FontDownload,
-                position = GroupPosition.BOTTOM,
-                onClick = { onNavigate(SettingsScreen.AppearanceThemes) }
-            )
-        }
-
-        Spacer(modifier = Modifier.height(18.dp))
-
-        SettingsCategoryHeader(title = "LANGUAGES & INPUT")
-
-        SettingsGroup {
-            SmartSettingsTile(
-                title = "Keyboard Layouts",
-                subtitle = "English, Provat, Avro, Arabic, Bangla Jatiyo",
-                icon = Icons.Outlined.Keyboard,
-                position = GroupPosition.TOP,
-                onClick = { onNavigate(SettingsScreen.KeyboardLayouts) }
-            )
-
-            SmartSettingsTile(
-                title = "Preferences & Speed",
-                subtitle = "Ultra-low latency, haptic vibration and layout scaling",
-                icon = Icons.Outlined.Tune,
-                position = GroupPosition.MIDDLE,
-                onClick = { onNavigate(SettingsScreen.Preferences) }
-            )
-
-            SmartSettingsTile(
-                title = "Corrections & Suggestions",
-                subtitle = "Candidate completions, smart next-word prediction",
-                icon = Icons.Outlined.Spellcheck,
-                position = GroupPosition.MIDDLE,
-                onClick = { onNavigate(SettingsScreen.CorrectionsSuggestions) }
-            )
-
-            SmartSettingsTile(
-                title = "Clipboard Manager",
-                subtitle = "Clipboard history, pinned clips and quick paste",
-                icon = Icons.Outlined.ContentPaste,
-                position = GroupPosition.MIDDLE,
-                onClick = { onNavigate(SettingsScreen.Clipboard) }
-            )
-
-            SmartSettingsTile(
-                title = "Voice Typing",
-                subtitle = "Voice input with speech-to-text integration",
-                icon = Icons.Outlined.Mic,
-                position = GroupPosition.BOTTOM,
-                onClick = { onNavigate(SettingsScreen.VoiceTyping) }
-            )
-        }
-
-        Spacer(modifier = Modifier.height(18.dp))
-
-        // 4. Developer & About Card
-        SettingsCategoryHeader(title = "ABOUT & DEVELOPER")
-
-        SettingsGroup {
-            SmartSettingsTile(
-                title = "About Lipika",
-                subtitle = "Salim Hosen Shohan • University of Rajshahi",
-                icon = Icons.Outlined.Info,
-                position = GroupPosition.ALONE,
-                onClick = { onNavigate(SettingsScreen.About) }
-            )
-        }
-
-        Spacer(modifier = Modifier.height(32.dp))
     }
 }
 
 @Composable
-private fun SmartSettingsTile(
-    title: String,
-    subtitle: String,
+private fun CircularDashboardButton(
     icon: ImageVector,
-    position: GroupPosition,
+    label: String,
+    colors: SettingsColors,
     onClick: () -> Unit
 ) {
-    val colors = LocalSettingsColors.current
-
-    SettingsItemCard(
-        position = position,
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
-            .fillMaxWidth()
+            .clip(RoundedCornerShape(16.dp))
             .clickable(onClick = onClick)
+            .padding(horizontal = 8.dp, vertical = 4.dp)
     ) {
-        Row(
+        Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 14.dp),
-            verticalAlignment = Alignment.CenterVertically
+                .size(68.dp)
+                .clip(CircleShape)
+                .background(colors.cardBackground)
+                .padding(1.dp)
+                .clip(CircleShape)
+                .background(colors.inputBackground),
+            contentAlignment = Alignment.Center
         ) {
-            Box(
-                modifier = Modifier
-                    .size(42.dp)
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(colors.iconBackground),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    imageVector = icon,
-                    contentDescription = title,
-                    tint = colors.accent,
-                    modifier = Modifier.size(22.dp)
-                )
-            }
-
-            Spacer(modifier = Modifier.width(14.dp))
-
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = title,
-                    fontSize = 15.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = colors.textPrimary
-                )
-                Spacer(modifier = Modifier.height(2.dp))
-                Text(
-                    text = subtitle,
-                    fontSize = 12.5.sp,
-                    color = colors.textSecondary,
-                    lineHeight = 16.sp
-                )
-            }
-
             Icon(
-                imageVector = Icons.AutoMirrored.Outlined.KeyboardArrowRight,
-                contentDescription = null,
-                tint = colors.textSecondary.copy(alpha = 0.5f),
-                modifier = Modifier.size(20.dp)
+                imageVector = icon,
+                contentDescription = label,
+                tint = colors.textPrimary,
+                modifier = Modifier.size(28.dp)
             )
         }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Text(
+            text = label,
+            fontSize = 14.sp,
+            fontWeight = FontWeight.SemiBold,
+            color = colors.textPrimary
+        )
     }
 }

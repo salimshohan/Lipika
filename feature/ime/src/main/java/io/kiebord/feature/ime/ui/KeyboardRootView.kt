@@ -416,7 +416,16 @@ fun KeyboardRootView(
         if (voiceInputState is VoiceInputState.Listening) {
             onDismissVoiceTyping()
         }
-        if (isEmojiSearchOpen) {
+        if (key.type == KeyType.SWITCH_LANGUAGE) {
+            isEmojiOpen = !isEmojiOpen
+            if (isEmojiOpen) {
+                isToolsDrawerOpen = false
+                isClipboardOpen = false
+                isResizerOpen = false
+                isTextEditOpen = false
+                isSuggestionsExpanded = false
+            }
+        } else if (isEmojiSearchOpen) {
             when (key.type) {
                 KeyType.CHARACTER -> {
                     val text = key.commitText ?: key.label

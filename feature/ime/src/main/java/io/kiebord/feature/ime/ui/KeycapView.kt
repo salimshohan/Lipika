@@ -28,6 +28,7 @@ import io.kiebord.feature.ime.action.ActionKeyVisual
 import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material.icons.outlined.ArrowUpward
 import androidx.compose.material.icons.outlined.Language
+import androidx.compose.material.icons.outlined.SentimentSatisfiedAlt
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -647,10 +648,10 @@ fun KeycapView(
             }
             KeyType.SWITCH_LANGUAGE -> {
                 Icon(
-                    imageVector = Icons.Outlined.Language,
-                    contentDescription = "Switch Language",
+                    imageVector = Icons.Outlined.SentimentSatisfiedAlt,
+                    contentDescription = "Emoji / Language",
                     tint = foregroundColor,
-                    modifier = Modifier.size((20 * iconScaleFactor).coerceAtLeast(11f).dp)
+                    modifier = Modifier.size((22 * iconScaleFactor).coerceAtLeast(12f).dp)
                 )
             }
             KeyType.SPACE -> {

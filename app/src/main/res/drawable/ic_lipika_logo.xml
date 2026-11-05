@@ -2,86 +2,87 @@
     xmlns:aapt="http://schemas.android.com/aapt"
     android:width="128dp"
     android:height="128dp"
-    android:viewportWidth="128"
-    android:viewportHeight="128">
+    android:viewportWidth="512"
+    android:viewportHeight="512">
 
-    <!-- Premium Rounded Squircle Keycap Base -->
+    <!-- Keycap Body -->
     <path
-        android:pathData="M24,12 L104,12 A16,16 0,0,1 120,28 L120,100 A16,16 0,0,1 104,116 L24,116 A16,16 0,0,1 8,100 L8,28 A16,16 0,0,1 24,12 Z">
+        android:pathData="M132,36 L380,36 A96,96 0,0,1 476,132 L476,380 A96,96 0,0,1 380,476 L132,476 A96,96 0,0,1 36,380 L36,132 A96,96 0,0,1 132,36 Z">
         <aapt:attr name="android:fillColor">
             <gradient
                 android:angle="135"
-                android:endColor="#0F172A"
                 android:startColor="#1E1B4B"
+                android:centerColor="#0F172A"
+                android:endColor="#020617"
                 android:type="linear" />
         </aapt:attr>
     </path>
 
-    <!-- Glowing Keycap Border Stroke -->
+    <!-- Glowing Cyber Border -->
     <path
-        android:pathData="M24,13.5 L104,13.5 A14.5,14.5 0,0,1 118.5,28 L118.5,100 A14.5,14.5 0,0,1 104,114.5 L24,114.5 A14.5,14.5 0,0,1 9.5,100 L9.5,28 A14.5,14.5 0,0,1 24,13.5 Z"
-        android:strokeWidth="2.5">
+        android:pathData="M132,40 L380,40 A92,92 0,0,1 472,132 L472,380 A92,92 0,0,1 380,472 L132,472 A92,92 0,0,1 40,380 L40,132 A92,92 0,0,1 132,40 Z"
+        android:strokeWidth="8">
         <aapt:attr name="android:strokeColor">
             <gradient
                 android:angle="135"
+                android:startColor="#06B6D4"
+                android:centerColor="#38BDF8"
                 android:endColor="#8B5CF6"
+                android:type="linear" />
+        </aapt:attr>
+    </path>
+
+    <!-- Glass Sheen -->
+    <path
+        android:pathData="M 40,132 C 40,81 81,40 132,40 L 380,40 C 431,40 472,81 472,132 L 472,180 Q 256,120 40,180 Z"
+        android:fillAlpha="0.18"
+        android:fillColor="#FFFFFF" />
+
+    <!-- Center Radial Glow -->
+    <path
+        android:pathData="M256,256 m-160,0 a160,160 0,1,0 320,0 a160,160 0,1,0 -320,0"
+        android:fillAlpha="0.35">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:centerX="256"
+                android:centerY="256"
+                android:gradientRadius="160"
                 android:startColor="#06B6D4"
-                android:type="linear" />
-        </aapt:attr>
-    </path>
-
-    <!-- Top Keycap Reflection / Sheen -->
-    <path
-        android:pathData="M24,16 L104,16 A12,12 0,0,1 116,28 L116,48 Q64,36 12,48 L12,28 A12,12 0,0,1 24,16 Z"
-        android:fillAlpha="0.12">
-        <aapt:attr name="android:fillColor">
-            <gradient
-                android:angle="90"
-                android:endColor="#00FFFFFF"
-                android:startColor="#FFFFFFFF"
-                android:type="linear" />
-        </aapt:attr>
-    </path>
-
-    <!-- Center Radiant Glow Behind Glyph -->
-    <path
-        android:pathData="M64,64 m-36,0 a36,36 0,1,0 72,0 a36,36 0,1,0 -72,0"
-        android:fillAlpha="0.25">
-        <aapt:attr name="android:fillColor">
-            <gradient
-                android:centerX="64"
-                android:centerY="64"
-                android:gradientRadius="36"
                 android:endColor="#0006B6D4"
-                android:startColor="#06B6D4"
                 android:type="radial" />
         </aapt:attr>
     </path>
 
-    <!-- Stylized Modern Bengali 'ল' (Lipika) + Pen Quill Ribbon -->
-    <!-- Left Loop of 'ল' -->
+    <!-- Top Horizontal Bar ('Matra') -->
     <path
-        android:pathData="M38,76 C34,68 36,54 44,48 C51,43 59,46 62,54 C65,46 73,43 80,48 C88,54 90,68 86,76 C83,82 76,86 68,85 L68,78 C73,79 78,76 80,72 C83,66 81,56 75,52 C70,49 65,51 63,58 L59,58 C57,51 52,49 47,52 C41,56 39,66 42,72 C44,76 49,79 54,78 L54,85 C46,86 39,82 38,76 Z"
-        android:fillColor="#38BDF8" />
-
-    <!-- Vertical Stem & Top Bar of 'ল' -->
-    <path
-        android:pathData="M34,40 L94,40 L94,46 L34,46 Z"
+        android:pathData="M143,160 L369,160 A13,13 0,0,1 382,173 L382,173 A13,13 0,0,1 369,186 L143,186 A13,13 0,0,1 130,173 L130,173 A13,13 0,0,1 143,160 Z"
         android:fillColor="#FFFFFF" />
 
-    <!-- Right Descending Serif & Sparkle -->
+    <!-- Stylized Modern Bengali 'ল' Loops -->
     <path
-        android:pathData="M88,40 L94,40 L94,88 C94,91 91,94 88,94 L85,94 C82,94 80,91 80,88 L80,82 L86,82 L86,88 L88,88 Z"
+        android:pathData="M 155,310 C 135,275 145,220 180,196 C 210,176 242,188 252,218 C 265,188 298,176 328,196 C 360,220 370,275 350,310 C 340,330 315,350 280,345 L 280,318 C 300,322 320,310 326,295 C 338,270 330,230 306,215 C 288,202 265,210 256,238 L 242,238 C 233,210 210,202 192,215 C 168,230 160,270 172,295 C 178,310 198,322 218,318 L 218,345 C 183,350 158,330 155,310 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:angle="90"
+                android:startColor="#38BDF8"
+                android:endColor="#06B6D4"
+                android:type="linear" />
+        </aapt:attr>
+    </path>
+
+    <!-- Vertical Stem of 'ল' -->
+    <path
+        android:pathData="M369,160 L369,160 A13,13 0,0,1 382,173 L382,342 A13,13 0,0,1 369,355 L369,355 A13,13 0,0,1 356,342 L356,173 A13,13 0,0,1 369,160 Z"
         android:fillColor="#FFFFFF" />
 
-    <!-- Modern Typing Cursor Spark -->
+    <!-- Foot Accent -->
     <path
-        android:pathData="M98,42 L101,42 L101,54 L98,54 Z"
+        android:pathData="M341,340 L371,340 A11,11 0,0,1 382,351 L382,351 A11,11 0,0,1 371,362 L341,362 A11,11 0,0,1 330,351 L330,351 A11,11 0,0,1 341,340 Z"
+        android:fillColor="#FFFFFF" />
+
+    <!-- Cyber Dot Spark -->
+    <path
+        android:pathData="M394,152 m-7,0 a7,7 0,1,0 14,0 a7,7 0,1,0 -14,0"
         android:fillColor="#06B6D4" />
-
-    <path
-        android:pathData="M64,96 L67,90 L73,93 L68,97 L72,103 L66,100 L63,105 L62,99 L56,99 L61,95 Z"
-        android:fillColor="#38BDF8"
-        android:fillAlpha="0.7" />
 
 </vector>

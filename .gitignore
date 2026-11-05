@@ -14,6 +14,7 @@ native/kiebord-engine/target/
 *.apk
 *.aab
 *.keystore
+!app/debug.keystore
 *.jks
 *.log
 .kotlin/

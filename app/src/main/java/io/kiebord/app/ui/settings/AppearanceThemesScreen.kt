@@ -101,6 +101,7 @@ private data class PendingImportData(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppearanceThemesScreen(
+    initialTab: Int = 0,
     preferences: KiebordPreferences,
     onUpdateTheme: (String) -> Unit,
     onUpdateHeightScale: (Float) -> Unit = {},
@@ -122,7 +123,7 @@ fun AppearanceThemesScreen(
     var previewThemeOption by remember { mutableStateOf<ThemeOptionItem?>(null) }
     var pendingImportTheme by remember { mutableStateOf<PendingImportData?>(null) }
     var showCreatePopup by remember { mutableStateOf(false) }
-    var selectedTab by remember { mutableStateOf(0) }
+    var selectedTab by remember { mutableStateOf(initialTab) }
     val colors = LocalSettingsColors.current
     val scope = rememberCoroutineScope()
 

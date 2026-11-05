@@ -116,9 +116,33 @@ class MainActivity : ComponentActivity() {
                 }
             }
 
+            val currentFontFamily = remember(preferences.selectedFont, preferences.customFontPath) {
+                io.kiebord.theme.resolveKeyboardFontFamily(preferences.selectedFont, preferences.customFontPath)
+            }
+            val appTypography = remember(currentFontFamily) {
+                val d = androidx.compose.material3.Typography()
+                androidx.compose.material3.Typography(
+                    displayLarge = d.displayLarge.copy(fontFamily = currentFontFamily),
+                    displayMedium = d.displayMedium.copy(fontFamily = currentFontFamily),
+                    displaySmall = d.displaySmall.copy(fontFamily = currentFontFamily),
+                    headlineLarge = d.headlineLarge.copy(fontFamily = currentFontFamily),
+                    headlineMedium = d.headlineMedium.copy(fontFamily = currentFontFamily),
+                    headlineSmall = d.headlineSmall.copy(fontFamily = currentFontFamily),
+                    titleLarge = d.titleLarge.copy(fontFamily = currentFontFamily),
+                    titleMedium = d.titleMedium.copy(fontFamily = currentFontFamily),
+                    titleSmall = d.titleSmall.copy(fontFamily = currentFontFamily),
+                    bodyLarge = d.bodyLarge.copy(fontFamily = currentFontFamily),
+                    bodyMedium = d.bodyMedium.copy(fontFamily = currentFontFamily),
+                    bodySmall = d.bodySmall.copy(fontFamily = currentFontFamily),
+                    labelLarge = d.labelLarge.copy(fontFamily = currentFontFamily),
+                    labelMedium = d.labelMedium.copy(fontFamily = currentFontFamily),
+                    labelSmall = d.labelSmall.copy(fontFamily = currentFontFamily)
+                )
+            }
+
             CompositionLocalProvider(
                 LocalSettingsColors provides settingsColors,
-                LocalTextStyle provides TextStyle(fontFamily = KeyboardFontFamily)
+                LocalTextStyle provides TextStyle(fontFamily = currentFontFamily)
             ) {
                 MaterialTheme(
                     colorScheme = if (isDark) {
@@ -138,7 +162,7 @@ class MainActivity : ComponentActivity() {
                             onSurface = settingsColors.textPrimary
                         )
                     },
-                    typography = KiebordTypography
+                    typography = appTypography
                 ) {
                     Surface(
                         modifier = Modifier.fillMaxSize(),
@@ -389,6 +413,7 @@ fun KiebordSettingsApp(
 
                     is SettingsScreen.AppearanceThemes -> {
                         AppearanceThemesScreen(
+                            initialTab = screen.initialTab,
                             preferences = preferences,
                             onUpdateTheme = { theme ->
                                 scope.launch { preferencesRepo.updateTheme(theme) }

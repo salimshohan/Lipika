@@ -2,49 +2,39 @@
     xmlns:aapt="http://schemas.android.com/aapt"
     android:width="108dp"
     android:height="108dp"
-    android:viewportWidth="108"
-    android:viewportHeight="108">
+    android:viewportWidth="512"
+    android:viewportHeight="512">
 
-    <!-- Center Radiant Backlight Glow -->
+    <!-- Top Horizontal Bar ('Matra') -->
     <path
-        android:pathData="M54,54 m-30,0 a30,30 0,1,0 60,0 a30,30 0,1,0 -60,0"
-        android:fillAlpha="0.28">
-        <aapt:attr name="android:fillColor">
-            <gradient
-                android:centerX="54"
-                android:centerY="54"
-                android:gradientRadius="30"
-                android:endColor="#0006B6D4"
-                android:startColor="#06B6D4"
-                android:type="radial" />
-        </aapt:attr>
-    </path>
-
-    <!-- Top Keycap Matra Line -->
-    <path
-        android:pathData="M28,34 L80,34 L80,39 L28,39 Z"
+        android:pathData="M143,160 L369,160 A13,13 0,0,1 382,173 L382,173 A13,13 0,0,1 369,186 L143,186 A13,13 0,0,1 130,173 L130,173 A13,13 0,0,1 143,160 Z"
         android:fillColor="#FFFFFF" />
 
     <!-- Stylized Modern Bengali 'ল' Loops -->
     <path
-        android:pathData="M32,65 C28,58 30,46 37,41 C43,37 50,39 52,46 C55,39 62,37 68,41 C75,46 77,58 73,65 C71,70 65,74 58,73 L58,67 C62,68 67,65 68,62 C71,57 69,48 64,45 C60,42 55,44 53,50 L50,50 C48,44 44,42 40,45 C35,48 33,57 36,62 C37,65 42,68 46,67 L46,73 C39,74 33,70 32,65 Z">
+        android:pathData="M 155,310 C 135,275 145,220 180,196 C 210,176 242,188 252,218 C 265,188 298,176 328,196 C 360,220 370,275 350,310 C 340,330 315,350 280,345 L 280,318 C 300,322 320,310 326,295 C 338,270 330,230 306,215 C 288,202 265,210 256,238 L 242,238 C 233,210 210,202 192,215 C 168,230 160,270 172,295 C 178,310 198,322 218,318 L 218,345 C 183,350 158,330 155,310 Z">
         <aapt:attr name="android:fillColor">
             <gradient
                 android:angle="90"
-                android:endColor="#38BDF8"
-                android:startColor="#06B6D4"
+                android:startColor="#38BDF8"
+                android:endColor="#06B6D4"
                 android:type="linear" />
         </aapt:attr>
     </path>
 
-    <!-- Right Stem of 'ল' -->
+    <!-- Vertical Stem of 'ল' -->
     <path
-        android:pathData="M75,34 L80,34 L80,75 C80,78 77,80 75,80 L72,80 C70,80 68,78 68,75 L68,70 L73,70 L73,75 L75,75 Z"
+        android:pathData="M369,160 L369,160 A13,13 0,0,1 382,173 L382,342 A13,13 0,0,1 369,355 L369,355 A13,13 0,0,1 356,342 L356,173 A13,13 0,0,1 369,160 Z"
         android:fillColor="#FFFFFF" />
 
-    <!-- Cyan Electric Dot / Accent -->
+    <!-- Foot Accent -->
     <path
-        android:pathData="M83,36 L86,36 L86,46 L83,46 Z"
+        android:pathData="M341,340 L371,340 A11,11 0,0,1 382,351 L382,351 A11,11 0,0,1 371,362 L341,362 A11,11 0,0,1 330,351 L330,351 A11,11 0,0,1 341,340 Z"
+        android:fillColor="#FFFFFF" />
+
+    <!-- Cyber Dot Spark -->
+    <path
+        android:pathData="M394,152 m-7,0 a7,7 0,1,0 14,0 a7,7 0,1,0 -14,0"
         android:fillColor="#06B6D4" />
 
 </vector>

@@ -13,13 +13,19 @@ android {
         applicationId = "com.salimshohan.lipika"
         minSdk = 24
         targetSdk = 36
-        versionCode = 9
-        versionName = "0.1.6"
+        versionCode = 10
+        versionName = "0.1.7"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     signingConfigs {
+        getByName("debug") {
+            storeFile = file("debug.keystore")
+            storePassword = "android"
+            keyAlias = "androiddebugkey"
+            keyPassword = "android"
+        }
         create("release") {
             val keystorePath = System.getenv("KEYSTORE_FILE")
             if (!keystorePath.isNullOrBlank() && file(keystorePath).exists()) {
@@ -42,6 +48,7 @@ android {
             signingConfig = signingConfigs.getByName("release").takeIf { it.storeFile != null }
         }
         debug {
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
 

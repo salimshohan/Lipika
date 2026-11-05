@@ -1,6 +1,6 @@
 [package]
 name = "lipika-engine"
-version = "0.1.6"
+version = "0.1.7"
 edition = "2021"
 authors = ["Salim Hosen Shohan"]
 description = "High-performance hybrid spatial Lipika Keyboard core and phonetic engine in pure Rust"

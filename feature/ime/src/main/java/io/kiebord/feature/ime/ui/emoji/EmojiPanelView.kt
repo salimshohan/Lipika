@@ -226,8 +226,9 @@ fun EmojiPanelView(
             // Standard emoji cell is ~38-42dp wide.
             // In portrait (~360-412dp), this yields 9-10 columns.
             // In landscape (~700-1000dp), this yields 17-25 columns, keeping emojis at normal size!
+            // iOS-style larger emoji cells (~7-8 columns in portrait, matching Apple iOS)
             val calculatedColumns = remember(totalWidthDp) {
-                (totalWidthDp / 40.dp).toInt().coerceIn(9, 25)
+                (totalWidthDp / 48.dp).toInt().coerceIn(7, 18)
             }
 
             AndroidView(
