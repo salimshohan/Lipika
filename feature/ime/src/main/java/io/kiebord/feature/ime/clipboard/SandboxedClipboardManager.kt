@@ -2,6 +2,7 @@ package io.kiebord.feature.ime.clipboard
 
 import android.content.ClipboardManager
 import android.content.Context
+import android.net.Uri
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -174,6 +175,32 @@ class SandboxedClipboardManager(context: Context) {
             quickPasteClip = null
         }
         saveClipsToDisk()
+    }
+
+    
+    fun addImageClip(context: Context, uri: Uri) {
+        val pathOrUri = uri.toString()
+        addClip(pathOrUri)
+    }
+
+    fun updateClip(entry: ClipboardEntry, newText: String) {
+        val trimmed = newText.trim()
+        if (trimmed.isEmpty()) return
+        val index = clips.indexOfFirst { it.id == entry.id }
+        if (index >= 0) {
+            clips[index] = entry.copy(text = trimmed, timestamp = System.currentTimeMillis())
+            saveClipsToDisk()
+        }
+    }
+
+    fun moveClip(fromId: String, toId: String) {
+        val fromIndex = clips.indexOfFirst { it.id == fromId }
+        val toIndex = clips.indexOfFirst { it.id == toId }
+        if (fromIndex >= 0 && toIndex >= 0 && fromIndex != toIndex) {
+            val item = clips.removeAt(fromIndex)
+            clips.add(toIndex, item)
+            saveClipsToDisk()
+        }
     }
 
     fun clearAllUnpinned() {
