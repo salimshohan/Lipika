@@ -63,7 +63,7 @@
         android:pathData="M 155,310 C 135,275 145,220 180,196 C 210,176 242,188 252,218 C 265,188 298,176 328,196 C 360,220 370,275 350,310 C 340,330 315,350 280,345 L 280,318 C 300,322 320,310 326,295 C 338,270 330,230 306,215 C 288,202 265,210 256,238 L 242,238 C 233,210 210,202 192,215 C 168,230 160,270 172,295 C 178,310 198,322 218,318 L 218,345 C 183,350 158,330 155,310 Z">
         <aapt:attr name="android:fillColor">
             <gradient
-                android:angle="90"
+                android:angle="270"
                 android:startColor="#38BDF8"
                 android:endColor="#06B6D4"
                 android:type="linear" />
@@ -80,9 +80,9 @@
         android:pathData="M341,340 L371,340 A11,11 0,0,1 382,351 L382,351 A11,11 0,0,1 371,362 L341,362 A11,11 0,0,1 330,351 L330,351 A11,11 0,0,1 341,340 Z"
         android:fillColor="#FFFFFF" />
 
-    <!-- Cyber Dot Spark -->
+    <!-- Electric Cyan Typing Cursor Spark -->
     <path
-        android:pathData="M394,152 m-7,0 a7,7 0,1,0 14,0 a7,7 0,1,0 -14,0"
+        android:pathData="M396,177 A7,7 0,0,1 410,177 L410,211 A7,7 0,0,1 396,211 Z"
         android:fillColor="#06B6D4" />
 
 </vector>
