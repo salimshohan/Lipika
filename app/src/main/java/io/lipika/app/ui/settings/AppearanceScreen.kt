@@ -30,6 +30,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.outlined.AutoAwesome
 import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material.icons.outlined.ColorLens
 import androidx.compose.material.icons.outlined.DarkMode
