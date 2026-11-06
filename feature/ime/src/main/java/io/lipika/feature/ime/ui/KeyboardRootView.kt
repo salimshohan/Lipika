@@ -411,6 +411,7 @@ fun KeyboardRootView(
     var isEmojiOpen by remember { mutableStateOf(false) }
     var isEmojiSearchOpen by remember { mutableStateOf(false) }
     var emojiSearchQuery by remember { mutableStateOf("") }
+    var isTextEditOpen by remember { mutableStateOf(false) }
 
     val handleKeyTapUnified: (KeyDef) -> Unit = { key ->
         if (voiceInputState is VoiceInputState.Listening) {
@@ -467,7 +468,6 @@ fun KeyboardRootView(
     } else false
 
     var isResizerOpen by remember { mutableStateOf(false) }
-    var isTextEditOpen by remember { mutableStateOf(false) }
     var isToolsDrawerOpen by remember { mutableStateOf(false) }
     var isSuggestionsExpanded by remember { mutableStateOf(false) }
     var showNumberRow by remember(defaultShowNumberRow) { mutableStateOf(defaultShowNumberRow) }
