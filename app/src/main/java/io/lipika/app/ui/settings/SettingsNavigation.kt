@@ -6,6 +6,7 @@ package io.lipika.app.ui.settings
 sealed class SettingsScreen {
     data object Main : SettingsScreen()
     data class AppearanceThemes(val initialTab: Int = 0) : SettingsScreen()
+    data object Appearance : SettingsScreen()
     data object Fonts : SettingsScreen()
     data class ThemeDesigner(val editingThemeId: String? = null) : SettingsScreen()
     data object KeyboardLayouts : SettingsScreen()

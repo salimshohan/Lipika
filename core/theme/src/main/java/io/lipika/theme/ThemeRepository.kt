@@ -80,6 +80,20 @@ class ThemeRepository private constructor(private val context: Context) {
             description = "Velvet graphite dark keycaps with vibrant indigo-blue accents",
             scheme = KeyboardColorScheme.DefaultDark,
             category = ThemeCategory.ORIGINALS
+        ),
+        "pure_black" to ThemeOptionItem(
+            id = "pure_black",
+            name = "Pure Black",
+            description = "Pitch-black OLED background with ultra-dark keys",
+            scheme = KeyboardColorScheme.PureBlack,
+            category = ThemeCategory.BORNO_AMOLED
+        ),
+        "amoled_black" to ThemeOptionItem(
+            id = "amoled_black",
+            name = "AMOLED Black",
+            description = "True AMOLED black with deep charcoal keys",
+            scheme = KeyboardColorScheme.AmoledBlack,
+            category = ThemeCategory.BORNO_AMOLED
         )
     )
 

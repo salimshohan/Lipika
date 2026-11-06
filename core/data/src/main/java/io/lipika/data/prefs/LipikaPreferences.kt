@@ -21,6 +21,15 @@ data class LipikaPreferences(
     val showKeyPopups: Boolean = true,
     val showSecondaryKeys: Boolean = true,
 
+    // Appearance Screen Settings
+    val displayMode: String = DISPLAY_MODE_SYSTEM,
+    val appTheme: String = APP_THEME_SYSTEM,
+    val keyboardThemeMode: String = KEYBOARD_THEME_DARK,
+    val darkStyle: String = DARK_STYLE_DARK_GRAY,
+    val themeSchedule: String = SCHEDULE_ALWAYS_DARK,
+    val customScheduleStartHour: Int = 18,
+    val customScheduleEndHour: Int = 6,
+
     // Preferences & Haptics
     val vibrateOnKeypress: Boolean = false,
     val vibrationType: String = VIBRATION_TYPE_HAPTIC,
@@ -80,8 +89,75 @@ data class LipikaPreferences(
         return extraRowOverrides["${layoutId}_${rowId}"] ?: default
     }
 
+    fun resolveEffectiveIsDark(systemInDark: Boolean): Boolean {
+        return when (themeSchedule) {
+            SCHEDULE_ALWAYS_LIGHT -> false
+            SCHEDULE_ALWAYS_DARK -> true
+            SCHEDULE_SUNSET_TO_SUNRISE -> {
+                val cal = java.util.Calendar.getInstance()
+                val hour = cal.get(java.util.Calendar.HOUR_OF_DAY)
+                hour >= 18 || hour < 6
+            }
+            SCHEDULE_CUSTOM -> {
+                val cal = java.util.Calendar.getInstance()
+                val hour = cal.get(java.util.Calendar.HOUR_OF_DAY)
+                if (customScheduleStartHour <= customScheduleEndHour) {
+                    hour in customScheduleStartHour until customScheduleEndHour
+                } else {
+                    hour >= customScheduleStartHour || hour < customScheduleEndHour
+                }
+            }
+            else -> {
+                when {
+                    appTheme == APP_THEME_LIGHT -> false
+                    appTheme == APP_THEME_DARK -> true
+                    displayMode == DISPLAY_MODE_LIGHT -> false
+                    displayMode == DISPLAY_MODE_DARK -> true
+                    else -> systemInDark
+                }
+            }
+        }
+    }
+
+    fun effectiveKeyboardTheme(): String {
+        return when (keyboardThemeMode) {
+            KEYBOARD_THEME_LIGHT -> THEME_DEFAULT_LIGHT
+            KEYBOARD_THEME_DARK -> when (darkStyle) {
+                DARK_STYLE_PURE_BLACK -> THEME_PURE_BLACK
+                DARK_STYLE_AMOLED -> THEME_AMOLED_BLACK
+                else -> THEME_DEFAULT_DARK
+            }
+            KEYBOARD_THEME_CUSTOM -> theme
+            else -> theme
+        }
+    }
+
     companion object {
         const val VOICE_PROVIDER_GOOGLE = "google"
+
+        const val DISPLAY_MODE_LIGHT = "light"
+        const val DISPLAY_MODE_DARK = "dark"
+        const val DISPLAY_MODE_SYSTEM = "system"
+
+        const val APP_THEME_LIGHT = "light"
+        const val APP_THEME_DARK = "dark"
+        const val APP_THEME_SYSTEM = "system"
+        const val APP_THEME_DYNAMIC = "dynamic"
+
+        const val KEYBOARD_THEME_LIGHT = "light"
+        const val KEYBOARD_THEME_DARK = "dark"
+        const val KEYBOARD_THEME_CUSTOM = "custom"
+
+        const val DARK_STYLE_PURE_BLACK = "pure_black"
+        const val DARK_STYLE_AMOLED = "amoled"
+        const val DARK_STYLE_DARK_GRAY = "dark_gray"
+
+        const val SCHEDULE_ALWAYS_LIGHT = "always_light"
+        const val SCHEDULE_ALWAYS_DARK = "always_dark"
+        const val SCHEDULE_SUNSET_TO_SUNRISE = "sunset_to_sunrise"
+        const val SCHEDULE_CUSTOM = "custom"
+
+        const val THEME_PURE_BLACK = "pure_black"
 
         const val FONT_DEFAULT = "default"
         const val FONT_TW_CENT_MT = "tw_cent_mt"

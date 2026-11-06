@@ -112,6 +112,15 @@ class LipikaPreferencesRepository private constructor(private val context: Conte
         val VOICE_TYPING_ENABLED = booleanPreferencesKey("pref_voice_typing_enabled")
         val VOICE_TYPING_PROVIDER = stringPreferencesKey("pref_voice_typing_provider")
         val SETUP_COMPLETED = booleanPreferencesKey("pref_setup_completed")
+
+        // Appearance screen settings
+        val DISPLAY_MODE = stringPreferencesKey("pref_display_mode")
+        val APP_THEME = stringPreferencesKey("pref_app_theme")
+        val KEYBOARD_THEME_MODE = stringPreferencesKey("pref_keyboard_theme_mode")
+        val DARK_STYLE = stringPreferencesKey("pref_dark_style")
+        val THEME_SCHEDULE = stringPreferencesKey("pref_theme_schedule")
+        val CUSTOM_SCHEDULE_START_HOUR = intPreferencesKey("pref_custom_schedule_start_hour")
+        val CUSTOM_SCHEDULE_END_HOUR = intPreferencesKey("pref_custom_schedule_end_hour")
     }
 
     val preferencesFlow: Flow<LipikaPreferences> = context.lipikaDataStore.data
@@ -139,6 +148,15 @@ class LipikaPreferencesRepository private constructor(private val context: Conte
                 showKeyShadows = prefs[PreferencesKeys.SHOW_KEY_SHADOWS] ?: true,
                 showKeyPopups = prefs[PreferencesKeys.SHOW_KEY_POPUPS] ?: true,
                 showSecondaryKeys = prefs[PreferencesKeys.SHOW_SECONDARY_KEYS] ?: true,
+
+                // Appearance Screen Settings
+                displayMode = prefs[PreferencesKeys.DISPLAY_MODE] ?: LipikaPreferences.DISPLAY_MODE_SYSTEM,
+                appTheme = prefs[PreferencesKeys.APP_THEME] ?: LipikaPreferences.APP_THEME_SYSTEM,
+                keyboardThemeMode = prefs[PreferencesKeys.KEYBOARD_THEME_MODE] ?: LipikaPreferences.KEYBOARD_THEME_DARK,
+                darkStyle = prefs[PreferencesKeys.DARK_STYLE] ?: LipikaPreferences.DARK_STYLE_DARK_GRAY,
+                themeSchedule = prefs[PreferencesKeys.THEME_SCHEDULE] ?: LipikaPreferences.SCHEDULE_ALWAYS_DARK,
+                customScheduleStartHour = prefs[PreferencesKeys.CUSTOM_SCHEDULE_START_HOUR] ?: 18,
+                customScheduleEndHour = prefs[PreferencesKeys.CUSTOM_SCHEDULE_END_HOUR] ?: 6,
 
                 vibrateOnKeypress = prefs[PreferencesKeys.VIBRATE_ON_KEYPRESS] ?: false,
                 vibrationType = prefs[PreferencesKeys.VIBRATION_TYPE] ?: LipikaPreferences.VIBRATION_TYPE_HAPTIC,
@@ -241,6 +259,33 @@ class LipikaPreferencesRepository private constructor(private val context: Conte
 
     suspend fun updateTheme(theme: String) {
         context.lipikaDataStore.edit { it[PreferencesKeys.THEME] = theme }
+    }
+
+    suspend fun updateDisplayMode(mode: String) {
+        context.lipikaDataStore.edit { it[PreferencesKeys.DISPLAY_MODE] = mode }
+    }
+
+    suspend fun updateAppTheme(appTheme: String) {
+        context.lipikaDataStore.edit { it[PreferencesKeys.APP_THEME] = appTheme }
+    }
+
+    suspend fun updateKeyboardThemeMode(mode: String) {
+        context.lipikaDataStore.edit { it[PreferencesKeys.KEYBOARD_THEME_MODE] = mode }
+    }
+
+    suspend fun updateDarkStyle(style: String) {
+        context.lipikaDataStore.edit { it[PreferencesKeys.DARK_STYLE] = style }
+    }
+
+    suspend fun updateThemeSchedule(schedule: String) {
+        context.lipikaDataStore.edit { it[PreferencesKeys.THEME_SCHEDULE] = schedule }
+    }
+
+    suspend fun updateCustomScheduleHours(startHour: Int, endHour: Int) {
+        context.lipikaDataStore.edit {
+            it[PreferencesKeys.CUSTOM_SCHEDULE_START_HOUR] = startHour
+            it[PreferencesKeys.CUSTOM_SCHEDULE_END_HOUR] = endHour
+        }
     }
 
     suspend fun updateSelectedFont(font: String) {

@@ -168,6 +168,7 @@ fun SettingsUnifiedTopBar(
     val title = when (screen) {
         is SettingsScreen.Main -> "Lipika"
         is SettingsScreen.AppearanceThemes -> "Theme"
+        is SettingsScreen.Appearance -> "Appearance"
         is SettingsScreen.Fonts -> "Fonts"
         is SettingsScreen.ThemeDesigner -> "Theme Studio"
         is SettingsScreen.KeyboardLayouts -> "Language"
@@ -184,6 +185,7 @@ fun SettingsUnifiedTopBar(
     val subtitle: String? = when (screen) {
         is SettingsScreen.Main -> null
         is SettingsScreen.AppearanceThemes -> "Themes & key styling"
+        is SettingsScreen.Appearance -> "Display, themes & dark style"
         is SettingsScreen.Fonts -> "Select keyboard typography"
         is SettingsScreen.ThemeDesigner -> if (screen.editingThemeId != null) "Edit custom theme" else "Create & customize theme"
         is SettingsScreen.KeyboardLayouts -> "Active layouts & preview"

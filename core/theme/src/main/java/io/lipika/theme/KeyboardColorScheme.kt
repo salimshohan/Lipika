@@ -306,6 +306,24 @@ data class KeyboardColorScheme(
             keyPressedForeground = Color(0xFFFFFFFF)
         )
 
+        val PureBlack = KeyboardColorScheme(
+            containerBackground = Color(0xFF000000),
+            keyBackground = Color(0xFF0A0A0A),
+            keyForeground = Color(0xFFFFFFFF),
+            keyBorder = Color(0xFF1F1F1F),
+            keyShadow = Color(0x00000000),
+            actionKeyBackground = Color(0xFF000000),
+            actionKeyForeground = Color(0xFFFFFFFF),
+            shiftActiveColor = Color(0xFF38BDF8),
+            accentColor = Color(0xFF38BDF8),
+            moreKeysBackground = Color(0xFF141414),
+            guidelineColor = Color(0xFF38BDF8),
+            suggestionBackground = Color(0xFF000000),
+            suggestionForeground = Color(0xFFFFFFFF),
+            keyPressedBackground = Color(0xFF202020),
+            keyPressedForeground = Color(0xFFFFFFFF)
+        )
+
         val AmoledBlack = KeyboardColorScheme(
             containerBackground = Color(0xFF000000),
             keyBackground = Color(0xFF18181B),

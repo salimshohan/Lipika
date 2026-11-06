@@ -258,7 +258,7 @@ class LipikaService : InputMethodService() {
             preferencesRepo.preferencesFlow.collect { prefs ->
                 preferencesState = prefs
                 (transliterationManager as? GenericTransliterationManager)?.isAutoCorrectEnabled = prefs.phoneticAutoCorrect
-                colorScheme = io.lipika.theme.ThemeRepository.getInstance(this@LipikaService).getColorScheme(prefs.theme)
+                colorScheme = io.lipika.theme.ThemeRepository.getInstance(this@LipikaService).getColorScheme(prefs.effectiveKeyboardTheme())
                 val availableMeta = layoutRepo.getAvailableLayouts().map { it.id }.toSet()
                 val enabledIds = prefs.enabledLayoutIds.toList().filter { id ->
                     id in availableMeta || id == LipikaPreferences.LAYOUT_AR_ARABIC

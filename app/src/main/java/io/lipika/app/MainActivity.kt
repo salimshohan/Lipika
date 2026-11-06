@@ -56,7 +56,11 @@ import io.lipika.app.ui.onboarding.OnboardingScreen
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
+import android.os.Build
+import androidx.compose.material3.dynamicDarkColorScheme
+import androidx.compose.material3.dynamicLightColorScheme
 import io.lipika.app.ui.settings.AboutScreen
+import io.lipika.app.ui.settings.AppearanceScreen
 import io.lipika.app.ui.settings.AppearanceThemesScreen
 import io.lipika.app.ui.settings.BackupRestoreScreen
 import io.lipika.app.ui.settings.ClipboardSettingsScreen
@@ -106,16 +110,46 @@ class MainActivity : ComponentActivity() {
                 initial = preferencesRepo.getInitialPreferences()
             )
 
-            val isDark = isSystemInDarkTheme()
-            val dynamicAccent = when (preferences.accentColor) {
-                LipikaPreferences.ACCENT_EMERALD -> Color(0xFF10B981)
-                LipikaPreferences.ACCENT_ORANGE -> Color(0xFFF97316)
-                LipikaPreferences.ACCENT_VIOLET -> Color(0xFF8B5CF6)
-                LipikaPreferences.ACCENT_ROSE -> Color(0xFFEC4899)
-                LipikaPreferences.ACCENT_AMBER -> Color(0xFFF59E0B)
+            val systemInDark = isSystemInDarkTheme()
+            val isDark = remember(
+                preferences.displayMode,
+                preferences.appTheme,
+                preferences.themeSchedule,
+                preferences.customScheduleStartHour,
+                preferences.customScheduleEndHour,
+                systemInDark
+            ) {
+                preferences.resolveEffectiveIsDark(systemInDark)
+            }
+            val dynamicAccent = when {
+                preferences.appTheme == LipikaPreferences.APP_THEME_DYNAMIC && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
+                    val dynamicScheme = if (isDark) dynamicDarkColorScheme(this@MainActivity) else dynamicLightColorScheme(this@MainActivity)
+                    dynamicScheme.primary
+                }
+                preferences.accentColor == LipikaPreferences.ACCENT_EMERALD -> Color(0xFF10B981)
+                preferences.accentColor == LipikaPreferences.ACCENT_ORANGE -> Color(0xFFF97316)
+                preferences.accentColor == LipikaPreferences.ACCENT_VIOLET -> Color(0xFF8B5CF6)
+                preferences.accentColor == LipikaPreferences.ACCENT_ROSE -> Color(0xFFEC4899)
+                preferences.accentColor == LipikaPreferences.ACCENT_AMBER -> Color(0xFFF59E0B)
                 else -> if (isDark) Color(0xFF38BDF8) else Color(0xFF0284C7)
             }
-            val baseColors = if (isDark) DarkSettingsColors else LightSettingsColors
+            val baseColors = if (isDark) {
+                when (preferences.darkStyle) {
+                    LipikaPreferences.DARK_STYLE_PURE_BLACK -> DarkSettingsColors.copy(
+                        background = Color(0xFF000000),
+                        cardBackground = Color(0xFF0A0A0A),
+                        cardBorder = Color(0xFF1F1F1F)
+                    )
+                    LipikaPreferences.DARK_STYLE_AMOLED -> DarkSettingsColors.copy(
+                        background = Color(0xFF000000),
+                        cardBackground = Color(0xFF121214),
+                        cardBorder = Color(0xFF202024)
+                    )
+                    else -> DarkSettingsColors
+                }
+            } else {
+                LightSettingsColors
+            }
             val settingsColors = baseColors.copy(
                 accent = dynamicAccent,
                 sectionTitle = dynamicAccent
@@ -331,7 +365,9 @@ fun LipikaSettingsApp(
             ?: if ((context as? android.app.Activity)?.intent?.action == "io.lipika.action.THEMES") "themes" else null
         if (target == "layouts") {
             SettingsScreen.KeyboardLayouts
-        } else if (target == "themes" || target == "appearance" || pendingThemeImportUri != null) {
+        } else if (target == "appearance") {
+            SettingsScreen.Appearance
+        } else if (target == "themes" || pendingThemeImportUri != null) {
             SettingsScreen.AppearanceThemes()
         } else if (target == "clipboard") {
             SettingsScreen.Clipboard
@@ -366,7 +402,13 @@ fun LipikaSettingsApp(
     LaunchedEffect(navigationTarget) {
         if (navigationTarget != null) {
             when (navigationTarget) {
-                "themes", "appearance" -> {
+                "appearance" -> {
+                    if (currentScreen != SettingsScreen.Appearance) {
+                        backStack = listOf(SettingsScreen.Main)
+                        currentScreen = SettingsScreen.Appearance
+                    }
+                }
+                "themes" -> {
                     if (currentScreen !is SettingsScreen.AppearanceThemes) {
                         backStack = listOf(SettingsScreen.Main)
                         currentScreen = SettingsScreen.AppearanceThemes()
@@ -513,6 +555,56 @@ fun LipikaSettingsApp(
                             onClearPendingImportUri = onClearPendingThemeImportUri,
                             onOpenThemeDesigner = { editingThemeId ->
                                 navigateTo(SettingsScreen.ThemeDesigner(editingThemeId))
+                            },
+                            onBack = navigateBack
+                        )
+                    }
+
+                    is SettingsScreen.Appearance -> {
+                        AppearanceScreen(
+                            preferences = preferences,
+                            onUpdateDisplayMode = { mode ->
+                                scope.launch { preferencesRepo.updateDisplayMode(mode) }
+                            },
+                            onUpdateAppTheme = { appTheme ->
+                                scope.launch { preferencesRepo.updateAppTheme(appTheme) }
+                            },
+                            onUpdateKeyboardThemeMode = { mode ->
+                                scope.launch {
+                                    preferencesRepo.updateKeyboardThemeMode(mode)
+                                    val updatedTheme = when (mode) {
+                                        LipikaPreferences.KEYBOARD_THEME_LIGHT -> LipikaPreferences.THEME_DEFAULT_LIGHT
+                                        LipikaPreferences.KEYBOARD_THEME_DARK -> when (preferences.darkStyle) {
+                                            LipikaPreferences.DARK_STYLE_PURE_BLACK -> LipikaPreferences.THEME_PURE_BLACK
+                                            LipikaPreferences.DARK_STYLE_AMOLED -> LipikaPreferences.THEME_AMOLED_BLACK
+                                            else -> LipikaPreferences.THEME_DEFAULT_DARK
+                                        }
+                                        else -> preferences.theme
+                                    }
+                                    preferencesRepo.updateTheme(updatedTheme)
+                                }
+                            },
+                            onUpdateDarkStyle = { style ->
+                                scope.launch {
+                                    preferencesRepo.updateDarkStyle(style)
+                                    if (preferences.keyboardThemeMode == LipikaPreferences.KEYBOARD_THEME_DARK) {
+                                        val updatedTheme = when (style) {
+                                            LipikaPreferences.DARK_STYLE_PURE_BLACK -> LipikaPreferences.THEME_PURE_BLACK
+                                            LipikaPreferences.DARK_STYLE_AMOLED -> LipikaPreferences.THEME_AMOLED_BLACK
+                                            else -> LipikaPreferences.THEME_DEFAULT_DARK
+                                        }
+                                        preferencesRepo.updateTheme(updatedTheme)
+                                    }
+                                }
+                            },
+                            onUpdateThemeSchedule = { schedule ->
+                                scope.launch { preferencesRepo.updateThemeSchedule(schedule) }
+                            },
+                            onUpdateCustomScheduleHours = { start, end ->
+                                scope.launch { preferencesRepo.updateCustomScheduleHours(start, end) }
+                            },
+                            onOpenThemeStudio = {
+                                navigateTo(SettingsScreen.AppearanceThemes(0))
                             },
                             onBack = navigateBack
                         )

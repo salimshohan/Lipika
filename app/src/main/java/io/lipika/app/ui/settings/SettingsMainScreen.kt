@@ -29,6 +29,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.outlined.AutoAwesome
+import androidx.compose.material.icons.outlined.BrightnessMedium
 import androidx.compose.material.icons.outlined.ContentPaste
 import androidx.compose.material.icons.outlined.FontDownload
 import androidx.compose.material.icons.outlined.Info
@@ -498,11 +499,19 @@ fun SettingsMainScreen(
                     )
                 }
 
-                // Row 4: About & Spacer (7th card stays in column 1, no awkward stretching)
+                // Row 4: Appearance (NEW) & About
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
+                    DashboardOptionCard(
+                        modifier = Modifier.weight(1f),
+                        title = "Appearance",
+                        subtitle = "Display, themes & dark style",
+                        icon = Icons.Outlined.BrightnessMedium,
+                        colors = colors,
+                        onClick = { onNavigate(SettingsScreen.Appearance) }
+                    )
                     DashboardOptionCard(
                         modifier = Modifier.weight(1f),
                         title = "About",
@@ -511,7 +520,6 @@ fun SettingsMainScreen(
                         colors = colors,
                         onClick = { onNavigate(SettingsScreen.About) }
                     )
-                    Spacer(modifier = Modifier.weight(1f))
                 }
             }
 
