@@ -350,6 +350,95 @@ class PredefinedLayoutsTest {
     }
 
     @Test
+    fun testEnglishNumberRowBengaliHints() {
+        val enRow = PredefinedLayouts.NumberRowEn
+        val expectedDigits = listOf("1", "2", "3", "4", "5", "6", "7", "8", "9", "0")
+        val expectedBengaliHints = listOf("১", "২", "৩", "৪", "৫", "৬", "৭", "৮", "৯", "০")
+
+        assertEquals(10, enRow.keys.size)
+        for (i in 0 until 10) {
+            val key = enRow.keys[i]
+            assertEquals("English main digit mismatch at $i", expectedDigits[i], key.label)
+            assertEquals("Bengali hint mismatch at $i", expectedBengaliHints[i], key.flickUp)
+            assertEquals("Bengali moreKey mismatch at $i", expectedBengaliHints[i], key.moreKeys.firstOrNull())
+        }
+    }
+
+    @Test
+    fun testEnglishQwertySymbolHintsAndActions() {
+        val qwerty = PredefinedLayouts.EnglishQwerty
+        val row0 = qwerty.rows[0].keys
+        val expectedRow0Hints = mapOf(
+            "q" to "৳", "w" to "%", "e" to "_", "r" to ";", "t" to "<",
+            "y" to ">", "u" to "+", "i" to "=", "o" to "[", "p" to "]"
+        )
+        for (k in row0) {
+            assertEquals("Hint for ${k.label}", expectedRow0Hints[k.label], k.flickUp)
+        }
+
+        val row1 = qwerty.rows[1].keys
+        val expectedRow1Hints = mapOf(
+            "a" to "@", "s" to "#", "d" to "&", "f" to "*", "g" to "-",
+            "h" to "!", "j" to "?", "k" to "(", "l" to ")"
+        )
+        for (k in row1) {
+            assertEquals("Hint for ${k.label}", expectedRow1Hints[k.label], k.flickUp)
+        }
+
+        val row2 = qwerty.rows[2].keys
+        // Shift is at index 0, Delete at last index
+        val zKey = row2.first { it.label == "z" }
+        assertEquals("\"", zKey.flickUp)
+
+        val xKey = row2.first { it.label == "x" }
+        org.junit.Assert.assertNull("X must have no visible hint", xKey.flickUp)
+        assertEquals("ACTION_CUT", xKey.moreKeys.firstOrNull())
+
+        val cKey = row2.first { it.label == "c" }
+        org.junit.Assert.assertNull("C must have no visible hint", cKey.flickUp)
+        assertEquals("ACTION_COPY", cKey.moreKeys.firstOrNull())
+
+        val vKey = row2.first { it.label == "v" }
+        org.junit.Assert.assertNull("V must have no visible hint", vKey.flickUp)
+        assertEquals("ACTION_PASTE", vKey.moreKeys.firstOrNull())
+
+        val bKey = row2.first { it.label == "b" }
+        assertEquals("'", bKey.flickUp)
+
+        val nKey = row2.first { it.label == "n" }
+        assertEquals(":", nKey.flickUp)
+
+        val mKey = row2.first { it.label == "m" }
+        assertEquals("/", mKey.flickUp)
+    }
+
+    @Test
+    fun testEnglishQwertyBottomRowOrder() {
+        val bottomRow = PredefinedLayouts.EnglishQwerty.rows[3].keys
+        assertEquals(6, bottomRow.size)
+
+        // 1. ?123
+        assertEquals(io.lipika.common.model.KeyType.SYMBOLS, bottomRow[0].type)
+        assertEquals("?123", bottomRow[0].label)
+
+        // 2. Emoji
+        assertEquals(io.lipika.common.model.KeyType.SWITCH_LANGUAGE, bottomRow[1].type)
+        assertEquals("emoji", bottomRow[1].icon)
+
+        // 3. Comma
+        assertEquals(",", bottomRow[2].label)
+
+        // 4. Spacebar
+        assertEquals(io.lipika.common.model.KeyType.SPACE, bottomRow[3].type)
+
+        // 5. Full Stop
+        assertEquals(".", bottomRow[4].label)
+
+        // 6. Go / Enter
+        assertEquals(io.lipika.common.model.KeyType.ACTION, bottomRow[5].type)
+    }
+
+    @Test
     fun testKeyboardLayoutDefEffectiveDisplayName() {
         val withDisplay = io.lipika.common.model.KeyboardLayoutDef(
             id = "test_custom",

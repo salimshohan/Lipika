@@ -1248,30 +1248,21 @@ class LipikaService : InputMethodService() {
         }
         if (charToInsert.isEmpty()) return
 
-        val isEnglish = primaryAlphaLayout.id == LipikaPreferences.LAYOUT_EN_QWERTY
         when (charToInsert) {
             "ACTION_CUT", "action:cut", "CUT" -> {
-                if (isEnglish) {
-                    handleTextAction(TextAction.CUT, false)
-                }
+                handleTextAction(TextAction.CUT, false)
                 return
             }
             "ACTION_COPY", "action:copy", "COPY" -> {
-                if (isEnglish) {
-                    handleTextAction(TextAction.COPY, false)
-                }
+                handleTextAction(TextAction.COPY, false)
                 return
             }
             "ACTION_PASTE", "action:paste", "PASTE" -> {
-                if (isEnglish) {
-                    handleTextAction(TextAction.PASTE, false)
-                }
+                handleTextAction(TextAction.PASTE, false)
                 return
             }
             "ACTION_SELECT_ALL", "action:select_all", "SELECT_ALL" -> {
-                if (isEnglish) {
-                    handleTextAction(TextAction.SELECT_ALL, true)
-                }
+                handleTextAction(TextAction.SELECT_ALL, true)
                 return
             }
         }

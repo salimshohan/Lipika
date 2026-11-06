@@ -11,8 +11,8 @@
 ---
 
 <p align="center">
-  <a href="https://github.com/salimshohan/Lipika/releases/tag/v0.2.4">
-    <img src="https://img.shields.io/badge/Release-v0.2.4-06B6D4?style=for-the-badge&logo=android&logoColor=white" alt="Version 0.2.4" />
+  <a href="https://github.com/salimshohan/Lipika/releases/tag/v0.2.5">
+    <img src="https://img.shields.io/badge/Release-v0.2.5-06B6D4?style=for-the-badge&logo=android&logoColor=white" alt="Version 0.2.5" />
   </a>
   <a href="https://github.com/salimshohan/Lipika/releases/latest/download/Lipika.apk">
     <img src="https://img.shields.io/badge/Download-Lipika%20APK-10B981?style=for-the-badge&logo=android&logoColor=white" alt="Download APK" />
@@ -35,6 +35,11 @@
 
 ## ✨ Key Highlights
 
+- **⌨️ Perfected English Layout & Bengali Numeral Hints**:
+  - Dedicated Number Row (`1`–`0`) displaying Bengali numerals (`১`–`০`) as secondary hints on top-right corners; normal tap types English digit, long-press inserts corresponding Bengali numeral.
+  - Refined symbol hints on QWERTY alphabet keys (`q`→`৳`, `w`→`%`, `e`→`_`, `r`→`;`, `t`→`<`, `y`→`>`, `u`→`+`, `i`→`=`, `o`→`[`, `p`→`]`, `a`→`@`, `s`→`#`, `d`→`&`, `f`→`*`, `g`→`-`, `h`→`!`, `j`→`?`, `k`→`(`, `l`→`)`, `z`→`"`, `b`→`'`, `n`→`:`, `m`→`/`).
+  - Clean `x`, `c`, `v` keys without distracting badges, featuring intuitive direct Cut, Copy, and Paste on long-press (Copy automatically copies entire text if nothing is highlighted, or selected text when highlighted).
+  - Streamlined bottom row order: `?123` ➔ `Emoji` ➔ `Comma (,)` ➔ `Spacebar` ➔ `Full Stop (.)` ➔ `Go / Enter`.
 - **🎨 Dedicated Appearance Section**: Comprehensive appearance controls with Display Mode (Light, Dark, System Default), App Theme (Light, Dark, System, Dynamic Color), Keyboard Theme (Light, Dark, Custom with live interactive preview), Dark Style (Pure Black `#000000`, AMOLED `#18181B`, Dark Gray `#22242B`), and Scheduling (Always Light, Always Dark, Sunset to Sunrise, Custom Schedule with time sliders).
 - **🎛️ Modern 4×2 Dashboard Grid**: Smart Typing, Fonts, Theme, Language, Preferences, Clipboard, Appearance, and About in rectangular frosted glass cards.
 - **⚡ Smart Typing Intelligence**: Consolidated Smart Typing with offline bilingual (Bengali & English) emoji predictions and corrections.

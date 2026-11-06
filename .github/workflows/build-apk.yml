@@ -72,6 +72,11 @@ jobs:
           body: |
             ### 🌟 Lipika Keyboard ${{ github.ref_name }} Release
             
+            - **⌨️ Perfected English Keyboard Layout & Bengali Numerals**:
+              - Dedicated Number Row (`1`–`0`) displaying Bengali numerals (`১`–`০`) as top-right secondary hints. Normal tap types English numbers; long press inserts the Bengali numeral.
+              - Alphabet rows with exact secondary symbol hints (`৳`, `%`, `_`, `;`, `<`, `>`, `+`, `=`, `[`, `]`, `@`, `#`, `&`, `*`, `-`, `!`, `?`, `(`, `)`, `"`, `'`, `:`, `/`).
+              - Clean `x`, `c`, `v` without visible badge hints, featuring direct Cut, Copy, and Paste long-press actions (Copy captures all text if no selection, or selected text).
+              - Standardized bottom row: `?123` ➔ `Emoji` ➔ `Comma (,)` ➔ `Spacebar` ➔ `Full Stop (.)` ➔ `Go / Enter`.
             - **🎨 Dedicated Appearance Section**: Comprehensive appearance controls with Display Mode (Light, Dark, System Default), App Theme (Light, Dark, System, Dynamic Color), Keyboard Theme (Light, Dark, Custom with embedded live interactive preview), Dark Style (Pure Black `#000000`, AMOLED `#18181B`, Dark Gray `#22242B`), and Scheduling (Always Light, Always Dark, Sunset to Sunrise, Custom Schedule with time sliders).
             - **🎛️ Modern 4×2 Symmetrical Dashboard Grid**: Smart Typing, Fonts, Theme, Language, Preferences, Clipboard, Appearance, and About in rectangular frosted glass cards.
             - **⚡ Smart Typing Intelligence**: Consolidated Smart Typing screen with offline bilingual (Bengali & English) emoji predictions and corrections.

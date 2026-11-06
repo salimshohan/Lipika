@@ -1715,7 +1715,7 @@ fun KeyboardRootView(
                                 isSlidingShiftMode = isSlidingShiftMode,
                                 showKeyBorders = showKeyBorders,
                                 showKeyShadows = showKeyShadows,
-                                showSecondaryKeys = showSecondaryKeys && !isTopNumberRow,
+                                showSecondaryKeys = showSecondaryKeys,
                                 showKeyPopups = showKeyPopups,
                                 compactGaps = isDisplayBornoEasy && !isBottomRow,
                                 isInteractive = areKeysInteractive,

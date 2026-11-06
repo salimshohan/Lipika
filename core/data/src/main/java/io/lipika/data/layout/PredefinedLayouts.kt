@@ -39,16 +39,16 @@ object PredefinedLayouts {
 
     val NumberRowEn: KeyRow = KeyRow(
         listOf(
-            KeyDef("1", shiftedLabel = "!", moreKeys = listOf("1", "¹", "½", "১")),
-            KeyDef("2", shiftedLabel = "@", moreKeys = listOf("2", "²", "⅔", "২")),
-            KeyDef("3", shiftedLabel = "#", moreKeys = listOf("3", "³", "¾", "৩")),
-            KeyDef("4", shiftedLabel = "$", moreKeys = listOf("4", "⁴", "৪")),
-            KeyDef("5", shiftedLabel = "%", moreKeys = listOf("5", "⁵", "৫")),
-            KeyDef("6", shiftedLabel = "^", moreKeys = listOf("6", "⁶", "৬")),
-            KeyDef("7", shiftedLabel = "&", moreKeys = listOf("7", "⁷", "৭")),
-            KeyDef("8", shiftedLabel = "*", moreKeys = listOf("8", "⁸", "৮")),
-            KeyDef("9", shiftedLabel = "(", moreKeys = listOf("9", "⁹", "৯")),
-            KeyDef("0", shiftedLabel = ")", moreKeys = listOf("0", "⁰", "০", "∅"))
+            KeyDef("1", shiftedLabel = "!", flickUp = "১", moreKeys = listOf("১", "¹", "½")),
+            KeyDef("2", shiftedLabel = "@", flickUp = "২", moreKeys = listOf("২", "²", "⅔")),
+            KeyDef("3", shiftedLabel = "#", flickUp = "৩", moreKeys = listOf("৩", "³", "¾")),
+            KeyDef("4", shiftedLabel = "$", flickUp = "৪", moreKeys = listOf("৪", "⁴")),
+            KeyDef("5", shiftedLabel = "%", flickUp = "৫", moreKeys = listOf("৫", "⁵")),
+            KeyDef("6", shiftedLabel = "^", flickUp = "৬", moreKeys = listOf("৬", "⁶")),
+            KeyDef("7", shiftedLabel = "&", flickUp = "৭", moreKeys = listOf("৭", "⁷")),
+            KeyDef("8", shiftedLabel = "*", flickUp = "৮", moreKeys = listOf("৮", "⁸")),
+            KeyDef("9", shiftedLabel = "(", flickUp = "৯", moreKeys = listOf("৯", "⁹")),
+            KeyDef("0", shiftedLabel = ")", flickUp = "০", moreKeys = listOf("০", "⁰", "∅"))
         )
     )
 
@@ -69,27 +69,27 @@ object PredefinedLayouts {
         rows = listOf(
             KeyRow(
                 listOf(
-                    KeyDef("q", "Q", flickUp = "1", moreKeys = listOf("1")),
-                    KeyDef("w", "W", flickUp = "2", moreKeys = listOf("2")),
-                    KeyDef("e", "E", flickUp = "3", moreKeys = listOf("3", "é", "è", "ê", "ë", "ē")),
-                    KeyDef("r", "R", flickUp = "4", moreKeys = listOf("4")),
-                    KeyDef("t", "T", flickUp = "5", moreKeys = listOf("5")),
-                    KeyDef("y", "Y", flickUp = "6", moreKeys = listOf("6")),
-                    KeyDef("u", "U", flickUp = "7", moreKeys = listOf("7", "ú", "ù", "û", "ü", "ū")),
-                    KeyDef("i", "I", flickUp = "8", moreKeys = listOf("8", "í", "ì", "î", "ï", "ī")),
-                    KeyDef("o", "O", flickUp = "9", moreKeys = listOf("9", "ó", "ò", "ô", "ö", "œ", "ø", "ō", "õ")),
-                    KeyDef("p", "P", flickUp = "0", moreKeys = listOf("0"))
+                    KeyDef("q", "Q", flickUp = "৳", moreKeys = listOf("৳")),
+                    KeyDef("w", "W", flickUp = "%", moreKeys = listOf("%")),
+                    KeyDef("e", "E", flickUp = "_", moreKeys = listOf("_", "é", "è", "ê", "ë", "ē")),
+                    KeyDef("r", "R", flickUp = ";", moreKeys = listOf(";")),
+                    KeyDef("t", "T", flickUp = "<", moreKeys = listOf("<")),
+                    KeyDef("y", "Y", flickUp = ">", moreKeys = listOf(">")),
+                    KeyDef("u", "U", flickUp = "+", moreKeys = listOf("+", "ú", "ù", "û", "ü", "ū")),
+                    KeyDef("i", "I", flickUp = "=", moreKeys = listOf("=", "í", "ì", "î", "ï", "ī")),
+                    KeyDef("o", "O", flickUp = "[", moreKeys = listOf("[", "ó", "ò", "ô", "ö", "œ", "ø", "ō", "õ")),
+                    KeyDef("p", "P", flickUp = "]", moreKeys = listOf("]"))
                 )
             ),
             KeyRow(
                 keys = listOf(
                     KeyDef("a", "A", flickUp = "@", moreKeys = listOf("@", "à", "á", "â", "ä", "æ", "ã", "å", "ā")),
                     KeyDef("s", "S", flickUp = "#", moreKeys = listOf("#", "ß")),
-                    KeyDef("d", "D", flickUp = "$", moreKeys = listOf("$")),
-                    KeyDef("f", "F", flickUp = "%", moreKeys = listOf("%")),
-                    KeyDef("g", "G", flickUp = "&", moreKeys = listOf("&")),
-                    KeyDef("h", "H", flickUp = "-", moreKeys = listOf("-", "_")),
-                    KeyDef("j", "J", flickUp = "+", moreKeys = listOf("+")),
+                    KeyDef("d", "D", flickUp = "&", moreKeys = listOf("&")),
+                    KeyDef("f", "F", flickUp = "*", moreKeys = listOf("*")),
+                    KeyDef("g", "G", flickUp = "-", moreKeys = listOf("-")),
+                    KeyDef("h", "H", flickUp = "!", moreKeys = listOf("!")),
+                    KeyDef("j", "J", flickUp = "?", moreKeys = listOf("?")),
                     KeyDef("k", "K", flickUp = "(", moreKeys = listOf("(")),
                     KeyDef("l", "L", flickUp = ")", moreKeys = listOf(")"))
                 ),
@@ -99,24 +99,24 @@ object PredefinedLayouts {
             KeyRow(
                 listOf(
                     KeyDef(type = KeyType.SHIFT, icon = "shift", widthWeight = 1.5f),
-                    KeyDef("z", "Z", flickUp = "ALL", moreKeys = listOf("ACTION_SELECT_ALL", "*")),
-                    KeyDef("x", "X", flickUp = "CUT", moreKeys = listOf("ACTION_CUT", "\"")),
-                    KeyDef("c", "C", flickUp = "COPY", moreKeys = listOf("ACTION_COPY", "'", "ç")),
-                    KeyDef("v", "V", flickUp = "PASTE", moreKeys = listOf("ACTION_PASTE", ":")),
-                    KeyDef("b", "B", flickUp = ";", moreKeys = listOf(";")),
-                    KeyDef("n", "N", flickUp = "!", moreKeys = listOf("!", "ñ")),
-                    KeyDef("m", "M", flickUp = "?", moreKeys = listOf("?")),
+                    KeyDef("z", "Z", flickUp = "\"", moreKeys = listOf("\"", "ACTION_SELECT_ALL")),
+                    KeyDef("x", "X", flickUp = null, moreKeys = listOf("ACTION_CUT")),
+                    KeyDef("c", "C", flickUp = null, moreKeys = listOf("ACTION_COPY")),
+                    KeyDef("v", "V", flickUp = null, moreKeys = listOf("ACTION_PASTE")),
+                    KeyDef("b", "B", flickUp = "'", moreKeys = listOf("'")),
+                    KeyDef("n", "N", flickUp = ":", moreKeys = listOf(":", "ñ")),
+                    KeyDef("m", "M", flickUp = "/", moreKeys = listOf("/")),
                     KeyDef(type = KeyType.DELETE, icon = "backspace", widthWeight = 1.5f)
                 )
             ),
             KeyRow(
                 listOf(
-                    KeyDef("?123", type = KeyType.SYMBOLS, widthWeight = 1.5f, slidingInput = true),
-                    KeyDef(",", widthWeight = 1.0f, moreKeys = listOf("ACTION_SETTINGS", "ACTION_ONE_HANDED")),
+                    KeyDef("?123", type = KeyType.SYMBOLS, widthWeight = 1.4f, slidingInput = true),
                     KeyDef(type = KeyType.SWITCH_LANGUAGE, icon = "emoji", widthWeight = 1.0f),
-                    KeyDef(" ", type = KeyType.SPACE, icon = "space", widthWeight = 4.0f),
+                    KeyDef(",", widthWeight = 1.0f, moreKeys = listOf("ACTION_SETTINGS", "ACTION_ONE_HANDED")),
+                    KeyDef(" ", type = KeyType.SPACE, icon = "space", widthWeight = 4.2f),
                     KeyDef(".", widthWeight = 1.0f, moreKeysColumns = 8, moreKeys = listOf(",", "?", "!", "#", ")", "(", "/", ";", "'", "@", ":", "-", "\"", "+", "%", "&")),
-                    KeyDef(type = KeyType.ACTION, icon = "enter", widthWeight = 1.5f, moreKeys = listOf("ACTION_EMOJI"))
+                    KeyDef(type = KeyType.ACTION, icon = "enter", widthWeight = 1.4f, moreKeys = listOf("ACTION_EMOJI"))
                 )
             )
         )
