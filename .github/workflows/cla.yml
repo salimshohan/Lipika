@@ -27,5 +27,5 @@ jobs:
           path-to-document: 'https://github.com/${{ github.repository }}/blob/main/CLA.md'
           branch: 'cla-signatures'
           allowlist: 'bot*,'
-          custom-notsigned-prcomment: 'Thank you for your pull request! Before we can accept your contribution, you must read and agree to the [Kiebord Contributor License Agreement (CLA)](https://github.com/${{ github.repository }}/blob/main/CLA.md).<br/>To sign the agreement, please reply to this comment with:<br/>`I have read the CLA Document and I hereby sign the CLA`'
+          custom-notsigned-prcomment: 'Thank you for your pull request! Before we can accept your contribution, you must read and agree to the [Lipika Contributor License Agreement (CLA)](https://github.com/${{ github.repository }}/blob/main/CLA.md).<br/>To sign the agreement, please reply to this comment with:<br/>`I have read the CLA Document and I hereby sign the CLA`'
 

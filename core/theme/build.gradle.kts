@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "io.kiebord.core.theme"
+    namespace = "io.lipika.core.theme"
     compileSdk = 36
 
     defaultConfig {

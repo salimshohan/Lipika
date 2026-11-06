@@ -10,7 +10,7 @@ release/
 /captures
 .externalNativeBuild
 .cxx
-native/kiebord-engine/target/
+native/lipika-engine/target/
 *.apk
 *.aab
 *.keystore

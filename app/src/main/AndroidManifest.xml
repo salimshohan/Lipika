@@ -27,7 +27,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
             <intent-filter>
-                <action android:name="io.kiebord.action.THEMES" />
+                <action android:name="io.lipika.action.THEMES" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
 
@@ -106,7 +106,7 @@
         </activity>
 
         <activity
-            android:name="io.kiebord.feature.ime.voice.VoicePermissionActivity"
+            android:name="io.lipika.feature.ime.voice.VoicePermissionActivity"
             android:exported="false"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
@@ -121,7 +121,7 @@
         </provider>
 
         <service
-            android:name="io.kiebord.feature.ime.KiebordService"
+            android:name="io.lipika.feature.ime.LipikaService"
             android:exported="true"
             android:directBootAware="true"
             android:label="@string/ime_name"

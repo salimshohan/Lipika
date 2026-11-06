@@ -81,7 +81,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "kiebord-engine"
+name = "lipika-engine"
 version = "0.1.4"
 dependencies = [
  "jni",

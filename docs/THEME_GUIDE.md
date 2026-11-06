@@ -1,19 +1,19 @@
-# Kiebord Keyboard Theme Development & Import Guide
+# Lipika Keyboard Theme Development & Import Guide
 
-This guide describes how to create, customize, and import keyboard themes for Kiebord using the unified `.bornotheme` format.
+This guide describes how to create, customize, and import keyboard themes for Lipika using the unified `.bornotheme` format.
 
 ---
 
 ## 1. Overview
 
-Kiebord supports:
+Lipika supports:
 - Built-in original themes (Default Dark, AMOLED Black, Tokyo Night, Nord Frost, Default Light).
 - Bundled Borno color presets (Classics, AMOLED, Aesthetic, Pastels, and Accent colors).
 - Dynamic custom themes loaded from storage via `.bornotheme` files.
 
 The **`.bornotheme`** format is versioned by `schemaVersion`:
 - **`.bornotheme` Version 1 (`schemaVersion: 1`)**: Borno's legacy format for backward compatibility.
-- **`.bornotheme` Version 2 (`schemaVersion: 2`)**: Kiebord's transformed modern native format retaining all advanced engine capabilities.
+- **`.bornotheme` Version 2 (`schemaVersion: 2`)**: Lipika's transformed modern native format retaining all advanced engine capabilities.
 
 ---
 
@@ -46,10 +46,10 @@ The legacy Borno Keyboard theme format supporting solid colors, 2-stop linear gr
 }
 ```
 
-> **Note on Image Backgrounds**: When `backgroundImageBase64` is included, Kiebord automatically decodes the image, downscales it to optimal dimensions (max 1280px), stores it in internal app storage, and manages its lifecycle.
+> **Note on Image Backgrounds**: When `backgroundImageBase64` is included, Lipika automatically decodes the image, downscales it to optimal dimensions (max 1280px), stores it in internal app storage, and manages its lifecycle.
 
 ### Format B: Borno Theme Version 2 (`.bornotheme` Single-File JSON)
-The transformed native Kiebord theme format retaining all modern design and rendering capabilities:
+The transformed native Lipika theme format retaining all modern design and rendering capabilities:
 - Multi-stop Linear, Radial, Sweep (angular), and 2D Mesh gradients.
 - Image backgrounds with blur radius, dimming overlay, and scale types (`crop`, `fit`, `fill`, `tile`).
 - Granular per-key overrides (`perKeyOverrides`) by coordinate, label, or key type.
@@ -147,7 +147,7 @@ my_theme.bornotheme (ZIP Archive)
 ```
 
 **Auto-Discovery & Path Normalization**:
-- Kiebord automatically checks for ZIP magic bytes (`PK\u0003\u0004`) upon opening.
+- Lipika automatically checks for ZIP magic bytes (`PK\u0003\u0004`) upon opening.
 - Unpacks safely into `custom_themes/<theme_id>/` with strict ZipSlip directory traversal security.
 - Automatically connects `background.*` to the keyboard wallpaper.
 - Automatically connects `font.ttf` / `font.otf` to the keyboard font family.
@@ -186,13 +186,13 @@ Colors may be specified in any of the following standard hex representations:
 - `#RRGGBB` (6 hex characters, e.g., `#282828`, `#FDFE03`)
 - `#AARRGGBB` (8 hex characters with alpha, e.g., `#4D000000`, `#FFEBEFF2`)
 
-Kiebord's internal parser safely normalizes these formats without relying on platform-dependent Android APIs, ensuring compatibility across all devices and test environments.
+Lipika's internal parser safely normalizes these formats without relying on platform-dependent Android APIs, ensuring compatibility across all devices and test environments.
 
 ---
 
 ## 4. Key Attributes Mapping
 
-| Borno Field | Kiebord Attribute | Description |
+| Borno Field | Lipika Attribute | Description |
 |---|---|---|
 | `backgroundColor` | `containerBackground` | Root keyboard surface background color |
 | `keyColor` | `keyBackground` | Standard alphabet and number keycaps |
@@ -214,9 +214,9 @@ Kiebord's internal parser safely normalizes these formats without relying on pla
 
 ---
 
-## 5. Importing Themes into Kiebord
+## 5. Importing Themes into Lipika
 
-1. Open Kiebord Settings.
+1. Open Lipika Settings.
 2. Navigate to **Theme & Appearance**.
 3. Tap the **+** card under Custom Themes and select **Import (.bornotheme)**.
 4. Select your `.bornotheme` file from the system document picker (or tap it in any file manager / messaging app).

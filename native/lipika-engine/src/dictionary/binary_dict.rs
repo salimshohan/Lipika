@@ -4,7 +4,7 @@ use std::cmp::Ordering;
 use std::collections::{BinaryHeap, HashMap};
 use std::time::{SystemTime, UNIX_EPOCH};
 
-pub const MAGIC: u32 = 0x4B42_4443; // "KBDC" (Kiebord Dictionary Core)
+pub const MAGIC: u32 = 0x4B42_4443; // "KBDC" (Lipika Dictionary Core)
 pub const VERSION: u16 = 5;
 pub const FLAG_LABELS_U8: u16 = 1;
 pub const FLAG_DEGREE_U8: u16 = 2;

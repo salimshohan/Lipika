@@ -863,26 +863,26 @@ fn test_iphone_casing() {
 
     #[test]
     fn test_dictionary_metadata_roundtrip_and_assets() {
-        let sample = "name=Kiebord Bangla Word Dictionary;author=Jayed Ahsan Saad;version=3;date=1761681600;license=Only for Kiebord;\nword=বাংলা,f=200\nword=ভাষা,f=180\n";
+        let sample = "name=Lipika Bangla Word Dictionary;author=Jayed Ahsan Saad;version=3;date=1761681600;license=Only for Lipika;\nword=বাংলা,f=200\nword=ভাষা,f=180\n";
         let parsed = CombinedParser::parse_str(sample);
         let bytes = BinaryDict::compile_combined(&parsed);
         let dict = BinaryDict::from_bytes(&bytes).expect("valid compiled dict");
         let meta = dict.metadata();
-        assert_eq!(meta.name, "Kiebord Bangla Word Dictionary");
+        assert_eq!(meta.name, "Lipika Bangla Word Dictionary");
         assert_eq!(meta.author, "Jayed Ahsan Saad");
         assert_eq!(meta.version, 3);
         assert_eq!(meta.date, 1761681600);
-        assert_eq!(meta.license, "Only for Kiebord");
+        assert_eq!(meta.license, "Only for Lipika");
         assert_eq!(dict.word_count(), 2);
 
         let bn_meta_str = get_dictionary_metadata("bn");
-        assert!(bn_meta_str.contains("name=Kiebord Bangla Word Dictionary;"), "bn meta: {}", bn_meta_str);
+        assert!(bn_meta_str.contains("name=Lipika Bangla Word Dictionary;"), "bn meta: {}", bn_meta_str);
         assert!(bn_meta_str.contains("author=Jayed Ahsan Saad;"), "bn meta: {}", bn_meta_str);
-        assert!(bn_meta_str.contains("license=Only for Kiebord;"), "bn meta: {}", bn_meta_str);
+        assert!(bn_meta_str.contains("license=Only for Lipika;"), "bn meta: {}", bn_meta_str);
 
         let en_meta_str = get_dictionary_metadata("en");
-        assert!(en_meta_str.contains("name=Kiebord English Word Dictionary;"), "en meta: {}", en_meta_str);
+        assert!(en_meta_str.contains("name=Lipika English Word Dictionary;"), "en meta: {}", en_meta_str);
         assert!(en_meta_str.contains("author=Jayed Ahsan Saad;"), "en meta: {}", en_meta_str);
-        assert!(en_meta_str.contains("license=Only for Kiebord;"), "en meta: {}", en_meta_str);
+        assert!(en_meta_str.contains("license=Only for Lipika;"), "en meta: {}", en_meta_str);
     }
 }

@@ -1,20 +1,20 @@
-# Kiebord Contributor License Agreement (CLA)
+# Lipika Contributor License Agreement (CLA)
 
-Thank you for your interest in contributing to **Kiebord**!
+Thank you for your interest in contributing to **Lipika**!
 
 This Contributor License Agreement ("Agreement" or "CLA") is entered into between the contributor ("You" or "Contributor") and **Codepotro**.
 
 In order to clarify the intellectual property license granted with Contributions, Codepotro must have a Contributor License Agreement on file that has been accepted by each Contributor. This agreement is for your protection as a Contributor as well as the protection of Codepotro and users of its software; it does not change your right to use your own Contributions for any other purpose.
 
-Please read this document carefully before submitting any Contribution to Kiebord.
+Please read this document carefully before submitting any Contribution to Lipika.
 
 ---
 
 ### 1. Definitions
 
-- **"Codepotro"** means the organization and maintainer of the Kiebord project and the Borno keyboard ecosystem.
+- **"Codepotro"** means the organization and maintainer of the Lipika project and the Borno keyboard ecosystem.
 - **"You" (or "Contributor")** means the individual or legal entity making a Contribution to Codepotro.
-- **"Contribution"** means any original work of authorship, including any code, documentation, layouts, data, bug fixes, or enhancements, submitted by You to Codepotro for inclusion in, or documentation of, any software or project managed by Codepotro (including the Kiebord project).
+- **"Contribution"** means any original work of authorship, including any code, documentation, layouts, data, bug fixes, or enhancements, submitted by You to Codepotro for inclusion in, or documentation of, any software or project managed by Codepotro (including the Lipika project).
 - **"Submitted"** means any form of electronic, written, or verbal communication sent to Codepotro or its representatives, including but not limited to pull requests, commits, issues, and code reviews on GitHub or any related collaboration platform.
 
 ---
@@ -30,7 +30,7 @@ Except for the license granted to Codepotro herein, You reserve all right, title
 You hereby grant to **Codepotro** a perpetual, worldwide, non-exclusive, no-charge, royalty-free, irrevocable copyright license to reproduce, prepare derivative works of, publicly display, publicly perform, sublicense, distribute, and commercialize your Contributions and such derivative works.
 
 **Dual-Licensing and Proprietary Distribution:**  
-While Kiebord is distributed as free and open-source software under the GNU General Public License v3.0 (GPLv3), You explicitly acknowledge and agree that **Codepotro** possesses the unrestricted right to:
+While Lipika is distributed as free and open-source software under the GNU General Public License v3.0 (GPLv3), You explicitly acknowledge and agree that **Codepotro** possesses the unrestricted right to:
 1. Incorporate, adapt, compile, and distribute your Contribution (in whole or in part) into proprietary, commercial, or closed-source applications and products, specifically including the **Borno** keyboard application and its associated services.
 2. Distribute such derivative works or closed-source applications under any license terms of Codepotro's choosing, including commercial end-user license agreements (EULAs), without any requirement or obligation to license or disclose the source code of such applications under the GNU General Public License or any other open-source license.
 3. Relicense, multi-license, or sub-license the project and your Contributions in future releases under open-source or proprietary terms as deemed appropriate by Codepotro.
@@ -66,5 +66,5 @@ In no event shall You or Codepotro be liable for any indirect, incidental, speci
 
 ### 7. Acceptance of Agreement
 
-By submitting a pull request, commit, or patch to the Kiebord repository, or by signing via an automated CLA bot or checklist, You agree to all terms and conditions set forth in this Agreement.
+By submitting a pull request, commit, or patch to the Lipika repository, or by signing via an automated CLA bot or checklist, You agree to all terms and conditions set forth in this Agreement.
 

@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 2,
+  "id": "frosted_glass",
+  "name": "Frosted Glass Effect",
+  "author": "Salim Hosen Shohan",
+  "version": 1,
+  "isDark": true,
+  "background": {
+    "gradient": {
+      "type": "linear",
+      "colors": ["#0B0F19", "#111827", "#1E1B4B"],
+      "stops": [0.0, 0.5, 1.0],
+      "angle": 135.0
+    }
+  },
+  "characterKey": {
+    "background": "#38FFFFFF",
+    "foreground": "#FFFFFF",
+    "stroke": {
+      "color": "#65FFFFFF",
+      "widthDp": 0.8,
+      "alpha": 0.55
+    },
+    "shadow": {
+      "color": "#26000000",
+      "elevationDp": 2.0
+    },
+    "cornerRadiusDp": 10.0,
+    "pressedBackground": "#55FFFFFF"
+  },
+  "functionalKey": {
+    "background": "#22FFFFFF",
+    "foreground": "#CBD5E1",
+    "stroke": {
+      "color": "#45FFFFFF",
+      "widthDp": 0.8,
+      "alpha": 0.45
+    },
+    "shadow": {
+      "color": "#1A000000",
+      "elevationDp": 1.5
+    },
+    "cornerRadiusDp": 10.0,
+    "pressedBackground": "#3DFFFFFF"
+  },
+  "actionKey": {
+    "background": "#38BDF8",
+    "foreground": "#FFFFFF",
+    "isPill": true,
+    "pressedBackground": "#0284C7"
+  },
+  "spaceKey": {
+    "background": "#2EFFFFFF",
+    "foreground": "#FFFFFF",
+    "cornerRadiusDp": 14.0,
+    "stroke": {
+      "color": "#55FFFFFF",
+      "widthDp": 0.8,
+      "alpha": 0.5
+    },
+    "shadow": {
+      "color": "#26000000",
+      "elevationDp": 2.0
+    }
+  },
+  "accentColor": "#38BDF8",
+  "shiftActiveColor": "#38BDF8",
+  "flatKeyLabelColor": "#FFFFFF",
+  "activeOptionHighlightColor": "#38BDF8",
+  "suggestionBackground": {
+    "solidColor": "#1AFFFFFF"
+  },
+  "suggestionForeground": "#F8FAFC",
+  "moreKeysBackground": "#111827",
+  "guidelineColor": "#38BDF8"
+}

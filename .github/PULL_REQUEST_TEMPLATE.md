@@ -19,9 +19,9 @@
 ---
 
 ## Contributor License Agreement (CLA)
-To ensure that contributions can be included in both **Kiebord** (open-source under GPLv3) and **Borno** (closed-source under Codepotro), please review and confirm the following:
+To ensure that contributions can be included in both **Lipika** (open-source under GPLv3) and **Borno** (closed-source under Codepotro), please review and confirm the following:
 
-- [ ] I have read and agree to the [Kiebord Contributor License Agreement (CLA)](CLA.md).
+- [ ] I have read and agree to the [Lipika Contributor License Agreement (CLA)](CLA.md).
 - [ ] I certify that this contribution is entirely my own original work and that I hold the necessary rights to submit it.
 - [ ] I certify that this contribution does not contain any code or assets decompiled, reverse-engineered, or copied from third-party proprietary software.
 

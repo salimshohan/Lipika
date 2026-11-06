@@ -11,7 +11,7 @@ pub mod translit;
 use translit::borno_phonetic::BornoPhonetic;
 
 #[no_mangle]
-pub extern "system" fn Java_io_kiebord_feature_ime_NativeEngine_transliterateBorno(
+pub extern "system" fn Java_io_lipika_feature_ime_NativeEngine_transliterateBorno(
     mut env: JNIEnv,
     _class: JClass,
     input: JString,
@@ -26,7 +26,7 @@ pub extern "system" fn Java_io_kiebord_feature_ime_NativeEngine_transliterateBor
 }
 
 #[no_mangle]
-pub extern "system" fn Java_io_kiebord_feature_ime_NativeEngine_getSuggestions(
+pub extern "system" fn Java_io_lipika_feature_ime_NativeEngine_getSuggestions(
     mut env: JNIEnv,
     _class: JClass,
     prefix: JString,
@@ -48,7 +48,7 @@ pub extern "system" fn Java_io_kiebord_feature_ime_NativeEngine_getSuggestions(
 }
 
 #[no_mangle]
-pub extern "system" fn Java_io_kiebord_feature_ime_NativeEngine_predictNextWords(
+pub extern "system" fn Java_io_lipika_feature_ime_NativeEngine_predictNextWords(
     mut env: JNIEnv,
     _class: JClass,
     prev_word: JString,
@@ -70,7 +70,7 @@ pub extern "system" fn Java_io_kiebord_feature_ime_NativeEngine_predictNextWords
 }
 
 #[no_mangle]
-pub extern "system" fn Java_io_kiebord_feature_ime_NativeEngine_loadDictionary(
+pub extern "system" fn Java_io_lipika_feature_ime_NativeEngine_loadDictionary(
     mut env: JNIEnv,
     _class: JClass,
     lang: JString,
@@ -93,7 +93,7 @@ pub extern "system" fn Java_io_kiebord_feature_ime_NativeEngine_loadDictionary(
 }
 
 #[no_mangle]
-pub extern "system" fn Java_io_kiebord_feature_ime_NativeEngine_registerLayoutProximityRows(
+pub extern "system" fn Java_io_lipika_feature_ime_NativeEngine_registerLayoutProximityRows(
     mut env: JNIEnv,
     _class: JClass,
     layout_id: JString,
@@ -127,7 +127,7 @@ pub extern "system" fn Java_io_kiebord_feature_ime_NativeEngine_registerLayoutPr
 }
 
 #[no_mangle]
-pub extern "system" fn Java_io_kiebord_feature_ime_NativeEngine_decodeGesture(
+pub extern "system" fn Java_io_lipika_feature_ime_NativeEngine_decodeGesture(
     mut env: JNIEnv,
     _class: JClass,
     points_x: jni::objects::JFloatArray,
@@ -260,7 +260,7 @@ pub extern "system" fn Java_io_kiebord_feature_ime_NativeEngine_decodeGesture(
 }
 
 #[no_mangle]
-pub extern "system" fn Java_io_kiebord_feature_ime_NativeEngine_transliterate(
+pub extern "system" fn Java_io_lipika_feature_ime_NativeEngine_transliterate(
     mut env: JNIEnv,
     _class: JClass,
     layout_id: JString,
@@ -294,7 +294,7 @@ pub extern "system" fn Java_io_kiebord_feature_ime_NativeEngine_transliterate(
 }
 
 #[no_mangle]
-pub extern "system" fn Java_io_kiebord_feature_ime_NativeEngine_isPhoneticLayout(
+pub extern "system" fn Java_io_lipika_feature_ime_NativeEngine_isPhoneticLayout(
     mut env: JNIEnv,
     _class: JClass,
     layout_id: JString,
@@ -307,7 +307,7 @@ pub extern "system" fn Java_io_kiebord_feature_ime_NativeEngine_isPhoneticLayout
 }
 
 #[no_mangle]
-pub extern "system" fn Java_io_kiebord_feature_ime_NativeEngine_isM17nLayout(
+pub extern "system" fn Java_io_lipika_feature_ime_NativeEngine_isM17nLayout(
     mut env: JNIEnv,
     _class: JClass,
     layout_id: JString,
@@ -320,7 +320,7 @@ pub extern "system" fn Java_io_kiebord_feature_ime_NativeEngine_isM17nLayout(
 }
 
 #[no_mangle]
-pub extern "system" fn Java_io_kiebord_feature_ime_NativeEngine_loadM17nRules(
+pub extern "system" fn Java_io_lipika_feature_ime_NativeEngine_loadM17nRules(
     mut env: JNIEnv,
     _class: JClass,
     layout_id: JString,
@@ -342,7 +342,7 @@ pub extern "system" fn Java_io_kiebord_feature_ime_NativeEngine_loadM17nRules(
 }
 
 #[no_mangle]
-pub extern "system" fn Java_io_kiebord_feature_ime_NativeEngine_transliterateM17n(
+pub extern "system" fn Java_io_lipika_feature_ime_NativeEngine_transliterateM17n(
     mut env: JNIEnv,
     _class: JClass,
     layout_id: JString,
@@ -362,7 +362,7 @@ pub extern "system" fn Java_io_kiebord_feature_ime_NativeEngine_transliterateM17
 }
 
 #[no_mangle]
-pub extern "system" fn Java_io_kiebord_feature_ime_NativeEngine_getTransliterationAlternatives(
+pub extern "system" fn Java_io_lipika_feature_ime_NativeEngine_getTransliterationAlternatives(
     mut env: JNIEnv,
     _class: JClass,
     layout_id: JString,
@@ -387,7 +387,7 @@ pub extern "system" fn Java_io_kiebord_feature_ime_NativeEngine_getTransliterati
 }
 
 #[no_mangle]
-pub extern "system" fn Java_io_kiebord_feature_ime_NativeEngine_getDictionaryMetadata(
+pub extern "system" fn Java_io_lipika_feature_ime_NativeEngine_getDictionaryMetadata(
     mut env: JNIEnv,
     _class: JClass,
     lang_or_path: JString,
@@ -401,7 +401,7 @@ pub extern "system" fn Java_io_kiebord_feature_ime_NativeEngine_getDictionaryMet
 }
 
 #[no_mangle]
-pub extern "system" fn Java_io_kiebord_feature_ime_NativeEngine_isWord(
+pub extern "system" fn Java_io_lipika_feature_ime_NativeEngine_isWord(
     mut env: JNIEnv,
     _class: JClass,
     word: JString,
@@ -424,7 +424,7 @@ pub extern "system" fn Java_io_kiebord_feature_ime_NativeEngine_isWord(
 }
 
 #[no_mangle]
-pub extern "system" fn Java_io_kiebord_feature_ime_NativeEngine_ping(
+pub extern "system" fn Java_io_lipika_feature_ime_NativeEngine_ping(
     _env: JNIEnv,
     _class: JClass,
 ) -> jboolean {

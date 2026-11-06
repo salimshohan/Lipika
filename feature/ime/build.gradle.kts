@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "io.kiebord.feature.ime"
+    namespace = "io.lipika.feature.ime"
     compileSdk = 36
     ndkVersion = "26.2.11394342"
 

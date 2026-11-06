@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "io.kiebord.app"
+    namespace = "io.lipika.app"
     compileSdk = 36
     ndkVersion = "26.2.11394342"
 
@@ -13,8 +13,8 @@ android {
         applicationId = "com.salimshohan.lipika"
         minSdk = 24
         targetSdk = 36
-        versionCode = 14
-        versionName = "0.2.1"
+        versionCode = 15
+        versionName = "0.2.2"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

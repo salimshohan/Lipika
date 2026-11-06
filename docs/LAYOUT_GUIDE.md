@@ -1,12 +1,12 @@
-# Kiebord Keyboard Layout Development Guide
+# Lipika Keyboard Layout Development Guide
 
-This guide describes how to create, test, and package custom keyboard layouts for Kiebord using the JSON layout format.
+This guide describes how to create, test, and package custom keyboard layouts for Lipika using the JSON layout format.
 
 ---
 
 ## 1. Overview
 
-Kiebord supports dynamic and bundled keyboard layouts defined in JSON. Layouts can be:
+Lipika supports dynamic and bundled keyboard layouts defined in JSON. Layouts can be:
 - Bundled with the application under `assets/layouts/<layout_id>.json`.
 
 Layouts are parsed with compile-time serializers and cached in memory to ensure zero latency during typing and language switching.
@@ -44,20 +44,20 @@ Layouts are parsed with compile-time serializers and cached in memory to ensure 
 ### Custom Symbol Pages (`?123` and `=\<`)
 
 Layouts can optionally provide their own `symbolsLayout` and `moreSymbolsLayout`.
-- **Row Height and Count Synchronization**: Whether switching between the alphabet page and `?123` (or `=\<`), Kiebord preserves identical row heights and row counts:
+- **Row Height and Count Synchronization**: Whether switching between the alphabet page and `?123` (or `=\<`), Lipika preserves identical row heights and row counts:
   - If the top number row is enabled (`showNumberRow`), both the alphabet and symbol pages render the top number row at row index 0 with matching height `(50 * scaleFactor).dp`.
   - If an extra row (such as Arabic Harakat diacritics or custom feature rows) is enabled, both the alphabet and symbol pages render the extra row with matching standard height `keyRowHeight`.
   - If either row is disabled by the user or layout configuration, neither page renders it.
-- **Dynamic Extra Row Carry-Over and Linking**: If an alphabet layout defines an enabled extra row (such as `harakat`), the symbols page can either provide its own corresponding extra row under the same `id` (e.g. Quranic stop marks for Arabic symbols), or Kiebord automatically carries over the alphabet extra row to the symbols page if row counts need matching. Toggling the feature in Settings updates both pages in lockstep.
-- **Duplicate Number Avoidance**: When the top number row is enabled on a symbol layout whose first core row contains digits, Kiebord automatically replaces that core row with the alternate symbols row (`~ < > _ ` º \ = { }` or shifted symbols) so numbers are not repeated across consecutive rows.
+- **Dynamic Extra Row Carry-Over and Linking**: If an alphabet layout defines an enabled extra row (such as `harakat`), the symbols page can either provide its own corresponding extra row under the same `id` (e.g. Quranic stop marks for Arabic symbols), or Lipika automatically carries over the alphabet extra row to the symbols page if row counts need matching. Toggling the feature in Settings updates both pages in lockstep.
+- **Duplicate Number Avoidance**: When the top number row is enabled on a symbol layout whose first core row contains digits, Lipika automatically replaces that core row with the alternate symbols row (`~ < > _ ` º \ = { }` or shifted symbols) so numbers are not repeated across consecutive rows.
 - **Localized Symbols**: Language-specific punctuation (such as Arabic question mark `؟`, comma `،`, semicolon `؛`, Eastern Arabic numbers `١, ٢, ٣...`, or Quranic stop marks) can be positioned directly on the symbol page.
-- **Automatic Fallback**: If a layout does not specify `symbolsLayout` (such as English QWERTY or Bengali layouts), Kiebord automatically falls back to the standard built-in symbols page with synchronized top number row behavior.
+- **Automatic Fallback**: If a layout does not specify `symbolsLayout` (such as English QWERTY or Bengali layouts), Lipika automatically falls back to the standard built-in symbols page with synchronized top number row behavior.
 
 ---
 
 ### `LayoutExtraRow` Properties
 
-Extra rows allow layouts to provide specialized key rows (such as Arabic Harakat diacritics, accented vowel bars, or mathematical symbol strips). Kiebord automatically creates a toggle switch under the layout in Settings for each declared extra row.
+Extra rows allow layouts to provide specialized key rows (such as Arabic Harakat diacritics, accented vowel bars, or mathematical symbol strips). Lipika automatically creates a toggle switch under the layout in Settings for each declared extra row.
 
 | Field | Type | Required | Description |
 |---|---|---|---|
@@ -121,7 +121,7 @@ You can include special action codes in the `moreKeys` array to provide direct a
 | `ACTION_CUT` | Cuts selected text to the clipboard. |
 | `ACTION_COPY` | Copies selected text to the clipboard. |
 | `ACTION_PASTE` | Pastes current clipboard contents. |
-| `ACTION_SETTINGS` | Opens Kiebord settings. |
+| `ACTION_SETTINGS` | Opens Lipika settings. |
 | `ACTION_ONE_HANDED` | Toggles one-handed mode. |
 | `ACTION_EMOJI` | Opens the emoji picker. |
 
@@ -233,7 +233,7 @@ To provide an optional extra row (such as the Harakat row in Arabic or an accent
 }
 ```
 
-When Kiebord loads this layout:
+When Lipika loads this layout:
 1. It automatically adds a **Harakat row (حركات)** switch under the layout card in **Settings > Languages & Layouts**.
 2. Users can toggle the row on or off with immediate live preview updating.
 3. The choice is preserved across reboots in app preferences.

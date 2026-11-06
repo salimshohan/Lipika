@@ -12,11 +12,11 @@ pub struct DictMetadata {
 impl Default for DictMetadata {
     fn default() -> Self {
         Self {
-            name: "Kiebord Word Dictionary".to_string(),
+            name: "Lipika Word Dictionary".to_string(),
             author: "Jayed Ahsan Saad".to_string(),
             version: 1,
             date: 0,
-            license: "Only for Kiebord".to_string(),
+            license: "Only for Lipika".to_string(),
         }
     }
 }
@@ -168,7 +168,7 @@ mod tests {
     #[test]
     fn test_parse_combined_sample() {
         let sample = "\
-name=Kiebord Bangla Word Dictionary;author=Jayed Ahsan Saad;version=2;date=1761681600;license=Only for Kiebord;
+name=Lipika Bangla Word Dictionary;author=Jayed Ahsan Saad;version=2;date=1761681600;license=Only for Lipika;
 word=আমাদের,f=102
  bigram=এই,f=4
   prev_word[0]=আমাদের
@@ -183,11 +183,11 @@ word=আমি,f=100
   prev_word[0]=আমি";
 
         let data = CombinedParser::parse_str(sample);
-        assert_eq!(data.metadata.name, "Kiebord Bangla Word Dictionary");
+        assert_eq!(data.metadata.name, "Lipika Bangla Word Dictionary");
         assert_eq!(data.metadata.author, "Jayed Ahsan Saad");
         assert_eq!(data.metadata.version, 2);
         assert_eq!(data.metadata.date, 1761681600);
-        assert_eq!(data.metadata.license, "Only for Kiebord");
+        assert_eq!(data.metadata.license, "Only for Lipika");
 
         assert_eq!(data.unigrams.len(), 2);
         assert_eq!(data.unigrams[0].0, "আমাদের");
