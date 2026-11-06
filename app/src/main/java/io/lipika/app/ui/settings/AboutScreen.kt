@@ -87,6 +87,13 @@ fun AboutScreen(
     val scrollState = rememberScrollState()
     val context = LocalContext.current
     val colors = LocalSettingsColors.current
+    val versionName = androidx.compose.runtime.remember {
+        try {
+            context.packageManager.getPackageInfo(context.packageName, 0).versionName ?: "0.2.3"
+        } catch (_: Exception) {
+            "0.2.3"
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -133,7 +140,7 @@ fun AboutScreen(
                         .padding(horizontal = 12.dp, vertical = 4.dp)
                 ) {
                     Text(
-                        text = "Version 0.2.0",
+                        text = "Version $versionName",
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Bold,
                         color = colors.accent
