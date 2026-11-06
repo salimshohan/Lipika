@@ -71,25 +71,24 @@ jobs:
           name: "Lipika ${{ github.ref_name }}"
           body: |
             ### 🌟 Lipika Keyboard ${{ github.ref_name }} Release
-            
+
+            - **🎨 Strict Reference Theme Gallery**:
+              - Recreated the Theme Gallery following the exact light, premium glassmorphism aesthetic (`media_1793974527569_3f4713f4.jpg`).
+              - Teal squircle header badge (`🎨`) with "Customize your space" and "Choose a theme that feels right for you".
+              - Exactly **TWO** rectangular theme cards per row (`chunked(2)`) with rounded corners (`22.dp`), subtle borders, soft shadows, and clean typography.
+              - Curated featured themes: **Ocean Teal** (*Fresh & energizing*), **Sunset Coral** (*Warm & creative*), **Minimal Grey** (*Clean & focused*), **Soft lavender** (*Calm & soothing*), alongside Frosted Glass, Lipika Gradient, Default Light/Dark, and AMOLED Black.
+              - Miniature keyboard preview on each card with translucent keycap bars, theme gradients, and active checkmark badges.
+              - Bottom docked deep forest teal **"Continue"** pill button (`RoundedCornerShape(26.dp)`, `height = 52.dp`).
+            - **🖼️ Strict App Icon Artwork**:
+              - Replaced all launcher icons to match the exact light squircle reference (`media_1793974513501_9b73af67.png`).
+              - Premium soft-blue to cyan gradient background with diagonal faceted lighting and soft ambient drop shadow.
+              - Rounded white capital letter "L" glyph centered in safe zone across all Android densities (`mdpi`, `hdpi`, `xhdpi`, `xxhdpi`, `xxxhdpi`), adaptive icons, and vector drawables.
             - **⌨️ Complete First Symbol Layout (`?123`) & Extended Symbols (`=<`)**:
-              - **First Symbol Layout (`?123`)**: Row 0 dedicated numbers with Bengali numeral hints; Row 1 `⇥` Tab, `~`, `\` (with `/` hint), `<`, `>`, `_`, `=`, `[`, `]`; Row 2 `@`, `#`, `৳`, `%`, `&`, `*`, `-`, `+`, `(`, `)`; Row 3 `=<`, `!`, `"`, `'`, `:`, `;`, `/`, `?`, Backspace; Row 4 `ABC`, `,`, Spacebar (5.0f), `.`, `Go`.
-              - **Extended Symbols Layout (`=<`)**: Row 0 `👉`, `◐`, `⊕`, `✖`, `✔`, `★`, `∞`, `➡`, `▶`, `🔄`; Row 1 `~`, ``` ` ```, `|`, `৳`, `√`, `π`, `÷`, `×`, `{`, `}`; Row 2 `⇥` Tab, `£`, `$`, `%`, `^`, `°`, `-`, `=`, `[`, `]`; Row 3 `?123`, `✥` Directional / Text-Editing key, `®`, `©`, `™`, `\`, `<`, `>`, Backspace; Row 4 `ABC`, `,`, Spacebar, `.`, `Go`.
+              - Row 0 dedicated numbers with Bengali numeral hints; Tab, Directional cursor pad, math symbols, and full punctuation suites.
             - **🇧🇩 Flawless Bengali Typography & Zero Dotted-Circle Fix**:
-              - Fixed Bengali typography rendering where combining vowel signs (কার e.g. "ক" + "া" -> "কা") previously caused Android's text layout engine to insert an unwanted dotted circle placeholder (`◌`).
-              - Native direct character commitment for fixed layouts (`bn_probhat`), eliminating isolating composing spans on vowel marks.
-              - Dynamic real-time prefix suggestion engine for Bengali Probhat and direct candidate replacement.
-              - Automatic sanitation stripping any accidental `\u25CC` placeholder characters.
-            - **🎯 Vector Icon Keycaps & Directional Pad Shortcut**:
-              - Crisp vector icon rendering for Tab (`⇥`) and Directional (`✥`) keys.
-              - Tapping `✥` instantly opens the directional cursor and text-editing panel.
-            - **⌨️ Perfected English Keyboard Layout & Bengali Numerals**:
-              - Dedicated Number Row (`1`–`0`) displaying Bengali numerals (`১`–`০`) as top-right secondary hints. Normal tap types English numbers; long press inserts the Bengali numeral.
-              - Clean `x`, `c`, `v` without visible badge hints, featuring direct Cut, Copy, and Paste long-press actions (Copy captures all text if no selection, or selected text).
-              - Standardized bottom row: `?123` ➔ `Emoji` ➔ `Comma (,)` ➔ `Spacebar` ➔ `Full Stop (.)` ➔ `Go / Enter`.
-            - **🎨 Dedicated Appearance Section & Symmetrical Dashboard**:
-              - Display Mode (Light, Dark, System Default), App Theme (Light, Dark, System, Dynamic Color), Keyboard Theme (Light, Dark, Custom with live interactive preview), Dark Style (Pure Black, AMOLED, Dark Gray), and Scheduling.
-              - Modern 4×2 frosted glass dashboard cards with edge-to-edge sunrise artwork.
+              - Fixed combining vowel marks (কার) eliminating unwanted dotted circle placeholders (`◌`).
+            - **📱 Symmetrical Dashboard & Unified Appearance Settings**:
+              - Centralized Appearance section organizing Display Mode, App Theme, Keyboard Theme, Dark Style, and Automated Scheduling.
           files: dist/Lipika.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

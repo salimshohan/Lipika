@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 2,
+  "id": "sunset_coral",
+  "name": "Sunset Coral",
+  "author": "Lipika",
+  "version": 1,
+  "isDark": false,
+  "background": {
+    "gradient": {
+      "type": "linear",
+      "colors": ["#F43F5E", "#FB7185", "#FBBF24"],
+      "stops": [0.0, 0.5, 1.0],
+      "angle": 135.0
+    }
+  },
+  "characterKey": {
+    "background": "#FFF1F2",
+    "foreground": "#1F2937",
+    "stroke": {
+      "color": "#FECDD3",
+      "widthDp": 0.75,
+      "alpha": 0.6
+    },
+    "shadow": {
+      "color": "#1AE11D48",
+      "elevationDp": 1.5
+    },
+    "cornerRadiusDp": 10.0,
+    "pressedBackground": "#FFE4E6"
+  },
+  "functionalKey": {
+    "background": "#FFE4E6",
+    "foreground": "#BE123C",
+    "stroke": {
+      "color": "#FECDD3",
+      "widthDp": 0.75,
+      "alpha": 0.5
+    },
+    "shadow": {
+      "color": "#1AE11D48",
+      "elevationDp": 1.5
+    },
+    "cornerRadiusDp": 10.0,
+    "pressedBackground": "#FECDD3"
+  },
+  "actionKey": {
+    "background": "#E11D48",
+    "foreground": "#FFFFFF",
+    "isPill": true,
+    "pressedBackground": "#BE123C"
+  },
+  "spaceKey": {
+    "background": "#FFF1F2",
+    "foreground": "#1F2937",
+    "cornerRadiusDp": 14.0,
+    "stroke": {
+      "color": "#FECDD3",
+      "widthDp": 0.75,
+      "alpha": 0.6
+    }
+  }
+}

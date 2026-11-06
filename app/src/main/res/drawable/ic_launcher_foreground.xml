@@ -1,66 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:aapt="http://schemas.android.com/aapt"
     android:width="108dp"
     android:height="108dp"
-    android:viewportWidth="512"
-    android:viewportHeight="512">
+    android:viewportWidth="108"
+    android:viewportHeight="108">
 
-    <!-- Center Radial Glow from docs/logo.svg -->
+    <!-- Soft ambient drop shadow underneath L glyph -->
     <path
-        android:pathData="M256,256 m-160,0 a160,160 0,1,0 320,0 a160,160 0,1,0 -320,0"
-        android:fillAlpha="0.35">
-        <aapt:attr name="android:fillColor">
-            <gradient
-                android:centerX="256"
-                android:centerY="256"
-                android:gradientRadius="160"
-                android:startColor="#06B6D4"
-                android:endColor="#0006B6D4"
-                android:type="radial" />
-        </aapt:attr>
-    </path>
+        android:pathData="M52,26 C47,26 43,30 43,35 L43,67 C43,76 49,81 57,81 L70,81 C74,81 77,78 77,74 C77,70 74,67 70,67 L59,67 C56,67 53,64 53,61 L53,35 C53,30 52,26 52,26 Z"
+        android:fillAlpha="0.28"
+        android:fillColor="#172554" />
 
-    <!-- Centered Bengali 'ল' and Typing Cursor Spark within 72dp Safe Zone -->
-    <group
-        android:pivotX="270"
-        android:pivotY="261"
-        android:scaleX="0.88"
-        android:scaleY="0.88"
-        android:translateX="-14"
-        android:translateY="-5">
-
-        <!-- Top Horizontal Bar ('Matra') -->
-        <path
-            android:pathData="M143,160 L369,160 A13,13 0,0,1 382,173 L382,173 A13,13 0,0,1 369,186 L143,186 A13,13 0,0,1 130,173 L130,173 A13,13 0,0,1 143,160 Z"
-            android:fillColor="#FFFFFF" />
-
-        <!-- Stylized Modern Bengali 'ল' Loops -->
-        <path
-            android:pathData="M 155,310 C 135,275 145,220 180,196 C 210,176 242,188 252,218 C 265,188 298,176 328,196 C 360,220 370,275 350,310 C 340,330 315,350 280,345 L 280,318 C 300,322 320,310 326,295 C 338,270 330,230 306,215 C 288,202 265,210 256,238 L 242,238 C 233,210 210,202 192,215 C 168,230 160,270 172,295 C 178,310 198,322 218,318 L 218,345 C 183,350 158,330 155,310 Z">
-            <aapt:attr name="android:fillColor">
-                <gradient
-                    android:angle="270"
-                    android:startColor="#38BDF8"
-                    android:endColor="#06B6D4"
-                    android:type="linear" />
-            </aapt:attr>
-        </path>
-
-        <!-- Vertical Stem of 'ল' -->
-        <path
-            android:pathData="M369,160 L369,160 A13,13 0,0,1 382,173 L382,342 A13,13 0,0,1 369,355 L369,355 A13,13 0,0,1 356,342 L356,173 A13,13 0,0,1 369,160 Z"
-            android:fillColor="#FFFFFF" />
-
-        <!-- Foot Accent -->
-        <path
-            android:pathData="M341,340 L371,340 A11,11 0,0,1 382,351 L382,351 A11,11 0,0,1 371,362 L341,362 A11,11 0,0,1 330,351 L330,351 A11,11 0,0,1 341,340 Z"
-            android:fillColor="#FFFFFF" />
-
-        <!-- Electric Cyan Typing Cursor Spark -->
-        <path
-            android:pathData="M396,177 A7,7 0,0,1 410,177 L410,211 A7,7 0,0,1 396,211 Z"
-            android:fillColor="#06B6D4" />
-
-    </group>
-
+    <!-- Pure white rounded Lipika L glyph centered in 72dp safe zone -->
+    <path
+        android:pathData="M51,24 C46,24 42,28 42,33 L42,65 C42,74 48,79 56,79 L69,79 C73,79 76,76 76,72 C76,68 73,65 69,65 L58,65 C55,65 52,62 52,59 L52,33 C52,28 51,24 51,24 Z"
+        android:fillColor="#FFFFFF" />
 </vector>

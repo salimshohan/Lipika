@@ -11,8 +11,8 @@
 ---
 
 <p align="center">
-  <a href="https://github.com/salimshohan/Lipika/releases/tag/v0.2.6">
-    <img src="https://img.shields.io/badge/Release-v0.2.6-06B6D4?style=for-the-badge&logo=android&logoColor=white" alt="Version 0.2.6" />
+  <a href="https://github.com/salimshohan/Lipika/releases/tag/v0.2.7">
+    <img src="https://img.shields.io/badge/Release-v0.2.7-06B6D4?style=for-the-badge&logo=android&logoColor=white" alt="Version 0.2.7" />
   </a>
   <a href="https://github.com/salimshohan/Lipika/releases/latest/download/Lipika.apk">
     <img src="https://img.shields.io/badge/Download-Lipika%20APK-10B981?style=for-the-badge&logo=android&logoColor=white" alt="Download APK" />
@@ -81,6 +81,6 @@ Lipika features 5 carefully chosen layouts:
 
 Download the stable pre-built APK directly from GitHub Releases:
 
-👉 **[Download Lipika v0.2.6 APK](https://github.com/salimshohan/Lipika/releases/download/v0.2.6/Lipika.apk)**
+👉 **[Download Lipika v0.2.7 APK](https://github.com/salimshohan/Lipika/releases/download/v0.2.7/Lipika.apk)**
 
 👉 **[Download Latest Lipika APK](https://github.com/salimshohan/Lipika/releases/latest/download/Lipika.apk)**

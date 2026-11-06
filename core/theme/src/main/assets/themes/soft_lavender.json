@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 2,
+  "id": "soft_lavender",
+  "name": "Soft lavender",
+  "author": "Lipika",
+  "version": 1,
+  "isDark": false,
+  "background": {
+    "gradient": {
+      "type": "linear",
+      "colors": ["#6D28D9", "#8B5CF6", "#C4B5FD"],
+      "stops": [0.0, 0.5, 1.0],
+      "angle": 135.0
+    }
+  },
+  "characterKey": {
+    "background": "#F5F3FF",
+    "foreground": "#1E1B4B",
+    "stroke": {
+      "color": "#DDD6FE",
+      "widthDp": 0.75,
+      "alpha": 0.6
+    },
+    "shadow": {
+      "color": "#1A6D28D9",
+      "elevationDp": 1.5
+    },
+    "cornerRadiusDp": 10.0,
+    "pressedBackground": "#EDE9FE"
+  },
+  "functionalKey": {
+    "background": "#EDE9FE",
+    "foreground": "#6D28D9",
+    "stroke": {
+      "color": "#DDD6FE",
+      "widthDp": 0.75,
+      "alpha": 0.5
+    },
+    "shadow": {
+      "color": "#1A6D28D9",
+      "elevationDp": 1.5
+    },
+    "cornerRadiusDp": 10.0,
+    "pressedBackground": "#DDD6FE"
+  },
+  "actionKey": {
+    "background": "#7C3AED",
+    "foreground": "#FFFFFF",
+    "isPill": true,
+    "pressedBackground": "#6D28D9"
+  },
+  "spaceKey": {
+    "background": "#F5F3FF",
+    "foreground": "#1E1B4B",
+    "cornerRadiusDp": 14.0,
+    "stroke": {
+      "color": "#DDD6FE",
+      "widthDp": 0.75,
+      "alpha": 0.6
+    }
+  }
+}

@@ -36,6 +36,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Delete
@@ -73,6 +74,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -186,27 +188,131 @@ fun AppearanceThemesScreen(
         }
     }
 
-    val otherCategories = listOf(
-        ThemeCategory.BORNO_GRADIENT,
-        ThemeCategory.BORNO_COLORS
-    )
+    val backgroundBrush = remember {
+        Brush.verticalGradient(
+            colors = listOf(
+                Color(0xFFD6F5F2),
+                Color(0xFFF1FAF9),
+                Color(0xFFE4F8F6),
+                Color(0xFFD0F4F0)
+            )
+        )
+    }
 
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
-            .verticalScroll(scrollState)
-            .padding(bottom = 32.dp)
+            .background(backgroundBrush)
     ) {
-        // 1. Originals Section
-        val originalThemes = allThemes.filter { it.category == ThemeCategory.ORIGINALS }
-        if (originalThemes.isNotEmpty()) {
-            Text(
-                text = "Originals",
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Bold,
-                color = colors.textPrimary,
-                modifier = Modifier.padding(start = 18.dp, top = 22.dp, bottom = 14.dp)
-            )
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(scrollState)
+                .padding(bottom = 96.dp)
+        ) {
+            // Top Navigation Bar
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 12.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(40.dp)
+                        .clip(CircleShape)
+                        .background(Color.White.copy(alpha = 0.85f))
+                        .clickable(onClick = onBack),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = "Back",
+                        tint = Color(0xFF0E332F),
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
+
+                Box(
+                    modifier = Modifier
+                        .size(40.dp)
+                        .clip(CircleShape)
+                        .background(Color.White.copy(alpha = 0.85f))
+                        .clickable {
+                            if (io.lipika.theme.designer.ThemeDesignerRegistry.isAvailable) {
+                                showCreatePopup = true
+                            } else {
+                                importLauncher.launch(arrayOf("*/*"))
+                            }
+                        },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.Add,
+                        contentDescription = "Add Theme",
+                        tint = Color(0xFF0E332F),
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
+            }
+
+            // Reference Header with Teal Palette Squircle Badge
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(56.dp)
+                        .shadow(
+                            elevation = 6.dp,
+                            shape = RoundedCornerShape(18.dp),
+                            ambientColor = Color(0x330E4D45),
+                            spotColor = Color(0x330E4D45)
+                        )
+                        .clip(RoundedCornerShape(18.dp))
+                        .background(Color(0xFF2C857B)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.Palette,
+                        contentDescription = null,
+                        tint = Color.White,
+                        modifier = Modifier.size(30.dp)
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Text(
+                    text = "Customize your space",
+                    fontSize = 22.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFF0E332F),
+                    textAlign = TextAlign.Center
+                )
+
+                Spacer(modifier = Modifier.height(6.dp))
+
+                Text(
+                    text = "Choose a theme that feels right for you",
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Normal,
+                    color = Color(0xFF5A7A77),
+                    textAlign = TextAlign.Center
+                )
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Featured 4 Themes in 2 Columns matching reference
+            val featuredIds = listOf("ocean_teal", "sunset_coral", "minimal_grey", "soft_lavender")
+            val featuredThemes = featuredIds.mapNotNull { id -> allThemes.find { it.id == id } }
+            val otherThemes = allThemes.filter { it.id !in featuredIds && it.category != ThemeCategory.CUSTOM }
+            val customThemes = allThemes.filter { it.category == ThemeCategory.CUSTOM }
 
             Column(
                 modifier = Modifier
@@ -214,7 +320,7 @@ fun AppearanceThemesScreen(
                     .padding(horizontal = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(14.dp)
             ) {
-                originalThemes.chunked(3).forEach { rowThemes ->
+                featuredThemes.chunked(2).forEach { rowThemes ->
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(14.dp)
@@ -227,90 +333,39 @@ fun AppearanceThemesScreen(
                                 showKeyBorders = preferences.showKeyBorders,
                                 showKeyShadows = preferences.showKeyShadows,
                                 modifier = Modifier.weight(1f),
-                                onSelect = { previewThemeOption = themeOption }
-                            )
-                        }
-                        repeat(3 - rowThemes.size) {
-                            Spacer(modifier = Modifier.weight(1f))
-                        }
-                    }
-                }
-            }
-        }
-
-        // 2. Custom Themes Section (Right Below Originals!)
-        val customThemes = allThemes.filter { it.category == ThemeCategory.CUSTOM }
-        Text(
-            text = "Custom Themes",
-            fontSize = 20.sp,
-            fontWeight = FontWeight.Bold,
-            color = colors.textPrimary,
-            modifier = Modifier.padding(start = 18.dp, top = 22.dp, bottom = 14.dp)
-        )
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(14.dp)
-        ) {
-            val totalItems = 1 + customThemes.size
-            val numRows = (totalItems + 2) / 3
-            for (rowIndex in 0 until numRows) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(14.dp)
-                ) {
-                    for (colIndex in 0 until 3) {
-                        val itemIndex = rowIndex * 3 + colIndex
-                        if (itemIndex == 0) {
-                            BlankThemePlusCard(
-                                modifier = Modifier.weight(1f),
-                                onClick = {
-                                    if (io.lipika.theme.designer.ThemeDesignerRegistry.isAvailable) {
-                                        showCreatePopup = true
-                                    } else {
-                                        importLauncher.launch(arrayOf("*/*"))
-                                    }
+                                onSelect = {
+                                    onUpdateTheme(themeOption.id)
+                                },
+                                onLongClick = {
+                                    previewThemeOption = themeOption
                                 }
                             )
-                        } else if (itemIndex - 1 < customThemes.size) {
-                            val themeOption = customThemes[itemIndex - 1]
-                            val isSelected = preferences.theme == themeOption.id
-                            AbstractThemeCard(
-                                themeOption = themeOption,
-                                isSelected = isSelected,
-                                showKeyBorders = preferences.showKeyBorders,
-                                showKeyShadows = preferences.showKeyShadows,
-                                modifier = Modifier.weight(1f),
-                                onSelect = { previewThemeOption = themeOption }
-                            )
-                        } else {
+                        }
+                        repeat(2 - rowThemes.size) {
                             Spacer(modifier = Modifier.weight(1f))
                         }
                     }
                 }
             }
-        }
 
-        // 3. Other Categories: Gradients, Colors
-        for (category in otherCategories) {
-            val categoryThemes = allThemes.filter { it.category == category }
-            if (categoryThemes.isNotEmpty()) {
+            // More Themes Section (2 per row)
+            if (otherThemes.isNotEmpty()) {
+                Spacer(modifier = Modifier.height(28.dp))
                 Text(
-                    text = category.title,
-                    fontSize = 20.sp,
+                    text = "More Themes",
+                    fontSize = 17.sp,
                     fontWeight = FontWeight.Bold,
-                    color = colors.textPrimary,
-                    modifier = Modifier.padding(start = 18.dp, top = 22.dp, bottom = 14.dp)
+                    color = Color(0xFF0E332F),
+                    modifier = Modifier.padding(horizontal = 20.dp, vertical = 6.dp)
                 )
-
+                Spacer(modifier = Modifier.height(10.dp))
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp),
                     verticalArrangement = Arrangement.spacedBy(14.dp)
                 ) {
-                    categoryThemes.chunked(3).forEach { rowThemes ->
+                    otherThemes.chunked(2).forEach { rowThemes ->
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.spacedBy(14.dp)
@@ -323,15 +378,121 @@ fun AppearanceThemesScreen(
                                     showKeyBorders = preferences.showKeyBorders,
                                     showKeyShadows = preferences.showKeyShadows,
                                     modifier = Modifier.weight(1f),
-                                    onSelect = { previewThemeOption = themeOption }
+                                    onSelect = {
+                                        onUpdateTheme(themeOption.id)
+                                    },
+                                    onLongClick = {
+                                        previewThemeOption = themeOption
+                                    }
                                 )
                             }
-                            repeat(3 - rowThemes.size) {
+                            repeat(2 - rowThemes.size) {
                                 Spacer(modifier = Modifier.weight(1f))
                             }
                         }
                     }
                 }
+            }
+
+            // Custom Themes Section (2 per row)
+            Spacer(modifier = Modifier.height(28.dp))
+            Text(
+                text = "Custom Themes",
+                fontSize = 17.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFF0E332F),
+                modifier = Modifier.padding(horizontal = 20.dp, vertical = 6.dp)
+            )
+            Spacer(modifier = Modifier.height(10.dp))
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(14.dp)
+            ) {
+                val totalCustom = 1 + customThemes.size
+                val numCustomRows = (totalCustom + 1) / 2
+                for (rowIndex in 0 until numCustomRows) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(14.dp)
+                    ) {
+                        for (colIndex in 0 until 2) {
+                            val itemIndex = rowIndex * 2 + colIndex
+                            if (itemIndex == 0) {
+                                BlankThemePlusCard(
+                                    modifier = Modifier.weight(1f),
+                                    onClick = {
+                                        if (io.lipika.theme.designer.ThemeDesignerRegistry.isAvailable) {
+                                            showCreatePopup = true
+                                        } else {
+                                            importLauncher.launch(arrayOf("*/*"))
+                                        }
+                                    }
+                                )
+                            } else if (itemIndex - 1 < customThemes.size) {
+                                val themeOption = customThemes[itemIndex - 1]
+                                val isSelected = preferences.theme == themeOption.id
+                                AbstractThemeCard(
+                                    themeOption = themeOption,
+                                    isSelected = isSelected,
+                                    showKeyBorders = preferences.showKeyBorders,
+                                    showKeyShadows = preferences.showKeyShadows,
+                                    modifier = Modifier.weight(1f),
+                                    onSelect = {
+                                        onUpdateTheme(themeOption.id)
+                                    },
+                                    onLongClick = {
+                                        previewThemeOption = themeOption
+                                    }
+                                )
+                            } else {
+                                Spacer(modifier = Modifier.weight(1f))
+                            }
+                        }
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+        }
+
+        // Bottom Docked "Continue" Pill Button (exact match to reference!)
+        Box(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .fillMaxWidth()
+                .background(
+                    Brush.verticalGradient(
+                        colors = listOf(
+                            Color(0x00E4F8F6),
+                            Color(0xCCE4F8F6),
+                            Color(0xFFD6F5F2)
+                        )
+                    )
+                )
+                .padding(horizontal = 20.dp, vertical = 16.dp)
+        ) {
+            Button(
+                onClick = onBack,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(52.dp),
+                shape = RoundedCornerShape(26.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFF0E4D45)
+                ),
+                elevation = ButtonDefaults.buttonElevation(
+                    defaultElevation = 4.dp,
+                    pressedElevation = 2.dp
+                )
+            ) {
+                Text(
+                    text = "Continue",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = Color.White
+                )
             }
         }
     }
@@ -631,33 +792,60 @@ private fun BlankThemePlusCard(
     modifier: Modifier = Modifier,
     onClick: () -> Unit
 ) {
-    val colors = LocalSettingsColors.current
-    val cardShape = RoundedCornerShape(20.dp)
-    val borderColor = if (colors.isDark) Color(0x18FFFFFF) else Color(0x0E000000)
+    val cardShape = RoundedCornerShape(22.dp)
 
-    Box(
+    Card(
+        shape = cardShape,
+        colors = CardDefaults.cardColors(
+            containerColor = Color.White
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        border = BorderStroke(width = 1.dp, color = Color(0xFFE2EFEF)),
         modifier = modifier
             .fillMaxWidth()
-            .aspectRatio(1.3f)
-            .shadow(
-                elevation = 2.dp,
-                shape = cardShape,
-                clip = false,
-                ambientColor = Color.Black.copy(alpha = 0.25f),
-                spotColor = Color.Black.copy(alpha = 0.25f)
-            )
-            .clip(cardShape)
-            .background(colors.cardBackground)
-            .border(width = 1.dp, color = borderColor, shape = cardShape)
-            .clickable(onClick = onClick),
-        contentAlignment = Alignment.Center
+            .clickable(onClick = onClick)
     ) {
-        Icon(
-            imageVector = Icons.Outlined.Add,
-            contentDescription = "Create Theme",
-            tint = colors.textSecondary,
-            modifier = Modifier.size(30.dp)
-        )
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(104.dp)
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(Color(0xFFF0FAF9)),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.Add,
+                    contentDescription = "Create Theme",
+                    tint = Color(0xFF2C857B),
+                    modifier = Modifier.size(32.dp)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            Text(
+                text = "Create Theme",
+                fontSize = 15.5.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFF1B2A28),
+                textAlign = TextAlign.Center
+            )
+
+            Spacer(modifier = Modifier.height(2.dp))
+
+            Text(
+                text = "Design or import",
+                fontSize = 12.sp,
+                color = Color(0xFF70807E),
+                textAlign = TextAlign.Center
+            )
+        }
     }
 }
 
@@ -668,160 +856,174 @@ private fun AbstractThemeCard(
     showKeyBorders: Boolean = true,
     showKeyShadows: Boolean = true,
     modifier: Modifier = Modifier,
-    onSelect: () -> Unit
+    onSelect: () -> Unit,
+    onLongClick: (() -> Unit)? = null
 ) {
-    val colors = LocalSettingsColors.current
     val scheme = themeOption.scheme
+    val cardShape = RoundedCornerShape(22.dp)
 
-    val gradientBrush = remember(scheme) {
-        scheme.themeSpec?.background?.gradient?.toBrush(androidx.compose.ui.geometry.Size(200f, 150f))
-    }
-
-    val cardShape = RoundedCornerShape(20.dp)
-    val cardBorderColor by animateColorAsState(
-        targetValue = if (isSelected) colors.accent else if (colors.isDark) Color(0x18FFFFFF) else Color(0x0E000000),
-        animationSpec = tween(durationMillis = 200),
-        label = "themeBorder"
-    )
-
-    BoxWithConstraints(
+    Card(
+        shape = cardShape,
+        colors = CardDefaults.cardColors(
+            containerColor = Color.White
+        ),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = if (isSelected) 4.dp else 2.dp
+        ),
+        border = BorderStroke(
+            width = if (isSelected) 2.5.dp else 1.dp,
+            color = if (isSelected) Color(0xFF147268) else Color(0xFFE2EFEF)
+        ),
         modifier = modifier
             .fillMaxWidth()
-            .aspectRatio(1.3f)
-            .shadow(
-                elevation = if (isSelected) 4.dp else 2.dp,
-                shape = cardShape,
-                clip = false,
-                ambientColor = Color.Black.copy(alpha = 0.25f),
-                spotColor = Color.Black.copy(alpha = 0.25f)
-            )
-            .clip(cardShape)
-            .then(
-                if (gradientBrush != null) {
-                    Modifier.background(gradientBrush)
-                } else {
-                    Modifier.background(scheme.containerBackground)
-                }
-            )
-            .border(
-                width = if (isSelected) 2.5.dp else 1.dp,
-                color = cardBorderColor,
-                shape = cardShape
-            )
             .clickable(onClick = onSelect)
     ) {
-        val imageSpec = scheme.themeSpec?.background?.image
-        if (imageSpec != null) {
-            io.lipika.theme.ThemeImageBackgroundView(
-                spec = imageSpec,
-                modifier = Modifier.fillMaxSize()
-            )
-        }
-
-        val cardWidth = maxWidth
-        val cardHeight = maxHeight
-
-        val keyHeight = cardHeight * 0.15f
-        val bottomMargin = cardHeight * 0.14f
-        val sideMargin = cardWidth * 0.14f
-        val keyGap = 6.dp
-
-        val keyShape = RoundedCornerShape(4.dp)
-        val keyBorderColor = scheme.keyBorder
-        val hasStroke = showKeyBorders && keyBorderColor != Color.Transparent && keyBorderColor.alpha > 0.05f
-
-        val keyShadowColor = scheme.keyShadow
-        val hasShadow = showKeyShadows && keyShadowColor != Color.Transparent && keyShadowColor.alpha > 0.05f
-
-        val spaceHex = scheme.themeSpec?.spaceKey?.background ?: scheme.themeSpec?.characterKey?.background
-        val spaceColor = if (spaceHex != null) ThemeColorUtils.parseHexColor(spaceHex, scheme.keyBackground) else scheme.keyBackground
-
-        val enterHex = scheme.themeSpec?.actionKey?.background
-        val enterColor = if (enterHex != null) ThemeColorUtils.parseHexColor(enterHex, scheme.accentColor) else scheme.accentColor
-
-        Row(
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .align(Alignment.BottomCenter)
-                .padding(start = sideMargin, end = sideMargin, bottom = bottomMargin)
-                .height(keyHeight),
-            horizontalArrangement = Arrangement.spacedBy(keyGap),
-            verticalAlignment = Alignment.CenterVertically
+                .padding(12.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Box(
-                modifier = Modifier
-                    .weight(0.58f)
-                    .fillMaxHeight()
-                    .then(
-                        if (hasShadow) {
-                            Modifier.shadow(
-                                elevation = 1.dp,
-                                shape = keyShape,
-                                clip = false,
-                                ambientColor = keyShadowColor,
-                                spotColor = keyShadowColor
-                            )
-                        } else {
-                            Modifier
-                        }
-                    )
-                    .then(
-                        if (hasStroke) {
-                            Modifier.border(0.75.dp, keyBorderColor, keyShape)
-                        } else {
-                            Modifier
-                        }
-                    )
-                    .clip(keyShape)
-                    .background(spaceColor)
-            )
-
-            Box(
-                modifier = Modifier
-                    .weight(0.14f)
-                    .fillMaxHeight()
-                    .then(
-                        if (hasShadow) {
-                            Modifier.shadow(
-                                elevation = 1.dp,
-                                shape = keyShape,
-                                clip = false,
-                                ambientColor = keyShadowColor,
-                                spotColor = keyShadowColor
-                            )
-                        } else {
-                            Modifier
-                        }
-                    )
-                    .then(
-                        if (hasStroke) {
-                            Modifier.border(0.75.dp, keyBorderColor, keyShape)
-                        } else {
-                            Modifier
-                        }
-                    )
-                    .clip(keyShape)
-                    .background(enterColor)
-            )
-        }
-
-        if (isSelected) {
-            Box(
-                modifier = Modifier
-                    .size(32.dp)
-                    .clip(CircleShape)
-                    .background(colors.accent)
-                    .border(1.5.dp, Color.White, CircleShape)
-                    .align(Alignment.Center),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.Check,
-                    contentDescription = "Selected",
-                    tint = Color.White,
-                    modifier = Modifier.size(18.dp)
-                )
+            // Miniature Keyboard Preview Box (104.dp height, 16.dp rounded shape)
+            val previewShape = RoundedCornerShape(16.dp)
+            val gradientBrush = remember(scheme) {
+                scheme.themeSpec?.background?.gradient?.toBrush(androidx.compose.ui.geometry.Size(260f, 160f))
             }
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(104.dp)
+                    .clip(previewShape)
+                    .then(
+                        if (gradientBrush != null) {
+                            Modifier.background(gradientBrush)
+                        } else {
+                            Modifier.background(scheme.containerBackground)
+                        }
+                    )
+            ) {
+                val imageSpec = scheme.themeSpec?.background?.image
+                if (imageSpec != null) {
+                    io.lipika.theme.ThemeImageBackgroundView(
+                        spec = imageSpec,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                }
+
+                // White / translucent keycap bar at bottom representing miniature keyboard
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.BottomCenter)
+                        .height(44.dp)
+                        .background(Color.White.copy(alpha = 0.95f))
+                        .padding(horizontal = 8.dp, vertical = 6.dp)
+                ) {
+                    val keyShape = RoundedCornerShape(5.dp)
+                    val spaceHex = scheme.themeSpec?.spaceKey?.background ?: scheme.themeSpec?.characterKey?.background
+                    val spaceColor = if (spaceHex != null) ThemeColorUtils.parseHexColor(spaceHex, Color(0xFFF1F5F9)) else Color(0xFFF1F5F9)
+                    val enterHex = scheme.themeSpec?.actionKey?.background
+                    val enterColor = if (enterHex != null) ThemeColorUtils.parseHexColor(enterHex, scheme.accentColor) else scheme.accentColor
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .align(Alignment.Center),
+                        horizontalArrangement = Arrangement.spacedBy(4.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        // Function / Sym key
+                        Box(
+                            modifier = Modifier
+                                .weight(0.2f)
+                                .height(22.dp)
+                                .clip(keyShape)
+                                .background(Color(0xFFE2E8F0))
+                        )
+                        // Space bar
+                        Box(
+                            modifier = Modifier
+                                .weight(0.55f)
+                                .height(22.dp)
+                                .clip(keyShape)
+                                .background(spaceColor)
+                                .border(0.5.dp, Color(0x33000000), keyShape)
+                        )
+                        // Action / Enter key
+                        Box(
+                            modifier = Modifier
+                                .weight(0.25f)
+                                .height(22.dp)
+                                .clip(keyShape)
+                                .background(enterColor)
+                        )
+                    }
+                }
+
+                // Selected Checkmark Badge
+                if (isSelected) {
+                    Box(
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .size(22.dp)
+                            .clip(CircleShape)
+                            .background(Color(0xFF147268))
+                            .border(1.5.dp, Color.White, CircleShape)
+                            .align(Alignment.TopEnd),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Check,
+                            contentDescription = "Selected",
+                            tint = Color.White,
+                            modifier = Modifier.size(14.dp)
+                        )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            // Theme Name (Bold, 15.5.sp, dark color, centered)
+            Text(
+                text = themeOption.name,
+                fontSize = 15.5.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFF1B2A28),
+                textAlign = TextAlign.Center,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+
+            Spacer(modifier = Modifier.height(2.dp))
+
+            // Theme Vibe / Description (Soft grey, 12.sp, centered)
+            val vibeDescription = remember(themeOption.id, themeOption.description) {
+                when (themeOption.id) {
+                    "ocean_teal" -> "Fresh & energizing"
+                    "sunset_coral" -> "Warm & creative"
+                    "minimal_grey" -> "Clean & focused"
+                    "soft_lavender" -> "Calm & soothing"
+                    "frosted_glass" -> "Translucent & modern"
+                    "lipika_gradient" -> "Luminous aurora glass"
+                    "default_light" -> "Crisp & classic"
+                    "default_dark" -> "Sleek velvet graphite"
+                    "pure_black" -> "Pitch-black OLED"
+                    "amoled_black" -> "True deep black"
+                    else -> themeOption.description.take(24)
+                }
+            }
+
+            Text(
+                text = vibeDescription,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Normal,
+                color = Color(0xFF70807E),
+                textAlign = TextAlign.Center,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
         }
     }
 }

@@ -51,6 +51,34 @@ class ThemeRepository private constructor(private val context: Context) {
         get() = File(context.filesDir, "themes").apply { if (!exists()) mkdirs() }
 
     private val originalThemes = linkedMapOf<String, ThemeOptionItem>(
+        "ocean_teal" to ThemeOptionItem(
+            id = "ocean_teal",
+            name = "Ocean Teal",
+            description = "Fresh & energizing",
+            scheme = KeyboardColorScheme.OceanTeal,
+            category = ThemeCategory.ORIGINALS
+        ),
+        "sunset_coral" to ThemeOptionItem(
+            id = "sunset_coral",
+            name = "Sunset Coral",
+            description = "Warm & creative",
+            scheme = KeyboardColorScheme.SunsetCoral,
+            category = ThemeCategory.ORIGINALS
+        ),
+        "minimal_grey" to ThemeOptionItem(
+            id = "minimal_grey",
+            name = "Minimal Grey",
+            description = "Clean & focused",
+            scheme = KeyboardColorScheme.MinimalGrey,
+            category = ThemeCategory.ORIGINALS
+        ),
+        "soft_lavender" to ThemeOptionItem(
+            id = "soft_lavender",
+            name = "Soft lavender",
+            description = "Calm & soothing",
+            scheme = KeyboardColorScheme.SoftLavender,
+            category = ThemeCategory.ORIGINALS
+        ),
         "frosted_glass" to ThemeOptionItem(
             id = "frosted_glass",
             name = "Frosted Glass Effect",
@@ -112,6 +140,23 @@ class ThemeRepository private constructor(private val context: Context) {
     }
 
     private fun loadBundledThemes() {
+        listOf(
+            "ocean_teal" to "Ocean Teal",
+            "sunset_coral" to "Sunset Coral",
+            "minimal_grey" to "Minimal Grey",
+            "soft_lavender" to "Soft lavender"
+        ).forEach { (themeId, defaultName) ->
+            try {
+                val stream = context.assets.open("themes/$themeId.json")
+                val content = stream.bufferedReader(Charsets.UTF_8).use { it.readText() }
+                val spec = json.decodeFromString<KeyboardThemeSpec>(content)
+                bundledThemes[themeId] = spec.toCustomThemeDef()
+                richThemes[themeId] = spec
+                originalThemes[themeId]?.let { existing ->
+                    originalThemes[themeId] = existing.copy(scheme = spec.toKeyboardColorScheme())
+                }
+            } catch (_: Exception) {}
+        }
         try {
             val gradStream = context.assets.open("themes/lipika_gradient.json")
             val gradContent = gradStream.bufferedReader(Charsets.UTF_8).use { it.readText() }

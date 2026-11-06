@@ -496,7 +496,7 @@ fun LipikaSettingsApp(
             .navigationBarsPadding()
     ) {
         // Persistent Top Bar that stays anchored, only transitioning title/back-icon smoothly
-        if (!isMainScreen && currentScreen != SettingsScreen.Onboarding) {
+        if (!isMainScreen && currentScreen != SettingsScreen.Onboarding && currentScreen !is SettingsScreen.AppearanceThemes) {
             SettingsUnifiedTopBar(
                 screen = currentScreen,
                 onBack = navigateBack

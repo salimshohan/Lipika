@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 2,
+  "id": "minimal_grey",
+  "name": "Minimal Grey",
+  "author": "Lipika",
+  "version": 1,
+  "isDark": false,
+  "background": {
+    "gradient": {
+      "type": "linear",
+      "colors": ["#334155", "#64748B", "#94A3B8"],
+      "stops": [0.0, 0.5, 1.0],
+      "angle": 135.0
+    }
+  },
+  "characterKey": {
+    "background": "#F8FAFC",
+    "foreground": "#0F172A",
+    "stroke": {
+      "color": "#CBD5E1",
+      "widthDp": 0.75,
+      "alpha": 0.6
+    },
+    "shadow": {
+      "color": "#1A0F172A",
+      "elevationDp": 1.5
+    },
+    "cornerRadiusDp": 10.0,
+    "pressedBackground": "#E2E8F0"
+  },
+  "functionalKey": {
+    "background": "#E2E8F0",
+    "foreground": "#334155",
+    "stroke": {
+      "color": "#CBD5E1",
+      "widthDp": 0.75,
+      "alpha": 0.5
+    },
+    "shadow": {
+      "color": "#1A0F172A",
+      "elevationDp": 1.5
+    },
+    "cornerRadiusDp": 10.0,
+    "pressedBackground": "#CBD5E1"
+  },
+  "actionKey": {
+    "background": "#475569",
+    "foreground": "#FFFFFF",
+    "isPill": true,
+    "pressedBackground": "#334155"
+  },
+  "spaceKey": {
+    "background": "#F8FAFC",
+    "foreground": "#0F172A",
+    "cornerRadiusDp": 14.0,
+    "stroke": {
+      "color": "#CBD5E1",
+      "widthDp": 0.75,
+      "alpha": 0.6
+    }
+  }
+}

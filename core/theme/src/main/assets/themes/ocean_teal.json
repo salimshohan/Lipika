@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 2,
+  "id": "ocean_teal",
+  "name": "Ocean Teal",
+  "author": "Lipika",
+  "version": 1,
+  "isDark": false,
+  "background": {
+    "gradient": {
+      "type": "linear",
+      "colors": ["#0F766E", "#14B8A6", "#5EEAD4"],
+      "stops": [0.0, 0.5, 1.0],
+      "angle": 135.0
+    }
+  },
+  "characterKey": {
+    "background": "#F0FDFA",
+    "foreground": "#0F172A",
+    "stroke": {
+      "color": "#99F6E4",
+      "widthDp": 0.75,
+      "alpha": 0.6
+    },
+    "shadow": {
+      "color": "#1A0F766E",
+      "elevationDp": 1.5
+    },
+    "cornerRadiusDp": 10.0,
+    "pressedBackground": "#CCFBF1"
+  },
+  "functionalKey": {
+    "background": "#CCFBF1",
+    "foreground": "#0F766E",
+    "stroke": {
+      "color": "#5EEAD4",
+      "widthDp": 0.75,
+      "alpha": 0.5
+    },
+    "shadow": {
+      "color": "#1A0F766E",
+      "elevationDp": 1.5
+    },
+    "cornerRadiusDp": 10.0,
+    "pressedBackground": "#99F6E4"
+  },
+  "actionKey": {
+    "background": "#0D9488",
+    "foreground": "#FFFFFF",
+    "isPill": true,
+    "pressedBackground": "#0F766E"
+  },
+  "spaceKey": {
+    "background": "#F0FDFA",
+    "foreground": "#0F172A",
+    "cornerRadiusDp": 14.0,
+    "stroke": {
+      "color": "#99F6E4",
+      "widthDp": 0.75,
+      "alpha": 0.6
+    }
+  }
+}

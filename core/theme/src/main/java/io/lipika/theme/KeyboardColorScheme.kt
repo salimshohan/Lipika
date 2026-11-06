@@ -407,6 +407,78 @@ data class KeyboardColorScheme(
             keyPressedBackground = Color(0x55FFFFFF),
             keyPressedForeground = Color(0xFFFFFFFF)
         )
+
+        val OceanTeal = KeyboardColorScheme(
+            containerBackground = Color(0xFF0F766E),
+            keyBackground = Color(0xFFF0FDFA),
+            keyForeground = Color(0xFF0F172A),
+            keyBorder = Color(0x9999F6E4),
+            keyShadow = Color(0x260F766E),
+            actionKeyBackground = Color(0xFFCCFBF1),
+            actionKeyForeground = Color(0xFF0F766E),
+            shiftActiveColor = Color(0xFF0D9488),
+            accentColor = Color(0xFF0D9488),
+            moreKeysBackground = Color(0xFFFFFFFF),
+            guidelineColor = Color(0xFF0D9488),
+            suggestionBackground = Color(0xFFCCFBF1),
+            suggestionForeground = Color(0xFF0F766E),
+            keyPressedBackground = Color(0xFF99F6E4),
+            keyPressedForeground = Color(0xFF0F172A)
+        )
+
+        val SunsetCoral = KeyboardColorScheme(
+            containerBackground = Color(0xFFFB7185),
+            keyBackground = Color(0xFFFFF1F2),
+            keyForeground = Color(0xFF1F2937),
+            keyBorder = Color(0x99FECDD3),
+            keyShadow = Color(0x26E11D48),
+            actionKeyBackground = Color(0xFFFFE4E6),
+            actionKeyForeground = Color(0xFFBE123C),
+            shiftActiveColor = Color(0xFFE11D48),
+            accentColor = Color(0xFFE11D48),
+            moreKeysBackground = Color(0xFFFFFFFF),
+            guidelineColor = Color(0xFFE11D48),
+            suggestionBackground = Color(0xFFFFE4E6),
+            suggestionForeground = Color(0xFFBE123C),
+            keyPressedBackground = Color(0xFFFECDD3),
+            keyPressedForeground = Color(0xFF1F2937)
+        )
+
+        val MinimalGrey = KeyboardColorScheme(
+            containerBackground = Color(0xFF475569),
+            keyBackground = Color(0xFFF8FAFC),
+            keyForeground = Color(0xFF0F172A),
+            keyBorder = Color(0x99CBD5E1),
+            keyShadow = Color(0x260F172A),
+            actionKeyBackground = Color(0xFFE2E8F0),
+            actionKeyForeground = Color(0xFF334155),
+            shiftActiveColor = Color(0xFF475569),
+            accentColor = Color(0xFF475569),
+            moreKeysBackground = Color(0xFFFFFFFF),
+            guidelineColor = Color(0xFF475569),
+            suggestionBackground = Color(0xFFE2E8F0),
+            suggestionForeground = Color(0xFF334155),
+            keyPressedBackground = Color(0xFFCBD5E1),
+            keyPressedForeground = Color(0xFF0F172A)
+        )
+
+        val SoftLavender = KeyboardColorScheme(
+            containerBackground = Color(0xFF8B5CF6),
+            keyBackground = Color(0xFFF5F3FF),
+            keyForeground = Color(0xFF1E1B4B),
+            keyBorder = Color(0x99DDD6FE),
+            keyShadow = Color(0x266D28D9),
+            actionKeyBackground = Color(0xFFEDE9FE),
+            actionKeyForeground = Color(0xFF6D28D9),
+            shiftActiveColor = Color(0xFF7C3AED),
+            accentColor = Color(0xFF7C3AED),
+            moreKeysBackground = Color(0xFFFFFFFF),
+            guidelineColor = Color(0xFF7C3AED),
+            suggestionBackground = Color(0xFFEDE9FE),
+            suggestionForeground = Color(0xFF6D28D9),
+            keyPressedBackground = Color(0xFFDDD6FE),
+            keyPressedForeground = Color(0xFF1E1B4B)
+        )
     }
 }
 

@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:aapt="http://schemas.android.com/aapt"
     android:width="108dp"
@@ -5,78 +6,40 @@
     android:viewportWidth="512"
     android:viewportHeight="512">
 
-    <!-- Circle Keycap Body for Round Icon -->
+    <!-- Circular Background -->
     <path
-        android:pathData="M256,256 m-220,0 a220,220 0,1,0 440,0 a220,220 0,1,0 -440,0">
+        android:pathData="M256,256 m-216,0 a216,216 0,1,0 432,0 a216,216 0,1,0 -432,0">
         <aapt:attr name="android:fillColor">
             <gradient
-                android:angle="135"
-                android:startColor="#1E1B4B"
-                android:centerColor="#0F172A"
-                android:endColor="#020617"
-                android:type="linear" />
-        </aapt:attr>
-    </path>
-
-    <!-- Glowing Cyber Border -->
-    <path
-        android:pathData="M256,256 m-216,0 a216,216 0,1,0 432,0 a216,216 0,1,0 -432,0"
-        android:strokeWidth="8">
-        <aapt:attr name="android:strokeColor">
-            <gradient
-                android:angle="135"
-                android:startColor="#06B6D4"
+                android:angle="45"
+                android:startColor="#2563EB"
                 android:centerColor="#38BDF8"
-                android:endColor="#8B5CF6"
-                android:type="linear" />
-        </aapt:attr>
-    </path>
-
-    <!-- Center Radial Glow -->
-    <path
-        android:pathData="M256,256 m-160,0 a160,160 0,1,0 320,0 a160,160 0,1,0 -320,0"
-        android:fillAlpha="0.35">
-        <aapt:attr name="android:fillColor">
-            <gradient
-                android:centerX="256"
-                android:centerY="256"
-                android:gradientRadius="160"
-                android:startColor="#06B6D4"
-                android:endColor="#0006B6D4"
-                android:type="radial" />
-        </aapt:attr>
-    </path>
-
-    <!-- Top Horizontal Bar ('Matra') -->
-    <path
-        android:pathData="M143,160 L369,160 A13,13 0,0,1 382,173 L382,173 A13,13 0,0,1 369,186 L143,186 A13,13 0,0,1 130,173 L130,173 A13,13 0,0,1 143,160 Z"
-        android:fillColor="#FFFFFF" />
-
-    <!-- Stylized Modern Bengali 'ল' Loops -->
-    <path
-        android:pathData="M 155,310 C 135,275 145,220 180,196 C 210,176 242,188 252,218 C 265,188 298,176 328,196 C 360,220 370,275 350,310 C 340,330 315,350 280,345 L 280,318 C 300,322 320,310 326,295 C 338,270 330,230 306,215 C 288,202 265,210 256,238 L 242,238 C 233,210 210,202 192,215 C 168,230 160,270 172,295 C 178,310 198,322 218,318 L 218,345 C 183,350 158,330 155,310 Z">
-        <aapt:attr name="android:fillColor">
-            <gradient
-                android:angle="270"
-                android:startColor="#38BDF8"
                 android:endColor="#06B6D4"
                 android:type="linear" />
         </aapt:attr>
     </path>
 
-    <!-- Vertical Stem of 'ল' -->
+    <!-- Faceted diagonal light ray -->
     <path
-        android:pathData="M369,160 L369,160 A13,13 0,0,1 382,173 L382,342 A13,13 0,0,1 369,355 L369,355 A13,13 0,0,1 356,342 L356,173 A13,13 0,0,1 369,160 Z"
+        android:pathData="M240,44 L468,44 L468,240 L300,468 L150,468 Z"
+        android:fillAlpha="0.22">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:angle="45"
+                android:startColor="#FFFFFF"
+                android:endColor="#38BDF8"
+                android:type="linear" />
+        </aapt:attr>
+    </path>
+
+    <!-- Soft Drop Shadow for L -->
+    <path
+        android:pathData="M250,122 C224,122 208,138 208,164 L208,314 C208,352 236,380 274,380 L330,380 C348,380 362,366 362,348 C362,330 348,316 330,316 L278,316 C263,316 252,305 252,290 L252,164 C252,138 250,122 250,122 Z"
+        android:fillAlpha="0.30"
+        android:fillColor="#172554" />
+
+    <!-- Pure white rounded Lipika L glyph -->
+    <path
+        android:pathData="M246,114 C220,114 204,130 204,156 L204,306 C204,344 232,372 270,372 L326,372 C344,372 358,358 358,340 C358,322 344,308 326,308 L274,308 C259,308 248,297 248,282 L248,156 C248,130 246,114 246,114 Z"
         android:fillColor="#FFFFFF" />
-
-    <!-- Foot Accent -->
-    <path
-        android:pathData="M341,340 L371,340 A11,11 0,0,1 382,351 L382,351 A11,11 0,0,1 371,362 L341,362 A11,11 0,0,1 330,351 L330,351 A11,11 0,0,1 341,340 Z"
-        android:fillColor="#FFFFFF" />
-
-    <!-- Electric Cyan Typing Cursor Spark -->
-    <path
-        android:pathData="M396,177 A7,7 0,0,1 410,177 L410,211 A7,7 0,0,1 396,211 Z"
-        android:fillColor="#06B6D4" />
-
 </vector>
