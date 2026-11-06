@@ -418,6 +418,8 @@ fun KeyboardRootView(
         }
         if (key.type == KeyType.SWITCH_LANGUAGE) {
             isEmojiOpen = !isEmojiOpen
+        } else if (key.icon == "directional") {
+            isTextEditOpen = !isTextEditOpen
         } else if (isEmojiSearchOpen) {
             when (key.type) {
                 KeyType.CHARACTER -> {

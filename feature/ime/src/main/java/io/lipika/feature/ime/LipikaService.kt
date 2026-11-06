@@ -577,12 +577,14 @@ class LipikaService : InputMethodService() {
             // When typing normally, the cursor stays collapsed at the end of the candidate region.
             // If the user touched another position, the cursor or selection moved away from candidatesEnd,
             // or the composing span was cleared/invalidated by the host view.
-            val cursorMovedAway = candidatesStart < 0 ||
-                    candidatesEnd < 0 ||
-                    newSelStart != candidatesEnd ||
-                    newSelEnd != candidatesEnd ||
-                    newSelStart < candidatesStart ||
-                    newSelEnd > candidatesEnd
+            val cursorMovedAway = if (candidatesStart >= 0 && candidatesEnd >= 0) {
+                newSelStart != candidatesEnd ||
+                newSelEnd != candidatesEnd ||
+                newSelStart < candidatesStart ||
+                newSelEnd > candidatesEnd
+            } else {
+                false
+            }
 
             if (cursorMovedAway) {
                 val ic = currentInputConnection
@@ -884,18 +886,8 @@ class LipikaService : InputMethodService() {
                     }
                     // Bengali Probhat layout
                     activeLayout.id == "bn_probhat" -> {
-                        if (isBengaliChar(text)) {
-                            composingBuffer.append(text)
-                            ic.setComposingText(composingBuffer.toString(), 1)
-                        } else {
-                            val word = composingBuffer.toString().trim()
-                            if (preferencesState.learnedWordsEnabled && word.length >= UserDictionaryRepository.MIN_LEARN_LENGTH) {
-                                val prevWord = getPrecedingWord(excludeComposing = true)
-                                userDictionaryRepo.recordWord(word, prevWord)
-                            }
-                            finishComposing()
-                            commitCharacterWithPunctuationHandling(ic, text)
-                        }
+                        finishComposing()
+                        commitCharacterWithPunctuationHandling(ic, text.replace("\u25CC", ""))
                     }
                     // Bengali Borno Easy layout
                     activeLayout.id == "bn_easy" -> {
@@ -1489,9 +1481,12 @@ class LipikaService : InputMethodService() {
     }
 
     private fun commitCharacterWithPunctuationHandling(ic: InputConnection, text: String) {
+        val sanitized = text.replace("\u25CC", "")
+        if (sanitized.isEmpty()) return
+        val textToUse = sanitized
         val inUrlOrCode = isUrlOrCodeField()
-        val isRemovePunc = isRemoveSpaceBeforePunctuation(text)
-        val isAutoPunc = isAutoSpacePunctuation(text)
+        val isRemovePunc = isRemoveSpaceBeforePunctuation(textToUse)
+        val isAutoPunc = isAutoSpacePunctuation(textToUse)
 
         val canRemoveSpace = preferencesState.removeSpaceBeforePunctuation && !inUrlOrCode && isRemovePunc
         val canAutoSpace = preferencesState.autoSpaceAfterPunctuation && !inUrlOrCode && isAutoPunc
@@ -1506,27 +1501,27 @@ class LipikaService : InputMethodService() {
                 // Remove the space before the punctuation
                 ic.deleteSurroundingText(1, 0)
 
-                if (canAutoSpace && shouldAutoSpaceAfterPunctuation(precedingChar, text)) {
-                    ic.commitText(text + " ", 1)
+                if (canAutoSpace && shouldAutoSpaceAfterPunctuation(precedingChar, textToUse)) {
+                    ic.commitText(textToUse + " ", 1)
                     val now = SystemClock.uptimeMillis()
                     lastSpaceTapTime = now
                     lastAutoSpacePunctuationTime = now
-                    if (isSentenceTerminator(text) && shouldAutoCapitalize() && shiftState == ShiftState.UNSHIFTED) {
+                    if (isSentenceTerminator(textToUse) && shouldAutoCapitalize() && shiftState == ShiftState.UNSHIFTED) {
                         shiftState = ShiftState.ONE_SHOT
                     }
                     return
                 } else {
-                    ic.commitText(text, 1)
+                    ic.commitText(textToUse, 1)
                     lastAutoSpacePunctuationTime = 0L
                     return
                 }
-            } else if (canAutoSpace && precedingChar != null && shouldAutoSpaceAfterPunctuation(precedingChar, text)) {
+            } else if (canAutoSpace && precedingChar != null && shouldAutoSpaceAfterPunctuation(precedingChar, textToUse)) {
                 // Space before punctuation was not removed, but auto-space is enabled
-                ic.commitText(text + " ", 1)
+                ic.commitText(textToUse + " ", 1)
                 val now = SystemClock.uptimeMillis()
                 lastSpaceTapTime = now
                 lastAutoSpacePunctuationTime = now
-                if (isSentenceTerminator(text) && shouldAutoCapitalize() && shiftState == ShiftState.UNSHIFTED) {
+                if (isSentenceTerminator(textToUse) && shouldAutoCapitalize() && shiftState == ShiftState.UNSHIFTED) {
                     shiftState = ShiftState.ONE_SHOT
                 }
                 return
@@ -1535,12 +1530,12 @@ class LipikaService : InputMethodService() {
             // Not preceded by a space (e.g. typing a punctuation immediately after a word)
             if (canAutoSpace && textBefore.isNotEmpty()) {
                 val precedingChar = textBefore.last()
-                if (shouldAutoSpaceAfterPunctuation(precedingChar, text)) {
-                    ic.commitText(text + " ", 1)
+                if (shouldAutoSpaceAfterPunctuation(precedingChar, textToUse)) {
+                    ic.commitText(textToUse + " ", 1)
                     val now = SystemClock.uptimeMillis()
                     lastSpaceTapTime = now
                     lastAutoSpacePunctuationTime = now
-                    if (isSentenceTerminator(text) && shouldAutoCapitalize() && shiftState == ShiftState.UNSHIFTED) {
+                    if (isSentenceTerminator(textToUse) && shouldAutoCapitalize() && shiftState == ShiftState.UNSHIFTED) {
                         shiftState = ShiftState.ONE_SHOT
                     }
                     return
@@ -1549,7 +1544,7 @@ class LipikaService : InputMethodService() {
         }
 
         lastAutoSpacePunctuationTime = 0L
-        ic.commitText(text, 1)
+        ic.commitText(textToUse, 1)
     }
 
     private fun isBengaliChar(text: String): Boolean {
@@ -2163,6 +2158,12 @@ class LipikaService : InputMethodService() {
         } else if (composingBuffer.isNotEmpty()) {
             ic.commitText(textToCommit, 1)
             composingBuffer.clear()
+        } else if (activeLayout.id == "bn_probhat") {
+            val prefix = getBengaliWordBeforeCursor()
+            if (prefix.isNotEmpty()) {
+                ic.deleteSurroundingText(prefix.length, 0)
+            }
+            ic.commitText(textToCommit, 1)
         } else {
             ic.commitText(textToCommit, 1)
         }
@@ -2182,6 +2183,22 @@ class LipikaService : InputMethodService() {
 
     private fun containsBengaliText(text: String): Boolean = text.any { isBengaliChar(it) }
     private fun containsLatinText(text: String): Boolean = text.any { isLatinChar(it) }
+
+    private fun getBengaliWordBeforeCursor(): String {
+        val ic = currentInputConnection ?: return ""
+        val text = ic.getTextBeforeCursor(50, 0)?.toString() ?: return ""
+        if (text.isEmpty()) return ""
+        val sb = StringBuilder()
+        for (i in text.length - 1 downTo 0) {
+            val c = text[i]
+            if ((c in '\u0980'..'\u09FF') || c == '\u200C' || c == '\u200D') {
+                sb.append(c)
+            } else {
+                break
+            }
+        }
+        return sb.reverse().toString()
+    }
 
     private fun isBanglaLayout(layout: io.lipika.common.model.KeyboardLayoutDef = activeLayout): Boolean {
         return layout.language == "bn" || layout.id.startsWith("bn")
@@ -2466,7 +2483,11 @@ class LipikaService : InputMethodService() {
         val layoutMode = if (isEnglishLayout()) "en_qwerty" else activeLayout.id
         when (layoutMode) {
             "bn_probhat", "bn_national", "bn_easy" -> {
-                val prefix = BengaliBstiEngine.cleanPending(composingBuffer.toString())
+                val prefix = if (activeLayout.id == "bn_probhat") {
+                    getBengaliWordBeforeCursor()
+                } else {
+                    BengaliBstiEngine.cleanPending(composingBuffer.toString())
+                }
                 if (prefix.isNotEmpty()) {
                     val learned = if (preferencesState.learnedWordsEnabled) {
                         userDictionaryRepo.getCompletions(prefix, 4) { !containsLatinText(it) }

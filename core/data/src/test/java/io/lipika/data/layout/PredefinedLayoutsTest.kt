@@ -224,84 +224,122 @@ class PredefinedLayoutsTest {
     fun testSymbolsLayoutsWithAndWithoutNumberRow() {
         val standard = PredefinedLayouts.getSymbolsLayout("symbols_1", hasNumberRow = false)
         assertEquals("symbols_1", standard.id)
-        assertEquals(4, standard.rows.size)
-        // Row 0 is numbers
+        assertEquals(5, standard.rows.size)
+        // Row 0 is numbers 1-0 with Bengali numeral hints
         assertEquals("1", standard.rows[0].keys[0].label)
+        assertEquals("১", standard.rows[0].keys[0].flickUp)
         assertEquals("0", standard.rows[0].keys[9].label)
-        // Row 1 is @, #, $, %, etc.
-        assertEquals("@", standard.rows[1].keys[0].label)
-        assertEquals("ZW\nNJ", standard.rows[1].keys[9].label)
-        assertEquals("\u200C", standard.rows[1].keys[9].textToCommit(io.lipika.common.model.ShiftState.UNSHIFTED))
-        // Row 2 is =<, *, ", etc.
-        assertEquals("=\\<", standard.rows[2].keys[0].label)
-        // Row 3 is ABC, comma, underscore, space, slash, period, enter
-        assertEquals("ABC", standard.rows[3].keys[0].label)
-        assertEquals(",", standard.rows[3].keys[1].label)
-        assertEquals("_", standard.rows[3].keys[2].label)
-        assertEquals(KeyType.SPACE, standard.rows[3].keys[3].type)
-        assertEquals("/", standard.rows[3].keys[4].label)
-        assertEquals(".", standard.rows[3].keys[5].label)
+        assertEquals("০", standard.rows[0].keys[9].flickUp)
 
-        // With extra row (number row enabled)
+        // Row 1 is Tab, ~, \, <, >, _, =, [, ]
+        assertEquals("tab", standard.rows[1].keys[0].icon)
+        assertEquals("\t", standard.rows[1].keys[0].commitText)
+        assertEquals("~", standard.rows[1].keys[1].label)
+        assertEquals("\\", standard.rows[1].keys[2].label)
+        assertEquals("/", standard.rows[1].keys[2].flickUp)
+        assertEquals("<", standard.rows[1].keys[3].label)
+        assertEquals(">", standard.rows[1].keys[4].label)
+        assertEquals("_", standard.rows[1].keys[5].label)
+        assertEquals("=", standard.rows[1].keys[6].label)
+        assertEquals("[", standard.rows[1].keys[7].label)
+        assertEquals("]", standard.rows[1].keys[8].label)
+
+        // Row 2 is @, #, ৳, %, &, *, -, +, (, )
+        assertEquals("@", standard.rows[2].keys[0].label)
+        assertEquals("#", standard.rows[2].keys[1].label)
+        assertEquals("৳", standard.rows[2].keys[2].label)
+        assertEquals("%", standard.rows[2].keys[3].label)
+        assertEquals("&", standard.rows[2].keys[4].label)
+        assertEquals("*", standard.rows[2].keys[5].label)
+        assertEquals("-", standard.rows[2].keys[6].label)
+        assertEquals("+", standard.rows[2].keys[7].label)
+        assertEquals("(", standard.rows[2].keys[8].label)
+        assertEquals(")", standard.rows[2].keys[9].label)
+
+        // Row 3 is =<, !, ", ', :, ;, /, ?, Backspace
+        assertEquals("=<", standard.rows[3].keys[0].label)
+        assertEquals(KeyType.SYMBOLS, standard.rows[3].keys[0].type)
+        assertEquals("!", standard.rows[3].keys[1].label)
+        assertEquals("\"", standard.rows[3].keys[2].label)
+        assertEquals("'", standard.rows[3].keys[3].label)
+        assertEquals(":", standard.rows[3].keys[4].label)
+        assertEquals(";", standard.rows[3].keys[5].label)
+        assertEquals("/", standard.rows[3].keys[6].label)
+        assertEquals("?", standard.rows[3].keys[7].label)
+        assertEquals(KeyType.DELETE, standard.rows[3].keys[8].type)
+
+        // Row 4 is ABC, comma, space (weight 5.0), period, enter
+        assertEquals("ABC", standard.rows[4].keys[0].label)
+        assertEquals(KeyType.SYMBOLS, standard.rows[4].keys[0].type)
+        assertEquals(",", standard.rows[4].keys[1].label)
+        assertEquals(KeyType.SPACE, standard.rows[4].keys[2].type)
+        assertEquals(5.0f, standard.rows[4].keys[2].widthWeight, 0.01f)
+        assertEquals(".", standard.rows[4].keys[3].label)
+        assertEquals(KeyType.ACTION, standard.rows[4].keys[4].type)
+
+        // With extra row (number row enabled) returns same 5-row layout
         val withExtra = PredefinedLayouts.getSymbolsLayout("symbols_1", hasNumberRow = true)
         assertEquals(5, withExtra.rows.size)
-        // Row 0 is numbers
         assertEquals("1", withExtra.rows[0].keys[0].label)
-        // Row 1 is the EXTRA ROW from Borno XML reference: ~ < > _ ` º \ = { }
-        val extraRow = withExtra.rows[1].keys
-        assertEquals(10, extraRow.size)
-        assertEquals("~", extraRow[0].label)
-        assertEquals("<", extraRow[1].label)
-        assertEquals(">", extraRow[2].label)
-        assertEquals("_", extraRow[3].label)
-        assertEquals("`", extraRow[4].label)
-        assertEquals("º", extraRow[5].label)
-        assertEquals("\\", extraRow[6].label)
-        assertEquals("=", extraRow[7].label)
-        assertEquals("{", extraRow[8].label)
-        assertEquals("}", extraRow[9].label)
-        // Row 2 is @, #, $...
-        assertEquals("@", withExtra.rows[2].keys[0].label)
-        // Row 3 is =<...
-        assertEquals("=\\<", withExtra.rows[3].keys[0].label)
-        // Row 4 is ABC...
-        assertEquals("ABC", withExtra.rows[4].keys[0].label)
     }
 
     @Test
     fun testSymbolsMoreLayoutsWithAndWithoutNumberRow() {
         val standard = PredefinedLayouts.getSymbolsLayout("symbols_2", hasNumberRow = false)
         assertEquals("symbols_2", standard.id)
-        assertEquals(4, standard.rows.size)
-        assertEquals("~", standard.rows[0].keys[0].label)
-        assertEquals("∆", standard.rows[0].keys[9].label)
-        assertEquals("£", standard.rows[1].keys[0].label)
-        assertEquals("?123", standard.rows[2].keys[0].label)
-        assertEquals("ABC", standard.rows[3].keys[0].label)
+        assertEquals(5, standard.rows.size)
+        // Row 0 is special symbols
+        assertEquals("👉", standard.rows[0].keys[0].label)
+        assertEquals("🔄", standard.rows[0].keys[9].label)
 
-        // With extra shift row (number row enabled)
+        // Row 1 is ~, `, |, ৳, √, π, ÷, ×, {, }
+        assertEquals("~", standard.rows[1].keys[0].label)
+        assertEquals("`", standard.rows[1].keys[1].label)
+        assertEquals("|", standard.rows[1].keys[2].label)
+        assertEquals("৳", standard.rows[1].keys[3].label)
+        assertEquals("√", standard.rows[1].keys[4].label)
+        assertEquals("π", standard.rows[1].keys[5].label)
+        assertEquals("÷", standard.rows[1].keys[6].label)
+        assertEquals("×", standard.rows[1].keys[7].label)
+        assertEquals("{", standard.rows[1].keys[8].label)
+        assertEquals("}", standard.rows[1].keys[9].label)
+
+        // Row 2 is Tab, £, $, %, ^, °, -, =, [, ]
+        assertEquals("tab", standard.rows[2].keys[0].icon)
+        assertEquals("£", standard.rows[2].keys[1].label)
+        assertEquals("$", standard.rows[2].keys[2].label)
+        assertEquals("%", standard.rows[2].keys[3].label)
+        assertEquals("^", standard.rows[2].keys[4].label)
+        assertEquals("°", standard.rows[2].keys[5].label)
+        assertEquals("-", standard.rows[2].keys[6].label)
+        assertEquals("=", standard.rows[2].keys[7].label)
+        assertEquals("[", standard.rows[2].keys[8].label)
+        assertEquals("]", standard.rows[2].keys[9].label)
+
+        // Row 3 is ?123, directional, ®, ©, ™, \, <, >, Backspace
+        assertEquals("?123", standard.rows[3].keys[0].label)
+        assertEquals(KeyType.SYMBOLS, standard.rows[3].keys[0].type)
+        assertEquals("directional", standard.rows[3].keys[1].icon)
+        assertEquals("®", standard.rows[3].keys[2].label)
+        assertEquals("©", standard.rows[3].keys[3].label)
+        assertEquals("™", standard.rows[3].keys[4].label)
+        assertEquals("\\", standard.rows[3].keys[5].label)
+        assertEquals("<", standard.rows[3].keys[6].label)
+        assertEquals(">", standard.rows[3].keys[7].label)
+        assertEquals(KeyType.DELETE, standard.rows[3].keys[8].type)
+
+        // Row 4 is ABC, comma, space (5.0f), period, enter
+        assertEquals("ABC", standard.rows[4].keys[0].label)
+        assertEquals(",", standard.rows[4].keys[1].label)
+        assertEquals(KeyType.SPACE, standard.rows[4].keys[2].type)
+        assertEquals(5.0f, standard.rows[4].keys[2].widthWeight, 0.01f)
+        assertEquals(".", standard.rows[4].keys[3].label)
+        assertEquals(KeyType.ACTION, standard.rows[4].keys[4].type)
+
+        // With extra shift row returns same 5-row layout
         val withExtra = PredefinedLayouts.getSymbolsLayout("symbols_2", hasNumberRow = true)
         assertEquals(5, withExtra.rows.size)
-        assertEquals("~", withExtra.rows[0].keys[0].label)
-        // Row 1 is the EXTRA SHIFT ROW from Borno XML reference: ≠ ≤ ≥ ∫ Σ ≈ ± ∓ ½ ∞
-        val extraShiftRow = withExtra.rows[1].keys
-        assertEquals(10, extraShiftRow.size)
-        assertEquals("≠", extraShiftRow[0].label)
-        assertEquals("≤", extraShiftRow[1].label)
-        assertEquals("≥", extraShiftRow[2].label)
-        assertEquals("∫", extraShiftRow[3].label)
-        assertEquals("Σ", extraShiftRow[4].label)
-        assertEquals("≈", extraShiftRow[5].label)
-        assertEquals("±", extraShiftRow[6].label)
-        assertEquals("∓", extraShiftRow[7].label)
-        assertEquals("½", extraShiftRow[8].label)
-        assertEquals("∞", extraShiftRow[9].label)
-        // Row 2 is £, ¢...
-        assertEquals("£", withExtra.rows[2].keys[0].label)
-        // Row 3 is ?123...
-        assertEquals("?123", withExtra.rows[3].keys[0].label)
-        // Row 4 is ABC...
-        assertEquals("ABC", withExtra.rows[4].keys[0].label)
+        assertEquals("👉", withExtra.rows[0].keys[0].label)
     }
 
     @Test
@@ -1162,15 +1200,15 @@ class PredefinedLayoutsTest {
         val sym = layout.symbolsLayout
         assertNotNull("symbolsLayout must be present", sym)
         assertEquals("symbols_1", sym!!.id)
-        assertEquals(4, sym.rows.size)
+        assertEquals(5, sym.rows.size)
         assertEquals(listOf("1", "2", "3", "4", "5", "6", "7", "8", "9", "0"), sym.rows[0].keys.map { it.label })
 
         // Verify full moreSymbolsLayout as QWERTY
         val moreSym = layout.moreSymbolsLayout
         assertNotNull("moreSymbolsLayout must be present", moreSym)
         assertEquals("symbols_2", moreSym!!.id)
-        assertEquals(4, moreSym.rows.size)
-        assertEquals(listOf("~", "`", "|", "•", "√", "π", "÷", "×", "¶", "∆"), moreSym.rows[0].keys.map { it.label })
+        assertEquals(5, moreSym.rows.size)
+        assertEquals(listOf("👉", "◐", "⊕", "✖", "✔", "★", "∞", "➡", "▶", "🔄"), moreSym.rows[0].keys.map { it.label })
 
         // Verify rules file exists in assets
         val rulesCandidates = listOf(
@@ -1181,5 +1219,28 @@ class PredefinedLayoutsTest {
         val rulesFile = rulesCandidates.firstOrNull { it.exists() }
         assertNotNull("bn-khipro.classic.mim must exist in assets/rules/", rulesFile)
         assertTrue("rules file must not be empty", rulesFile!!.length() > 0)
+    }
+
+    @Test
+    fun testBengaliProbhatTypographyAndSymbolsLayout() {
+        val probhat = PredefinedLayouts.BengaliProbhat
+        assertEquals("bn_probhat", probhat.id)
+        val bottomRow = probhat.rows.last().keys
+        assertEquals("?১২৩", bottomRow[0].label)
+        assertEquals(KeyType.SWITCH_LANGUAGE, bottomRow[1].type)
+        assertEquals(",", bottomRow[2].label)
+        assertEquals(KeyType.SPACE, bottomRow[3].type)
+        assertEquals("।", bottomRow[4].label)
+        assertEquals(KeyType.ACTION, bottomRow[5].type)
+
+        val sym = PredefinedLayouts.Symbols
+        assertEquals(5, sym.rows.size)
+        assertEquals("tab", sym.rows[1].keys[0].icon)
+        assertEquals("=<", sym.rows[3].keys[0].label)
+
+        val moreSym = PredefinedLayouts.SymbolsMore
+        assertEquals(5, moreSym.rows.size)
+        assertEquals("?123", moreSym.rows[3].keys[0].label)
+        assertEquals("directional", moreSym.rows[3].keys[1].icon)
     }
 }

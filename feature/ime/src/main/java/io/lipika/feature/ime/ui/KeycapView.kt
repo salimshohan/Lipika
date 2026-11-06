@@ -17,10 +17,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Backspace
 import androidx.compose.material.icons.automirrored.outlined.KeyboardReturn
+import androidx.compose.material.icons.automirrored.outlined.KeyboardTab
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.automirrored.outlined.ArrowForward
 import androidx.compose.material.icons.automirrored.outlined.Send
 import androidx.compose.material.icons.outlined.Check
+import androidx.compose.material.icons.outlined.OpenWith
 import androidx.compose.material.icons.outlined.Search
 import io.lipika.feature.ime.action.ActionKeyType
 import io.lipika.feature.ime.action.ActionKeyVisual
@@ -670,41 +672,57 @@ fun KeycapView(
                 )
             }
             else -> {
-                val isBangla = isBanglaText(displaySymbolLabel)
-                val isMultiline = displaySymbolLabel.contains("\n")
-                val baseCharSize = if (isMultiline) {
-                    11.5f
-                } else if (displaySymbolLabel.length > 2) {
-                    if (isBangla) 15f else 17f
-                } else if (displaySymbolLabel.length > 1) {
-                    if (isBangla) 18.5f else 21f
-                } else {
-                    if (isBangla) 22.5f else 26f
-                }
-                val rawSize = if (isMultiline) 11.5f else if (key.type == KeyType.SYMBOLS) (if (isBangla) 15f else 17f) else baseCharSize
-                val textSize = (rawSize * fontScaleFactor).coerceAtLeast(8.5f).sp
-                val isUppercase = displaySymbolLabel.length == 1 && displaySymbolLabel.first().isUpperCase()
-                val verticalShift = if (isUppercase) (1.2f * fontScaleFactor).dp else 0.dp
-                Text(
-                    text = displaySymbolLabel,
-                    color = foregroundColor,
-                    fontSize = textSize,
-                    fontWeight = if (key.type == KeyType.SYMBOLS) FontWeight.Bold else FontWeight.Medium,
-                    fontFamily = LipikaTheme.fontFamily,
-                    maxLines = if (isMultiline) 2 else 1,
-                    softWrap = isMultiline,
-                    modifier = if (verticalShift > 0.dp) Modifier.offset(y = verticalShift) else Modifier,
-                    style = androidx.compose.ui.text.TextStyle(
-                        fontFamily = LipikaTheme.fontFamily,
-                        platformStyle = androidx.compose.ui.text.PlatformTextStyle(includeFontPadding = false),
-                        lineHeight = if (isMultiline) (12f * fontScaleFactor).sp else textSize,
-                        lineHeightStyle = androidx.compose.ui.text.style.LineHeightStyle(
-                            alignment = androidx.compose.ui.text.style.LineHeightStyle.Alignment.Center,
-                            trim = androidx.compose.ui.text.style.LineHeightStyle.Trim.Both
-                        ),
-                        textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                if (key.icon == "tab") {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Outlined.KeyboardTab,
+                        contentDescription = "Tab",
+                        tint = foregroundColor,
+                        modifier = Modifier.size(actionIconSize)
                     )
-                )
+                } else if (key.icon == "directional") {
+                    Icon(
+                        imageVector = Icons.Outlined.OpenWith,
+                        contentDescription = "Directional",
+                        tint = foregroundColor,
+                        modifier = Modifier.size(actionIconSize)
+                    )
+                } else {
+                    val isBangla = isBanglaText(displaySymbolLabel)
+                    val isMultiline = displaySymbolLabel.contains("\n")
+                    val baseCharSize = if (isMultiline) {
+                        11.5f
+                    } else if (displaySymbolLabel.length > 2) {
+                        if (isBangla) 15f else 17f
+                    } else if (displaySymbolLabel.length > 1) {
+                        if (isBangla) 18.5f else 21f
+                    } else {
+                        if (isBangla) 22.5f else 26f
+                    }
+                    val rawSize = if (isMultiline) 11.5f else if (key.type == KeyType.SYMBOLS) (if (isBangla) 15f else 17f) else baseCharSize
+                    val textSize = (rawSize * fontScaleFactor).coerceAtLeast(8.5f).sp
+                    val isUppercase = displaySymbolLabel.length == 1 && displaySymbolLabel.first().isUpperCase()
+                    val verticalShift = if (isUppercase) (1.2f * fontScaleFactor).dp else 0.dp
+                    Text(
+                        text = displaySymbolLabel,
+                        color = foregroundColor,
+                        fontSize = textSize,
+                        fontWeight = if (key.type == KeyType.SYMBOLS) FontWeight.Bold else FontWeight.Medium,
+                        fontFamily = LipikaTheme.fontFamily,
+                        maxLines = if (isMultiline) 2 else 1,
+                        softWrap = isMultiline,
+                        modifier = if (verticalShift > 0.dp) Modifier.offset(y = verticalShift) else Modifier,
+                        style = androidx.compose.ui.text.TextStyle(
+                            fontFamily = LipikaTheme.fontFamily,
+                            platformStyle = androidx.compose.ui.text.PlatformTextStyle(includeFontPadding = false),
+                            lineHeight = if (isMultiline) (12f * fontScaleFactor).sp else textSize,
+                            lineHeightStyle = androidx.compose.ui.text.style.LineHeightStyle(
+                                alignment = androidx.compose.ui.text.style.LineHeightStyle.Alignment.Center,
+                                trim = androidx.compose.ui.text.style.LineHeightStyle.Trim.Both
+                            ),
+                            textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                        )
+                    )
+                }
             }
         }
     }
