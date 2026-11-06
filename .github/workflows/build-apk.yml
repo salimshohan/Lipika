@@ -72,23 +72,25 @@ jobs:
           body: |
             ### 🌟 Lipika Keyboard ${{ github.ref_name }} Release
 
-            - **🎨 Strict Reference Theme Gallery**:
-              - Recreated the Theme Gallery following the exact light, premium glassmorphism aesthetic (`media_1793974527569_3f4713f4.jpg`).
-              - Teal squircle header badge (`🎨`) with "Customize your space" and "Choose a theme that feels right for you".
-              - Exactly **TWO** rectangular theme cards per row (`chunked(2)`) with rounded corners (`22.dp`), subtle borders, soft shadows, and clean typography.
-              - Curated featured themes: **Ocean Teal** (*Fresh & energizing*), **Sunset Coral** (*Warm & creative*), **Minimal Grey** (*Clean & focused*), **Soft lavender** (*Calm & soothing*), alongside Frosted Glass, Lipika Gradient, Default Light/Dark, and AMOLED Black.
-              - Miniature keyboard preview on each card with translucent keycap bars, theme gradients, and active checkmark badges.
-              - Bottom docked deep forest teal **"Continue"** pill button (`RoundedCornerShape(26.dp)`, `height = 52.dp`).
-            - **🖼️ Strict App Icon Artwork**:
-              - Replaced all launcher icons to match the exact light squircle reference (`media_1793974513501_9b73af67.png`).
-              - Premium soft-blue to cyan gradient background with diagonal faceted lighting and soft ambient drop shadow.
-              - Rounded white capital letter "L" glyph centered in safe zone across all Android densities (`mdpi`, `hdpi`, `xhdpi`, `xxhdpi`, `xxxhdpi`), adaptive icons, and vector drawables.
-            - **⌨️ Complete First Symbol Layout (`?123`) & Extended Symbols (`=<`)**:
-              - Row 0 dedicated numbers with Bengali numeral hints; Tab, Directional cursor pad, math symbols, and full punctuation suites.
-            - **🇧🇩 Flawless Bengali Typography & Zero Dotted-Circle Fix**:
-              - Fixed combining vowel marks (কার) eliminating unwanted dotted circle placeholders (`◌`).
-            - **📱 Symmetrical Dashboard & Unified Appearance Settings**:
-              - Centralized Appearance section organizing Display Mode, App Theme, Keyboard Theme, Dark Style, and Automated Scheduling.
+            - **🖼️ App Icon Artwork Complete Restoration**:
+              - Restored the complete light background canvas artwork with diagonal ambient gradient and soft specular lighting (`media_1793977899450_25297cd4.png`).
+              - Centered floating blue-to-cyan decorative squircle badge with soft ambient drop shadow and crisp white capital letter "L" glyph in safe zone across all Android densities (`mdpi`, `hdpi`, `xhdpi`, `xxhdpi`, `xxxhdpi`), adaptive launcher drawables, and SVG assets.
+            - **🎨 Theme Page Complete Redesign**:
+              - Status-bar inset respecting navigation bar with clean back navigation.
+              - Prominent **Create Theme** (launches Theme Studio) and **My Themes** management options at the top.
+              - Categorized in strict order: **Default Themes** (Default Light, Default Dark), **Color Themes** (solid colors), and **Gradient Themes** (gradient themes).
+              - Exactly **TWO** rectangular theme cards per row (`chunked(2)`) with immediate miniature keyboard preview without clicking.
+              - Interactive Customization Inspector: Clicking a card previews the theme and provides Key Border and Key Shadow toggles with an "Apply Theme" button.
+            - **📁 My Themes Sequential Auto-Naming & Management**:
+              - User custom themes automatically sequenced as "Lipika Theme 1", "Lipika Theme 2", etc. (never overwriting existing names).
+              - Full lifecycle management: Apply, Preview, Edit in Theme Studio, Rename, Share, and Delete with confirmation.
+            - **✨ Dedicated Appearance & Rich Multi-Accent System**:
+              - Cleaned up Appearance screen, removing redundant duplicates and integrating high-quality Accent Customization.
+              - **Single Color Mode**: 18 curated premium presets (Premium Blue, Royal Blue, Sky Blue, Teal, Mint Green, Emerald, Purple, Lavender, Violet, Pink, Rose, Coral, Orange, Amber, Gold, Red, Neutral Slate, Pastel Cyan) plus custom Hex color input.
+              - **Multiple Colors Mode**: Independent accent color customization for Cards, Navigation, Icons, Controls, and Buttons with live preview and reset to defaults.
+              - Automated Theme Scheduling (Always Light, Always Dark, Sunset to Sunrise, and Custom Schedule).
+            - **⚡ Dashboard Minimal Typing Animation (60+ Variations)**:
+              - Over 60 curated Bengali and English text variations with smooth typing, deleting, blinking cursor, and zero layout shift.
           files: dist/Lipika.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

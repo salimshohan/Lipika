@@ -535,34 +535,105 @@ private fun MinimalTypingHeader(
 ) {
     val phrases = remember {
         listOf(
+            // Bengali Short Words & Phrases
             "লিপিকা কীবোর্ড",
-            "Type freely in বাংলা & English",
             "সহজ ও সুন্দর বাংলা টাইপিং",
-            "অ আ ক খ • A B C D"
+            "আমার সোনার বাংলা",
+            "বাংলায় লিখুন সহজে",
+            "স্মার্ট কীবোর্ড লিপিকা",
+            "শব্দ ও বাক্যের জাদু",
+            "দ্রুত ও নির্ভুল টাইপিং",
+            "মাতৃভাষায় মনের ভাব",
+            "ভাষার ভালোবাসায় লিপিকা",
+            "বর্ণ থেকে শব্দ",
+            "অ আ ক খ • বাংলা লিপি",
+            "প্রভাত ও অভ্র লেআউট",
+            "ঝড়ের গতিতে টাইপ করুন",
+            "সুন্দর ফন্ট ও থিম",
+            "স্মার্ট প্রেডিকশন ও সাজেশন",
+            "স্মার্টফোন হোক বাংলাবান্ধব",
+            "স্বপ্নের মতো টাইপিং অভিজ্ঞতা",
+            "নতুন দিনের নতুন ভাবনা",
+            "বাংলা বর্ণমালার সুর",
+            "মন খুলে লিখুন বাংলায়",
+            "একুশের চেতনা ও বর্ণমালা",
+            "যুক্তাক্ষর লিখুন অনায়াসে",
+            "হাতেখড়ি থেকে পেশাদার",
+            "স্মার্ট বানান সংশোধনী",
+            "কবিতা ও গানের কথামালা",
+            "কথা হবে প্রাণ খুলে",
+            "বাংলা ভাষার ডিজিটাল রূপ",
+            "ধ্বনি ও অক্ষরের মিলন",
+            "রঙিন থিমে সাজুক কীবোর্ড",
+            "প্রতিটি স্পর্শে শুদ্ধ উচ্চারণ",
+            "আপনার নিজস্ব কীবোর্ড",
+
+            // English Words & Phrases
+            "Type freely in বাংলা & English",
+            "Smart. Fast. Beautiful.",
+            "Crafted for effortless typing",
+            "The quick brown fox jumps",
+            "Next-word prediction engine",
+            "Express yourself with emojis",
+            "Designed with love in Bangladesh",
+            "Precision typography & layouts",
+            "Speed meets elegance",
+            "Flawless typing, every time",
+            "Your personal typing companion",
+            "Type without limits",
+            "Smooth haptics & keypress sound",
+            "Beautiful frosted glass themes",
+            "Where speed meets precision",
+            "Write with confidence",
+            "Effortless bilingual switching",
+            "Smart autocorrect & learning",
+            "Type, tap, and connect",
+            "Unleash your typing speed",
+            "Fluid typing on any screen",
+            "Natural text suggestions",
+            "Intelligent spell checking",
+            "Personalized dictionary",
+            "Modern glassmorphism UI",
+            "Fastest way to type Bangla",
+            "Pure typographic delight",
+            "Every keystroke counts",
+            "A keyboard made for you"
         )
     }
 
-    var phraseIndex by remember { mutableStateOf(0) }
+    var playlist by remember { mutableStateOf(phrases.shuffled()) }
+    var playlistIndex by remember { mutableStateOf(0) }
     var displayedLength by remember { mutableStateOf(0) }
     var isDeleting by remember { mutableStateOf(false) }
 
-    LaunchedEffect(phraseIndex, isDeleting) {
-        val currentPhrase = phrases[phraseIndex]
+    LaunchedEffect(playlistIndex, isDeleting) {
+        val currentPhrase = playlist.getOrElse(playlistIndex) { phrases[0] }
         if (!isDeleting) {
             while (displayedLength < currentPhrase.length) {
-                delay(70L)
+                delay(65L)
                 displayedLength++
             }
-            delay(1800L)
+            delay(1700L)
             isDeleting = true
         } else {
             while (displayedLength > 0) {
-                delay(35L)
+                delay(30L)
                 displayedLength--
             }
-            delay(300L)
+            delay(250L)
             isDeleting = false
-            phraseIndex = (phraseIndex + 1) % phrases.size
+            val nextIndex = playlistIndex + 1
+            if (nextIndex >= playlist.size) {
+                val lastItem = playlist.lastOrNull()
+                var reshuffled = phrases.shuffled()
+                if (reshuffled.firstOrNull() == lastItem && reshuffled.size > 1) {
+                    reshuffled = reshuffled.drop(1) + reshuffled.take(1)
+                }
+                playlist = reshuffled
+                playlistIndex = 0
+            } else {
+                playlistIndex = nextIndex
+            }
         }
     }
 
@@ -596,7 +667,7 @@ private fun MinimalTypingHeader(
         label = "Float2"
     )
 
-    val currentPhrase = phrases[phraseIndex]
+    val currentPhrase = playlist.getOrElse(playlistIndex) { phrases[0] }
     val displayedText = currentPhrase.take(displayedLength)
 
     Box(
@@ -687,14 +758,17 @@ private fun MinimalTypingHeader(
             // Animated Typing Text Row
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
+                horizontalArrangement = Arrangement.Center,
+                modifier = Modifier.height(30.dp)
             ) {
                 Text(
                     text = displayedText,
                     fontSize = 20.sp,
                     fontWeight = FontWeight.SemiBold,
                     fontFamily = activeFontFamily,
-                    color = colors.textPrimary
+                    color = colors.textPrimary,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
                 Text(
                     text = " |",

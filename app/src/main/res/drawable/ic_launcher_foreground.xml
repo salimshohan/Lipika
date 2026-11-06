@@ -1,18 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
     android:width="108dp"
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
 
-    <!-- Soft ambient drop shadow underneath L glyph -->
+    <!-- Soft ambient drop shadow underneath squircle badge -->
     <path
-        android:pathData="M52,26 C47,26 43,30 43,35 L43,67 C43,76 49,81 57,81 L70,81 C74,81 77,78 77,74 C77,70 74,67 70,67 L59,67 C56,67 53,64 53,61 L53,35 C53,30 52,26 52,26 Z"
-        android:fillAlpha="0.28"
+        android:pathData="M23,25 C23,21 26,18 30,18 L78,18 C82,18 85,21 85,25 L85,87 C85,91 82,94 78,94 L30,94 C26,94 23,91 23,87 Z"
+        android:fillAlpha="0.22"
+        android:fillColor="#0C4A6E" />
+
+    <!-- Vibrant Blue-to-Cyan Squircle Badge centered in safe zone (22, 20 to 86, 84, width=64, height=64) -->
+    <path
+        android:pathData="M39,20 L69,20 C80,20 86,26 86,37 L86,67 C86,78 80,84 69,84 L39,84 C28,84 22,78 22,67 L22,37 C22,26 28,20 39,20 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:angle="45"
+                android:startColor="#2563EB"
+                android:centerColor="#38BDF8"
+                android:endColor="#06B6D4"
+                android:type="linear" />
+        </aapt:attr>
+    </path>
+
+    <!-- Diagonal Faceted Light Ray across squircle badge -->
+    <path
+        android:pathData="M52,20 L86,20 L86,52 L58,84 L40,84 Z"
+        android:fillAlpha="0.24">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:angle="45"
+                android:startColor="#FFFFFF"
+                android:endColor="#38BDF8"
+                android:type="linear" />
+        </aapt:attr>
+    </path>
+
+    <!-- Subtle faceted darker facet shadow -->
+    <path
+        android:pathData="M86,40 L86,76 L68,84 L54,84 Z"
+        android:fillAlpha="0.08"
+        android:fillColor="#000000" />
+
+    <!-- Ambient drop shadow for the 'L' glyph -->
+    <path
+        android:pathData="M53,34 C49,34 46,37 46,41 L46,65 C46,72 51,76 57,76 L68,76 C71,76 74,73 74,70 C74,67 71,64 68,64 L59,64 C56,64 54,62 54,59 L54,41 C54,37 53,34 53,34 Z"
+        android:fillAlpha="0.32"
         android:fillColor="#172554" />
 
-    <!-- Pure white rounded Lipika L glyph centered in 72dp safe zone -->
+    <!-- Pure white rounded Lipika 'L' glyph -->
     <path
-        android:pathData="M51,24 C46,24 42,28 42,33 L42,65 C42,74 48,79 56,79 L69,79 C73,79 76,76 76,72 C76,68 73,65 69,65 L58,65 C55,65 52,62 52,59 L52,33 C52,28 51,24 51,24 Z"
+        android:pathData="M52,32 C48,32 45,35 45,39 L45,63 C45,70 50,74 56,74 L67,74 C70,74 73,71 73,68 C73,65 70,62 67,62 L58,62 C55,62 53,60 53,57 L53,39 C53,35 52,32 52,32 Z"
         android:fillColor="#FFFFFF" />
 </vector>

@@ -738,6 +738,27 @@ class ThemeRepository private constructor(private val context: Context) {
         }
     }
 
+    fun renameCustomTheme(id: String, newName: String): Boolean {
+        val cid = canonicalId(id)
+        val spec = richThemes[cid]
+        if (spec != null) {
+            val updated = spec.copy(name = newName)
+            importRichTheme(updated)
+            return true
+        }
+        val def = customThemes[cid]
+        if (def != null) {
+            val updated = def.copy(name = newName)
+            customThemes[cid] = updated
+            try {
+                val file = File(customThemesDir, "$cid.json")
+                file.writeText(json.encodeToString(CustomThemeDef.serializer(), updated), Charsets.UTF_8)
+            } catch (_: Exception) {}
+            return true
+        }
+        return false
+    }
+
     fun deleteCustomTheme(id: String): Boolean {
         var anyDeleted = false
         val themeDir = File(customThemesDir, id)

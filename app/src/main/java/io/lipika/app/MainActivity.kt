@@ -121,18 +121,50 @@ class MainActivity : ComponentActivity() {
             ) {
                 preferences.resolveEffectiveIsDark(systemInDark)
             }
+            fun resolveColorToken(raw: String?, fallback: Color): Color {
+                if (raw.isNullOrBlank()) return fallback
+                if (raw.startsWith("#")) {
+                    return runCatching { Color(android.graphics.Color.parseColor(raw)) }.getOrElse { fallback }
+                }
+                return when (raw) {
+                    LipikaPreferences.ACCENT_PREMIUM_BLUE -> Color(0xFF0284C7)
+                    LipikaPreferences.ACCENT_ROYAL_BLUE -> Color(0xFF2563EB)
+                    LipikaPreferences.ACCENT_SKY_BLUE -> Color(0xFF0EA5E9)
+                    LipikaPreferences.ACCENT_TEAL -> Color(0xFF0D9488)
+                    LipikaPreferences.ACCENT_MINT_GREEN -> Color(0xFF10B981)
+                    LipikaPreferences.ACCENT_EMERALD -> Color(0xFF059669)
+                    LipikaPreferences.ACCENT_PURPLE -> Color(0xFF7C3AED)
+                    LipikaPreferences.ACCENT_LAVENDER -> Color(0xFF8B5CF6)
+                    LipikaPreferences.ACCENT_VIOLET -> Color(0xFF6D28D9)
+                    LipikaPreferences.ACCENT_PINK -> Color(0xFFEC4899)
+                    LipikaPreferences.ACCENT_ROSE -> Color(0xFFF43F5E)
+                    LipikaPreferences.ACCENT_CORAL -> Color(0xFFF97316)
+                    LipikaPreferences.ACCENT_ORANGE -> Color(0xFFEA580C)
+                    LipikaPreferences.ACCENT_AMBER -> Color(0xFFD97706)
+                    LipikaPreferences.ACCENT_GOLD -> Color(0xFFCA8A04)
+                    LipikaPreferences.ACCENT_RED -> Color(0xFFDC2626)
+                    LipikaPreferences.ACCENT_NEUTRAL_SLATE -> Color(0xFF475569)
+                    LipikaPreferences.ACCENT_CYAN -> Color(0xFF06B6D4)
+                    else -> fallback
+                }
+            }
+
+            val defaultAccent = if (isDark) Color(0xFF38BDF8) else Color(0xFF0284C7)
             val dynamicAccent = when {
                 preferences.appTheme == LipikaPreferences.APP_THEME_DYNAMIC && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
                     val dynamicScheme = if (isDark) dynamicDarkColorScheme(this@MainActivity) else dynamicLightColorScheme(this@MainActivity)
                     dynamicScheme.primary
                 }
-                preferences.accentColor == LipikaPreferences.ACCENT_EMERALD -> Color(0xFF10B981)
-                preferences.accentColor == LipikaPreferences.ACCENT_ORANGE -> Color(0xFFF97316)
-                preferences.accentColor == LipikaPreferences.ACCENT_VIOLET -> Color(0xFF8B5CF6)
-                preferences.accentColor == LipikaPreferences.ACCENT_ROSE -> Color(0xFFEC4899)
-                preferences.accentColor == LipikaPreferences.ACCENT_AMBER -> Color(0xFFF59E0B)
-                else -> if (isDark) Color(0xFF38BDF8) else Color(0xFF0284C7)
+                else -> resolveColorToken(preferences.accentColor, defaultAccent)
             }
+            val isMulti = preferences.accentMode == LipikaPreferences.ACCENT_MODE_MULTIPLE
+            val multiMap = if (isMulti) preferences.getMultipleAccentsMap() else emptyMap()
+            val cardAccent = if (isMulti) resolveColorToken(multiMap[LipikaPreferences.ACCENT_COMPONENT_CARDS], dynamicAccent) else dynamicAccent
+            val navAccent = if (isMulti) resolveColorToken(multiMap[LipikaPreferences.ACCENT_COMPONENT_NAV], dynamicAccent) else dynamicAccent
+            val iconAccent = if (isMulti) resolveColorToken(multiMap[LipikaPreferences.ACCENT_COMPONENT_ICONS], dynamicAccent) else dynamicAccent
+            val controlAccent = if (isMulti) resolveColorToken(multiMap[LipikaPreferences.ACCENT_COMPONENT_CONTROLS], dynamicAccent) else dynamicAccent
+            val buttonAccent = if (isMulti) resolveColorToken(multiMap[LipikaPreferences.ACCENT_COMPONENT_BUTTONS], dynamicAccent) else dynamicAccent
+
             val baseColors = if (isDark) {
                 when (preferences.darkStyle) {
                     LipikaPreferences.DARK_STYLE_PURE_BLACK -> DarkSettingsColors.copy(
@@ -152,7 +184,13 @@ class MainActivity : ComponentActivity() {
             }
             val settingsColors = baseColors.copy(
                 accent = dynamicAccent,
-                sectionTitle = dynamicAccent
+                sectionTitle = dynamicAccent,
+                cardAccent = cardAccent,
+                navAccent = navAccent,
+                iconAccent = iconAccent,
+                controlAccent = controlAccent,
+                buttonAccent = buttonAccent,
+                accentMode = preferences.accentMode
             )
 
             val view = LocalView.current
@@ -563,6 +601,22 @@ fun LipikaSettingsApp(
                     is SettingsScreen.Appearance -> {
                         AppearanceScreen(
                             preferences = preferences,
+                            onUpdateAccentMode = { mode ->
+                                scope.launch { preferencesRepo.updateAccentMode(mode) }
+                            },
+                            onUpdateAccentColor = { color ->
+                                scope.launch { preferencesRepo.updateAccentColor(color) }
+                            },
+                            onUpdateComponentAccent = { component, color ->
+                                scope.launch { preferencesRepo.updateComponentAccent(component, color) }
+                            },
+                            onResetAccents = {
+                                scope.launch {
+                                    preferencesRepo.updateAccentMode(LipikaPreferences.ACCENT_MODE_SINGLE)
+                                    preferencesRepo.updateAccentColor(LipikaPreferences.ACCENT_CYAN)
+                                    preferencesRepo.updateMultipleAccents(emptyMap())
+                                }
+                            },
                             onUpdateDisplayMode = { mode ->
                                 scope.launch { preferencesRepo.updateDisplayMode(mode) }
                             },

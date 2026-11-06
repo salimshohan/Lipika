@@ -9,6 +9,8 @@ data class LipikaPreferences(
     val selectedFont: String = FONT_TW_CENT_MT,
     val customFontPath: String = "",
     val accentColor: String = ACCENT_CYAN,
+    val accentMode: String = ACCENT_MODE_SINGLE,
+    val multipleAccentsRaw: String = "",
     val keyboardHeightScale: Float = 1.0f,
     val keyboardHeightScaleLandscape: Float = 1.0f,
     val chinPaddingPortraitDp: Float = 8.0f,
@@ -132,6 +134,18 @@ data class LipikaPreferences(
         }
     }
 
+    fun getMultipleAccentsMap(): Map<String, String> {
+        if (multipleAccentsRaw.isBlank()) return emptyMap()
+        return multipleAccentsRaw.split(",")
+            .mapNotNull { item ->
+                val parts = item.split(":")
+                if (parts.size == 2 && parts[0].isNotBlank() && parts[1].isNotBlank()) {
+                    parts[0].trim() to parts[1].trim()
+                } else null
+            }
+            .toMap()
+    }
+
     companion object {
         const val VOICE_PROVIDER_GOOGLE = "google"
 
@@ -179,6 +193,27 @@ data class LipikaPreferences(
         const val ACCENT_VIOLET = "VIOLET"
         const val ACCENT_ROSE = "ROSE"
         const val ACCENT_AMBER = "AMBER"
+        const val ACCENT_PREMIUM_BLUE = "PREMIUM_BLUE"
+        const val ACCENT_ROYAL_BLUE = "ROYAL_BLUE"
+        const val ACCENT_SKY_BLUE = "SKY_BLUE"
+        const val ACCENT_TEAL = "TEAL"
+        const val ACCENT_MINT_GREEN = "MINT_GREEN"
+        const val ACCENT_PURPLE = "PURPLE"
+        const val ACCENT_LAVENDER = "LAVENDER"
+        const val ACCENT_PINK = "PINK"
+        const val ACCENT_CORAL = "CORAL"
+        const val ACCENT_GOLD = "GOLD"
+        const val ACCENT_RED = "RED"
+        const val ACCENT_NEUTRAL_SLATE = "NEUTRAL_SLATE"
+
+        const val ACCENT_MODE_SINGLE = "single"
+        const val ACCENT_MODE_MULTIPLE = "multiple"
+
+        const val ACCENT_COMPONENT_CARDS = "cards"
+        const val ACCENT_COMPONENT_NAV = "nav"
+        const val ACCENT_COMPONENT_ICONS = "icons"
+        const val ACCENT_COMPONENT_CONTROLS = "controls"
+        const val ACCENT_COMPONENT_BUTTONS = "buttons"
 
         const val THEME_LIPIKA_GRADIENT = "lipika_gradient"
         const val THEME_FROSTED_GLASS = "frosted_glass"

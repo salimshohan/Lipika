@@ -88,7 +88,13 @@ data class SettingsColors(
     val activeBtnBg: Color,
     val activeBtnText: Color,
     val activeBtnBorder: Color,
-    val isDark: Boolean
+    val isDark: Boolean,
+    val cardAccent: Color = accent,
+    val navAccent: Color = accent,
+    val iconAccent: Color = accent,
+    val controlAccent: Color = accent,
+    val buttonAccent: Color = accent,
+    val accentMode: String = "single"
 )
 
 val DarkSettingsColors = SettingsColors(

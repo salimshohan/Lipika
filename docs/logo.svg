@@ -1,6 +1,19 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
   <defs>
-    <!-- Vibrant Blue to Cyan Gradient -->
+    <!-- Soft Light Aesthetic Background Gradient -->
+    <linearGradient id="lightBgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="50%" stop-color="#F8FAFC" />
+      <stop offset="100%" stop-color="#E0F2FE" />
+    </linearGradient>
+
+    <!-- Decorative Light Ray -->
+    <linearGradient id="lightRayGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F0F9FF" stop-opacity="0.6" />
+      <stop offset="100%" stop-color="#BAE6FD" stop-opacity="0.3" />
+    </linearGradient>
+
+    <!-- Vibrant Blue to Cyan Gradient for Central Artwork Squircle -->
     <linearGradient id="lipikaBgGrad" x1="15%" y1="90%" x2="85%" y2="10%">
       <stop offset="0%" stop-color="#2563EB" />
       <stop offset="35%" stop-color="#3B82F6" />
@@ -10,42 +23,48 @@
 
     <!-- Subtle Faceted Geometric Light Ray -->
     <linearGradient id="facetHighlight" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.22" />
-      <stop offset="50%" stop-color="#38BDF8" stop-opacity="0.10" />
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.28" />
+      <stop offset="50%" stop-color="#38BDF8" stop-opacity="0.12" />
       <stop offset="100%" stop-color="#06B6D4" stop-opacity="0" />
     </linearGradient>
 
     <!-- Soft Ambient Drop Shadow for L Glyph -->
     <filter id="glyphShadow" x="-20%" y="-20%" width="150%" height="150%">
-      <feDropShadow dx="4" dy="14" stdDeviation="12" flood-color="#172554" flood-opacity="0.38" />
+      <feDropShadow dx="3" dy="10" stdDeviation="8" flood-color="#172554" flood-opacity="0.36" />
     </filter>
 
-    <filter id="iconCardShadow" x="-10%" y="-10%" width="120%" height="120%">
-      <feDropShadow dx="0" dy="12" stdDeviation="20" flood-color="#1E3A8A" flood-opacity="0.28" />
+    <filter id="iconCardShadow" x="-15%" y="-15%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="16" stdDeviation="22" flood-color="#0C4A6E" flood-opacity="0.22" />
     </filter>
   </defs>
 
-  <!-- Background Squircle -->
-  <rect x="44" y="44" width="424" height="424" rx="98" fill="url(#lipikaBgGrad)" filter="url(#iconCardShadow)" />
+  <!-- Outer Light Canvas Card with Rounded Corners -->
+  <rect x="0" y="0" width="512" height="512" rx="112" fill="url(#lightBgGrad)" />
+
+  <!-- Decorative Background Light Ray -->
+  <path d="M 0 0 L 512 0 L 320 512 L 0 512 Z" fill="url(#lightRayGrad)" />
+
+  <!-- Central Decorative Blue-to-Cyan Squircle Badge -->
+  <rect x="100" y="100" width="312" height="312" rx="72" fill="url(#lipikaBgGrad)" filter="url(#iconCardShadow)" />
 
   <!-- Diagonal Facet Light Beam -->
-  <path d="M 240 44 L 468 44 C 468 90 468 200 468 240 L 300 468 C 240 468 180 468 150 468 Z" fill="url(#facetHighlight)" opacity="0.65" />
-  <path d="M 468 120 L 468 360 L 330 468 L 260 468 Z" fill="#000000" opacity="0.06" />
+  <path d="M 230 100 L 412 100 L 412 280 L 290 412 L 180 412 Z" fill="url(#facetHighlight)" />
+  <path d="M 412 180 L 412 360 L 330 412 L 260 412 Z" fill="#000000" opacity="0.06" />
 
   <!-- The Bold, Friendly Rounded Lipika "L" Glyph -->
   <g filter="url(#glyphShadow)">
     <path d="
-      M 246 114
-      C 220 114 204 130 204 156
-      L 204 306
-      C 204 344 232 372 270 372
-      L 326 372
-      C 344 372 358 358 358 340
-      C 358 322 344 308 326 308
-      L 274 308
-      C 259 308 248 297 248 282
-      L 248 156
-      C 248 130 246 114 246 114
+      M 248 160
+      C 226 160 212 174 212 196
+      L 212 306
+      C 212 334 234 358 266 358
+      L 310 358
+      C 326 358 338 346 338 330
+      C 338 314 326 302 310 302
+      L 270 302
+      C 256 302 246 292 246 278
+      L 246 196
+      C 246 174 248 160 248 160
       Z"
       fill="#FFFFFF" />
   </g>

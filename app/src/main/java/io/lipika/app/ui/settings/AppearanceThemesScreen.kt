@@ -1,12 +1,8 @@
 package io.lipika.app.ui.settings
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Card
 
 import android.content.Intent
 import android.net.Uri
-import android.provider.OpenableColumns
 import android.widget.Toast
-import androidx.core.content.FileProvider
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.animateColorAsState
@@ -23,12 +19,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
@@ -39,24 +35,24 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.outlined.Add
+import androidx.compose.material.icons.outlined.AutoAwesome
 import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material.icons.outlined.DriveFileRenameOutline
 import androidx.compose.material.icons.outlined.Edit
-import androidx.compose.material3.RadioButton
-import androidx.compose.material3.RadioButtonDefaults
-import androidx.compose.ui.text.font.FontFamily
-import io.lipika.theme.resolveKeyboardFontFamily
-import io.lipika.theme.KeyboardFontFamily
-import java.io.File
 import androidx.compose.material.icons.outlined.FileDownload
+import androidx.compose.material.icons.outlined.Folder
 import androidx.compose.material.icons.outlined.Palette
 import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -67,9 +63,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -83,6 +76,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.FileProvider
 import io.lipika.common.model.ShiftState
 import io.lipika.data.layout.PredefinedLayouts
 import io.lipika.data.prefs.LipikaPreferences
@@ -93,11 +87,15 @@ import io.lipika.theme.ThemeCategory
 import io.lipika.theme.ThemeColorUtils
 import io.lipika.theme.ThemeOptionItem
 import io.lipika.theme.ThemeRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.io.File
 
 private data class PendingImportData(
     val option: ThemeOptionItem,
     val rawJson: String? = null,
-    val stagingDir: java.io.File? = null
+    val stagingDir: File? = null
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -122,9 +120,46 @@ fun AppearanceThemesScreen(
     val scrollState = rememberScrollState()
     var previewThemeOption by remember { mutableStateOf<ThemeOptionItem?>(null) }
     var pendingImportTheme by remember { mutableStateOf<PendingImportData?>(null) }
-    var showCreatePopup by remember { mutableStateOf(false) }
+    var showMyThemesSheet by remember { mutableStateOf(false) }
+    var themeToRename by remember { mutableStateOf<ThemeOptionItem?>(null) }
+    var renameInputText by remember { mutableStateOf("") }
+    var themeToDelete by remember { mutableStateOf<ThemeOptionItem?>(null) }
+
     val colors = LocalSettingsColors.current
     val scope = rememberCoroutineScope()
+
+    val customThemes = remember(allThemes) {
+        allThemes.filter { it.category == ThemeCategory.CUSTOM || it.isCustom }
+    }
+
+    // Default Themes (Default Light & Default Dark)
+    val defaultThemes = remember(allThemes) {
+        val defs = allThemes.filter { it.id == "default_light" || it.id == "default_dark" }
+        // Ensure default_light is first, default_dark second
+        defs.sortedBy { if (it.id == "default_light") 0 else 1 }
+    }
+
+    // Color Themes (solid colors: pure_black, amoled_black, Borno color themes)
+    val colorThemes = remember(allThemes) {
+        allThemes.filter {
+            (it.id == "pure_black" || it.id == "amoled_black" || it.category == ThemeCategory.BORNO_COLORS) &&
+                    it.category != ThemeCategory.CUSTOM && !it.isCustom
+        }
+    }
+
+    // Gradient Themes (ocean_teal, sunset_coral, minimal_grey, soft_lavender, frosted_glass, lipika_gradient, tokyo_night, nord, Borno gradients)
+    val gradientThemes = remember(allThemes) {
+        val namedGradientIds = setOf(
+            "ocean_teal", "sunset_coral", "minimal_grey", "soft_lavender",
+            "frosted_glass", "lipika_gradient", "tokyo_night", "nord"
+        )
+        allThemes.filter {
+            (it.id in namedGradientIds || it.category == ThemeCategory.BORNO_GRADIENT) &&
+                    it.id != "default_light" && it.id != "default_dark" &&
+                    it.id != "pure_black" && it.id != "amoled_black" &&
+                    it.category != ThemeCategory.CUSTOM && !it.isCustom
+        }
+    }
 
     fun processThemeUri(uri: Uri, onCompleted: (() -> Unit)? = null) {
         scope.launch {
@@ -207,16 +242,18 @@ fun AppearanceThemesScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .statusBarsPadding()
                 .verticalScroll(scrollState)
-                .padding(bottom = 96.dp)
+                .padding(bottom = 36.dp)
         ) {
-            // Top Navigation Bar
+            // ==========================================
+            // TOP SECTION: Back Button & Header
+            // ==========================================
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp, vertical = 12.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Box(
                     modifier = Modifier
@@ -234,269 +271,116 @@ fun AppearanceThemesScreen(
                     )
                 }
 
-                Box(
-                    modifier = Modifier
-                        .size(40.dp)
-                        .clip(CircleShape)
-                        .background(Color.White.copy(alpha = 0.85f))
-                        .clickable {
-                            if (io.lipika.theme.designer.ThemeDesignerRegistry.isAvailable) {
-                                showCreatePopup = true
-                            } else {
-                                importLauncher.launch(arrayOf("*/*"))
-                            }
-                        },
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        imageVector = Icons.Outlined.Add,
-                        contentDescription = "Add Theme",
-                        tint = Color(0xFF0E332F),
-                        modifier = Modifier.size(20.dp)
+                Spacer(modifier = Modifier.width(14.dp))
+
+                Column {
+                    Text(
+                        text = "Theme Gallery",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF0E332F)
+                    )
+                    Text(
+                        text = "Customize keyboard colors & styles",
+                        fontSize = 12.5.sp,
+                        color = Color(0xFF5A7A77)
                     )
                 }
             }
 
-            // Reference Header with Teal Palette Squircle Badge
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 24.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Box(
-                    modifier = Modifier
-                        .size(56.dp)
-                        .shadow(
-                            elevation = 6.dp,
-                            shape = RoundedCornerShape(18.dp),
-                            ambientColor = Color(0x330E4D45),
-                            spotColor = Color(0x330E4D45)
-                        )
-                        .clip(RoundedCornerShape(18.dp))
-                        .background(Color(0xFF2C857B)),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        imageVector = Icons.Outlined.Palette,
-                        contentDescription = null,
-                        tint = Color.White,
-                        modifier = Modifier.size(30.dp)
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Text(
-                    text = "Customize your space",
-                    fontSize = 22.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color(0xFF0E332F),
-                    textAlign = TextAlign.Center
-                )
-
-                Spacer(modifier = Modifier.height(6.dp))
-
-                Text(
-                    text = "Choose a theme that feels right for you",
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Normal,
-                    color = Color(0xFF5A7A77),
-                    textAlign = TextAlign.Center
-                )
-            }
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            // Featured 4 Themes in 2 Columns matching reference
-            val featuredIds = listOf("ocean_teal", "sunset_coral", "minimal_grey", "soft_lavender")
-            val featuredThemes = featuredIds.mapNotNull { id -> allThemes.find { it.id == id } }
-            val otherThemes = allThemes.filter { it.id !in featuredIds && it.category != ThemeCategory.CUSTOM }
-            val customThemes = allThemes.filter { it.category == ThemeCategory.CUSTOM }
-
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                verticalArrangement = Arrangement.spacedBy(14.dp)
-            ) {
-                featuredThemes.chunked(2).forEach { rowThemes ->
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(14.dp)
-                    ) {
-                        rowThemes.forEach { themeOption ->
-                            val isSelected = preferences.theme == themeOption.id
-                            AbstractThemeCard(
-                                themeOption = themeOption,
-                                isSelected = isSelected,
-                                showKeyBorders = preferences.showKeyBorders,
-                                showKeyShadows = preferences.showKeyShadows,
-                                modifier = Modifier.weight(1f),
-                                onSelect = {
-                                    onUpdateTheme(themeOption.id)
-                                },
-                                onLongClick = {
-                                    previewThemeOption = themeOption
-                                }
-                            )
-                        }
-                        repeat(2 - rowThemes.size) {
-                            Spacer(modifier = Modifier.weight(1f))
-                        }
-                    }
-                }
-            }
-
-            // More Themes Section (2 per row)
-            if (otherThemes.isNotEmpty()) {
-                Spacer(modifier = Modifier.height(28.dp))
-                Text(
-                    text = "More Themes",
-                    fontSize = 17.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color(0xFF0E332F),
-                    modifier = Modifier.padding(horizontal = 20.dp, vertical = 6.dp)
-                )
-                Spacer(modifier = Modifier.height(10.dp))
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
-                    verticalArrangement = Arrangement.spacedBy(14.dp)
-                ) {
-                    otherThemes.chunked(2).forEach { rowThemes ->
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(14.dp)
-                        ) {
-                            rowThemes.forEach { themeOption ->
-                                val isSelected = preferences.theme == themeOption.id
-                                AbstractThemeCard(
-                                    themeOption = themeOption,
-                                    isSelected = isSelected,
-                                    showKeyBorders = preferences.showKeyBorders,
-                                    showKeyShadows = preferences.showKeyShadows,
-                                    modifier = Modifier.weight(1f),
-                                    onSelect = {
-                                        onUpdateTheme(themeOption.id)
-                                    },
-                                    onLongClick = {
-                                        previewThemeOption = themeOption
-                                    }
-                                )
-                            }
-                            repeat(2 - rowThemes.size) {
-                                Spacer(modifier = Modifier.weight(1f))
-                            }
-                        }
-                    }
-                }
-            }
-
-            // Custom Themes Section (2 per row)
-            Spacer(modifier = Modifier.height(28.dp))
-            Text(
-                text = "Custom Themes",
-                fontSize = 17.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color(0xFF0E332F),
-                modifier = Modifier.padding(horizontal = 20.dp, vertical = 6.dp)
-            )
             Spacer(modifier = Modifier.height(10.dp))
-            Column(
+
+            // ==========================================
+            // TOP SECTION: Create Theme & My Themes Options
+            // ==========================================
+            Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp),
-                verticalArrangement = Arrangement.spacedBy(14.dp)
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                val totalCustom = 1 + customThemes.size
-                val numCustomRows = (totalCustom + 1) / 2
-                for (rowIndex in 0 until numCustomRows) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(14.dp)
-                    ) {
-                        for (colIndex in 0 until 2) {
-                            val itemIndex = rowIndex * 2 + colIndex
-                            if (itemIndex == 0) {
-                                BlankThemePlusCard(
-                                    modifier = Modifier.weight(1f),
-                                    onClick = {
-                                        if (io.lipika.theme.designer.ThemeDesignerRegistry.isAvailable) {
-                                            showCreatePopup = true
-                                        } else {
-                                            importLauncher.launch(arrayOf("*/*"))
-                                        }
-                                    }
-                                )
-                            } else if (itemIndex - 1 < customThemes.size) {
-                                val themeOption = customThemes[itemIndex - 1]
-                                val isSelected = preferences.theme == themeOption.id
-                                AbstractThemeCard(
-                                    themeOption = themeOption,
-                                    isSelected = isSelected,
-                                    showKeyBorders = preferences.showKeyBorders,
-                                    showKeyShadows = preferences.showKeyShadows,
-                                    modifier = Modifier.weight(1f),
-                                    onSelect = {
-                                        onUpdateTheme(themeOption.id)
-                                    },
-                                    onLongClick = {
-                                        previewThemeOption = themeOption
-                                    }
-                                )
-                            } else {
-                                Spacer(modifier = Modifier.weight(1f))
-                            }
+                TopActionOptionCard(
+                    title = "Create Theme",
+                    subtitle = "Design in Studio",
+                    icon = Icons.Outlined.Palette,
+                    modifier = Modifier.weight(1f),
+                    onClick = {
+                        if (io.lipika.theme.designer.ThemeDesignerRegistry.isAvailable) {
+                            onOpenThemeDesigner(null)
+                        } else {
+                            importLauncher.launch(arrayOf("*/*"))
                         }
                     }
-                }
+                )
+
+                TopActionOptionCard(
+                    title = "My Themes",
+                    subtitle = "${customThemes.size} saved",
+                    icon = Icons.Outlined.Folder,
+                    modifier = Modifier.weight(1f),
+                    onClick = { showMyThemesSheet = true }
+                )
             }
 
-            Spacer(modifier = Modifier.height(24.dp))
-        }
+            Spacer(modifier = Modifier.height(26.dp))
 
-        // Bottom Docked "Continue" Pill Button (exact match to reference!)
-        Box(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .fillMaxWidth()
-                .background(
-                    Brush.verticalGradient(
-                        colors = listOf(
-                            Color(0x00E4F8F6),
-                            Color(0xCCE4F8F6),
-                            Color(0xFFD6F5F2)
-                        )
-                    )
+            // ==========================================
+            // THEME CATEGORY 1: DEFAULT THEMES
+            // ==========================================
+            if (defaultThemes.isNotEmpty()) {
+                ThemeCategoryHeader(title = "Default Themes")
+                Spacer(modifier = Modifier.height(10.dp))
+
+                ThemeGridTwoPerRow(
+                    themes = defaultThemes,
+                    activeThemeId = preferences.theme,
+                    showKeyBorders = preferences.showKeyBorders,
+                    showKeyShadows = preferences.showKeyShadows,
+                    onThemeClick = { themeOption -> previewThemeOption = themeOption }
                 )
-                .padding(horizontal = 20.dp, vertical = 16.dp)
-        ) {
-            Button(
-                onClick = onBack,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(52.dp),
-                shape = RoundedCornerShape(26.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFF0E4D45)
-                ),
-                elevation = ButtonDefaults.buttonElevation(
-                    defaultElevation = 4.dp,
-                    pressedElevation = 2.dp
+
+                Spacer(modifier = Modifier.height(26.dp))
+            }
+
+            // ==========================================
+            // THEME CATEGORY 2: COLOR THEMES
+            // ==========================================
+            if (colorThemes.isNotEmpty()) {
+                ThemeCategoryHeader(title = "Color Themes")
+                Spacer(modifier = Modifier.height(10.dp))
+
+                ThemeGridTwoPerRow(
+                    themes = colorThemes,
+                    activeThemeId = preferences.theme,
+                    showKeyBorders = preferences.showKeyBorders,
+                    showKeyShadows = preferences.showKeyShadows,
+                    onThemeClick = { themeOption -> previewThemeOption = themeOption }
                 )
-            ) {
-                Text(
-                    text = "Continue",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = Color.White
+
+                Spacer(modifier = Modifier.height(26.dp))
+            }
+
+            // ==========================================
+            // THEME CATEGORY 3: GRADIENT THEMES
+            // ==========================================
+            if (gradientThemes.isNotEmpty()) {
+                ThemeCategoryHeader(title = "Gradient Themes")
+                Spacer(modifier = Modifier.height(10.dp))
+
+                ThemeGridTwoPerRow(
+                    themes = gradientThemes,
+                    activeThemeId = preferences.theme,
+                    showKeyBorders = preferences.showKeyBorders,
+                    showKeyShadows = preferences.showKeyShadows,
+                    onThemeClick = { themeOption -> previewThemeOption = themeOption }
                 )
             }
         }
     }
 
+    // ==========================================
+    // THEME CUSTOMIZATION INSPECTOR BOTTOM SHEET
+    // ==========================================
     previewThemeOption?.let { currentPreview ->
         var previewShowKeyBorders by remember(currentPreview.id, preferences.showKeyBorders) {
             mutableStateOf(preferences.showKeyBorders)
@@ -523,6 +407,7 @@ fun AppearanceThemesScreen(
                     onUpdateTheme(currentPreview.id)
                     onUpdateShowKeyBorders(previewShowKeyBorders)
                     onUpdateShowKeyShadows(previewShowKeyShadows)
+                    Toast.makeText(context, "Theme '${currentPreview.name}' applied", Toast.LENGTH_SHORT).show()
                     previewThemeOption = null
                 },
                 onEditTheme = if (currentPreview.isCustom && io.lipika.theme.designer.ThemeDesignerRegistry.isAvailable) {
@@ -567,21 +452,339 @@ fun AppearanceThemesScreen(
                 } else null,
                 onDeleteTheme = if (currentPreview.isCustom) {
                     {
-                        val targetId = currentPreview.id
-                        val targetName = currentPreview.name
-                        themeRepo.deleteCustomTheme(targetId)
-                        if (preferences.theme == targetId) {
-                            onUpdateTheme(LipikaPreferences.THEME_DEFAULT_DARK)
-                        }
-                        reloadTrigger++
-                        previewThemeOption = null
-                        Toast.makeText(context, "Deleted $targetName", Toast.LENGTH_SHORT).show()
+                        themeToDelete = currentPreview
                     }
                 } else null
             )
         }
     }
 
+    // ==========================================
+    // MY THEMES BOTTOM SHEET
+    // ==========================================
+    if (showMyThemesSheet) {
+        val myThemesSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+
+        ModalBottomSheet(
+            onDismissRequest = { showMyThemesSheet = false },
+            sheetState = myThemesSheetState,
+            containerColor = colors.cardBackground,
+            shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 20.dp, vertical = 12.dp)
+                    .verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "My Custom Themes",
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = colors.textPrimary
+                    )
+
+                    Button(
+                        onClick = {
+                            showMyThemesSheet = false
+                            if (io.lipika.theme.designer.ThemeDesignerRegistry.isAvailable) {
+                                onOpenThemeDesigner(null)
+                            } else {
+                                importLauncher.launch(arrayOf("*/*"))
+                            }
+                        },
+                        colors = ButtonDefaults.buttonColors(containerColor = colors.accent),
+                        shape = RoundedCornerShape(10.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.Add,
+                            contentDescription = "New",
+                            modifier = Modifier.size(16.dp),
+                            tint = Color.White
+                        )
+                        Spacer(modifier = Modifier.width(6.dp))
+                        Text(text = "New Theme", fontSize = 13.sp, color = Color.White)
+                    }
+                }
+
+                if (customThemes.isEmpty()) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 32.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Outlined.Palette,
+                                contentDescription = null,
+                                tint = colors.textSecondary.copy(alpha = 0.5f),
+                                modifier = Modifier.size(48.dp)
+                            )
+                            Text(
+                                text = "No custom themes yet",
+                                fontSize = 15.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                color = colors.textPrimary
+                            )
+                            Text(
+                                text = "Create unique themes with custom colors in Theme Studio.",
+                                fontSize = 13.sp,
+                                color = colors.textSecondary,
+                                textAlign = TextAlign.Center
+                            )
+                        }
+                    }
+                } else {
+                    customThemes.forEachIndexed { index, customTheme ->
+                        val sequentialName = remember(customTheme.id, customTheme.name) {
+                            if (customTheme.name.isNotBlank() && !customTheme.name.startsWith("custom_") && customTheme.name != "Custom Theme") {
+                                customTheme.name
+                            } else {
+                                "Lipika Theme ${index + 1}"
+                            }
+                        }
+
+                        Card(
+                            modifier = Modifier.fillMaxWidth(),
+                            shape = RoundedCornerShape(16.dp),
+                            colors = CardDefaults.cardColors(containerColor = colors.cardBackground),
+                            border = BorderStroke(1.dp, colors.cardBorder)
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(12.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(12.dp)
+                            ) {
+                                // Miniature preview box
+                                Box(
+                                    modifier = Modifier
+                                        .size(64.dp)
+                                        .clip(RoundedCornerShape(12.dp))
+                                        .background(customTheme.scheme.containerBackground)
+                                        .border(1.dp, colors.cardBorder, RoundedCornerShape(12.dp))
+                                        .clickable {
+                                            showMyThemesSheet = false
+                                            previewThemeOption = customTheme
+                                        },
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Outlined.Palette,
+                                        contentDescription = null,
+                                        tint = customTheme.scheme.accentColor,
+                                        modifier = Modifier.size(24.dp)
+                                    )
+                                }
+
+                                Column(modifier = Modifier.weight(1f)) {
+                                    Text(
+                                        text = sequentialName,
+                                        fontSize = 15.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = colors.textPrimary
+                                    )
+                                    Text(
+                                        text = if (preferences.theme == customTheme.id) "Active Theme" else "Custom Theme",
+                                        fontSize = 12.sp,
+                                        color = if (preferences.theme == customTheme.id) colors.accent else colors.textSecondary
+                                    )
+                                }
+
+                                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                                    // Apply button
+                                    Button(
+                                        onClick = {
+                                            onUpdateTheme(customTheme.id)
+                                            Toast.makeText(context, "Theme '$sequentialName' applied", Toast.LENGTH_SHORT).show()
+                                            showMyThemesSheet = false
+                                        },
+                                        shape = RoundedCornerShape(8.dp),
+                                        colors = ButtonDefaults.buttonColors(containerColor = colors.accent),
+                                        modifier = Modifier.height(34.dp)
+                                    ) {
+                                        Text(text = "Apply", fontSize = 12.sp, color = Color.White)
+                                    }
+
+                                    // Rename button
+                                    Box(
+                                        modifier = Modifier
+                                            .size(34.dp)
+                                            .clip(RoundedCornerShape(8.dp))
+                                            .background(colors.iconBackground)
+                                            .clickable {
+                                                themeToRename = customTheme
+                                                renameInputText = sequentialName
+                                            },
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Outlined.DriveFileRenameOutline,
+                                            contentDescription = "Rename",
+                                            tint = colors.textPrimary,
+                                            modifier = Modifier.size(16.dp)
+                                        )
+                                    }
+
+                                    // Edit button
+                                    if (io.lipika.theme.designer.ThemeDesignerRegistry.isAvailable) {
+                                        Box(
+                                            modifier = Modifier
+                                                .size(34.dp)
+                                                .clip(RoundedCornerShape(8.dp))
+                                                .background(colors.iconBackground)
+                                                .clickable {
+                                                    showMyThemesSheet = false
+                                                    onOpenThemeDesigner(customTheme.id)
+                                                },
+                                            contentAlignment = Alignment.Center
+                                        ) {
+                                            Icon(
+                                                imageVector = Icons.Outlined.Edit,
+                                                contentDescription = "Edit",
+                                                tint = colors.textPrimary,
+                                                modifier = Modifier.size(16.dp)
+                                            )
+                                        }
+                                    }
+
+                                    // Delete button
+                                    Box(
+                                        modifier = Modifier
+                                            .size(34.dp)
+                                            .clip(RoundedCornerShape(8.dp))
+                                            .background(colors.iconBackground)
+                                            .clickable {
+                                                themeToDelete = customTheme
+                                            },
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Outlined.Delete,
+                                            contentDescription = "Delete",
+                                            tint = Color(0xFFEF4444),
+                                            modifier = Modifier.size(16.dp)
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(20.dp))
+            }
+        }
+    }
+
+    // ==========================================
+    // RENAME DIALOG
+    // ==========================================
+    themeToRename?.let { targetTheme ->
+        AlertDialog(
+            onDismissRequest = { themeToRename = null },
+            containerColor = colors.cardBackground,
+            title = {
+                Text(
+                    text = "Rename Theme",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = colors.textPrimary
+                )
+            },
+            text = {
+                OutlinedTextField(
+                    value = renameInputText,
+                    onValueChange = { renameInputText = it },
+                    singleLine = true,
+                    label = { Text("Theme Name") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        val newName = renameInputText.trim()
+                        if (newName.isNotBlank()) {
+                            themeRepo.renameCustomTheme(targetTheme.id, newName)
+                            reloadTrigger++
+                            Toast.makeText(context, "Renamed to '$newName'", Toast.LENGTH_SHORT).show()
+                        }
+                        themeToRename = null
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = colors.accent)
+                ) {
+                    Text("Save", color = Color.White)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { themeToRename = null }) {
+                    Text("Cancel", color = colors.textSecondary)
+                }
+            }
+        )
+    }
+
+    // ==========================================
+    // DELETE CONFIRMATION DIALOG
+    // ==========================================
+    themeToDelete?.let { targetTheme ->
+        AlertDialog(
+            onDismissRequest = { themeToDelete = null },
+            containerColor = colors.cardBackground,
+            title = {
+                Text(
+                    text = "Delete Theme",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = colors.textPrimary
+                )
+            },
+            text = {
+                Text(
+                    text = "Are you sure you want to delete '${targetTheme.name}'? This action cannot be undone.",
+                    fontSize = 14.sp,
+                    color = colors.textSecondary
+                )
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        val name = targetTheme.name
+                        themeRepo.deleteCustomTheme(targetTheme.id)
+                        if (preferences.theme == targetTheme.id) {
+                            onUpdateTheme(LipikaPreferences.THEME_DEFAULT_DARK)
+                        }
+                        reloadTrigger++
+                        previewThemeOption = null
+                        themeToDelete = null
+                        Toast.makeText(context, "Deleted '$name'", Toast.LENGTH_SHORT).show()
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFEF4444))
+                ) {
+                    Text("Delete", color = Color.White)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { themeToDelete = null }) {
+                    Text("Cancel", color = colors.textSecondary)
+                }
+            }
+        )
+    }
+
+    // Pending Import Sheet
     pendingImportTheme?.let { currentPending ->
         var importShowKeyBorders by remember(currentPending.option.id, preferences.showKeyBorders) {
             mutableStateOf(preferences.showKeyBorders)
@@ -609,242 +812,139 @@ fun AppearanceThemesScreen(
                 onToggleKeyShadows = { importShowKeyShadows = it },
                 onApplyTheme = {},
                 isImportMode = true,
-                onCancelImport = {
-                    currentPending.stagingDir?.let { try { it.deleteRecursively() } catch (_: Exception) {} }
+                onConfirmImport = {
+                    val raw = currentPending.rawJson
+                    val stDir = currentPending.stagingDir
+                    val importResult = when {
+                        stDir != null -> themeRepo.importStagedTheme(currentPending.option.id, stDir)
+                        raw != null -> themeRepo.importTheme(raw).map { it.first() }
+                        else -> Result.failure(IllegalStateException("No theme data to import"))
+                    }
+                    importResult.onSuccess { importedItem ->
+                        reloadTrigger++
+                        onUpdateTheme(importedItem.id)
+                        onUpdateShowKeyBorders(importShowKeyBorders)
+                        onUpdateShowKeyShadows(importShowKeyShadows)
+                        Toast.makeText(context, "Theme '${importedItem.name}' imported", Toast.LENGTH_SHORT).show()
+                    }.onFailure { err ->
+                        Toast.makeText(context, "Import failed: ${err.message}", Toast.LENGTH_LONG).show()
+                    }
                     pendingImportTheme = null
                 },
-                onConfirmImport = {
-                    if (currentPending.stagingDir != null) {
-                        val res = themeRepo.importStagedTheme(currentPending.option.id, currentPending.stagingDir)
-                        res.onSuccess { importedItem ->
-                            reloadTrigger++
-                            onUpdateTheme(importedItem.id)
-                            onUpdateShowKeyBorders(importShowKeyBorders)
-                            onUpdateShowKeyShadows(importShowKeyShadows)
-                            Toast.makeText(context, "Imported ${importedItem.name}", Toast.LENGTH_SHORT).show()
-                        }.onFailure { err ->
-                            Toast.makeText(context, "Import failed: ${err.message ?: "Invalid theme package"}", Toast.LENGTH_LONG).show()
-                        }
-                    } else if (!currentPending.rawJson.isNullOrBlank()) {
-                        val res = themeRepo.importTheme(currentPending.rawJson)
-                        res.onSuccess { importedList ->
-                            reloadTrigger++
-                            if (importedList.isNotEmpty()) {
-                                val first = importedList.first()
-                                onUpdateTheme(first.id)
-                                onUpdateShowKeyBorders(importShowKeyBorders)
-                                onUpdateShowKeyShadows(importShowKeyShadows)
-                                Toast.makeText(context, "Imported ${first.name}", Toast.LENGTH_SHORT).show()
-                            }
-                        }.onFailure { err ->
-                            Toast.makeText(context, "Import failed: ${err.message ?: "Invalid theme file"}", Toast.LENGTH_LONG).show()
-                        }
-                    }
+                onCancelImport = {
+                    currentPending.stagingDir?.let { try { it.deleteRecursively() } catch (_: Exception) {} }
                     pendingImportTheme = null
                 }
             )
         }
     }
-
-    if (showCreatePopup) {
-        AlertDialog(
-            onDismissRequest = { showCreatePopup = false },
-            containerColor = colors.cardBackground,
-            title = {
-                Text(
-                    text = "New Theme",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = colors.textPrimary
-                )
-            },
-            text = {
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    Text(
-                        text = "Choose an option to add a keyboard theme:",
-                        fontSize = 14.sp,
-                        color = colors.textSecondary
-                    )
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(12.dp)
-                    ) {
-                        // Button 1: Import (.bornotheme) - Squared Button
-                        Box(
-                            modifier = Modifier
-                                .weight(1f)
-                                .aspectRatio(1f)
-                                .clip(RoundedCornerShape(16.dp))
-                                .background(if (colors.isDark) Color(0xFF22242A) else Color(0xFFF1F3F9))
-                                .border(1.5.dp, colors.accent.copy(alpha = 0.6f), RoundedCornerShape(16.dp))
-                                .clickable {
-                                    showCreatePopup = false
-                                    importLauncher.launch(arrayOf("*/*"))
-                                },
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Column(
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.Center,
-                                modifier = Modifier.padding(6.dp)
-                            ) {
-                                Box(
-                                    modifier = Modifier
-                                        .size(46.dp)
-                                        .clip(CircleShape)
-                                        .background(colors.accent.copy(alpha = 0.15f)),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Outlined.FileDownload,
-                                        contentDescription = "Import",
-                                        tint = colors.accent,
-                                        modifier = Modifier.size(24.dp)
-                                    )
-                                }
-                                Spacer(modifier = Modifier.height(8.dp))
-                                Text(
-                                    text = "Import",
-                                    fontSize = 14.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = colors.textPrimary,
-                                    textAlign = TextAlign.Center
-                                )
-                                Text(
-                                    text = ".bornotheme",
-                                    fontSize = 11.sp,
-                                    color = colors.textSecondary,
-                                    textAlign = TextAlign.Center
-                                )
-                            }
-                        }
-
-                        // Button 2: Create Theme - Squared Button
-                        if (io.lipika.theme.designer.ThemeDesignerRegistry.isAvailable) {
-                            Box(
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .aspectRatio(1f)
-                                    .clip(RoundedCornerShape(16.dp))
-                                    .background(if (colors.isDark) Color(0xFF22242A) else Color(0xFFF1F3F9))
-                                    .border(1.5.dp, colors.cardBorder, RoundedCornerShape(16.dp))
-                                    .clickable {
-                                        showCreatePopup = false
-                                        onOpenThemeDesigner(null)
-                                    },
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Column(
-                                    horizontalAlignment = Alignment.CenterHorizontally,
-                                    verticalArrangement = Arrangement.Center,
-                                    modifier = Modifier.padding(6.dp)
-                                ) {
-                                    Box(
-                                        modifier = Modifier
-                                            .size(46.dp)
-                                            .clip(CircleShape)
-                                            .background(if (colors.isDark) Color(0xFF2C2C32) else Color(0xFFE2E2EC)),
-                                        contentAlignment = Alignment.Center
-                                    ) {
-                                        Icon(
-                                            imageVector = Icons.Outlined.Palette,
-                                            contentDescription = "Create",
-                                            tint = colors.textPrimary,
-                                            modifier = Modifier.size(24.dp)
-                                        )
-                                    }
-                                    Spacer(modifier = Modifier.height(8.dp))
-                                    Text(
-                                        text = "Create",
-                                        fontSize = 14.sp,
-                                        fontWeight = FontWeight.Bold,
-                                        color = colors.textPrimary,
-                                        textAlign = TextAlign.Center
-                                    )
-                                    Text(
-                                        text = "Theme Studio",
-                                        fontSize = 11.sp,
-                                        color = colors.textSecondary,
-                                        textAlign = TextAlign.Center
-                                    )
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            confirmButton = {},
-            dismissButton = {
-                TextButton(onClick = { showCreatePopup = false }) {
-                    Text("Cancel", color = colors.textSecondary)
-                }
-            }
-        )
-    }
 }
 
 @Composable
-private fun BlankThemePlusCard(
+private fun ThemeCategoryHeader(title: String) {
+    Text(
+        text = title,
+        fontSize = 16.5.sp,
+        fontWeight = FontWeight.Bold,
+        color = Color(0xFF0E332F),
+        modifier = Modifier.padding(horizontal = 20.dp, vertical = 2.dp)
+    )
+}
+
+@Composable
+private fun TopActionOptionCard(
+    title: String,
+    subtitle: String,
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
     modifier: Modifier = Modifier,
     onClick: () -> Unit
 ) {
-    val cardShape = RoundedCornerShape(22.dp)
+    val cardShape = RoundedCornerShape(18.dp)
 
     Card(
         shape = cardShape,
-        colors = CardDefaults.cardColors(
-            containerColor = Color.White
-        ),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         border = BorderStroke(width = 1.dp, color = Color(0xFFE2EFEF)),
         modifier = modifier
             .fillMaxWidth()
             .clickable(onClick = onClick)
     ) {
-        Column(
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(12.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .padding(horizontal = 14.dp, vertical = 14.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Box(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(104.dp)
-                    .clip(RoundedCornerShape(16.dp))
-                    .background(Color(0xFFF0FAF9)),
+                    .size(42.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(Color(0xFFE0F4F1)),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
-                    imageVector = Icons.Outlined.Add,
-                    contentDescription = "Create Theme",
-                    tint = Color(0xFF2C857B),
-                    modifier = Modifier.size(32.dp)
+                    imageVector = icon,
+                    contentDescription = title,
+                    tint = Color(0xFF147268),
+                    modifier = Modifier.size(22.dp)
                 )
             }
 
-            Spacer(modifier = Modifier.height(10.dp))
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = title,
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFF0E332F)
+                )
+                Text(
+                    text = subtitle,
+                    fontSize = 12.sp,
+                    color = Color(0xFF5A7A77),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
+        }
+    }
+}
 
-            Text(
-                text = "Create Theme",
-                fontSize = 15.5.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color(0xFF1B2A28),
-                textAlign = TextAlign.Center
-            )
-
-            Spacer(modifier = Modifier.height(2.dp))
-
-            Text(
-                text = "Design or import",
-                fontSize = 12.sp,
-                color = Color(0xFF70807E),
-                textAlign = TextAlign.Center
-            )
+@Composable
+private fun ThemeGridTwoPerRow(
+    themes: List<ThemeOptionItem>,
+    activeThemeId: String,
+    showKeyBorders: Boolean,
+    showKeyShadows: Boolean,
+    onThemeClick: (ThemeOptionItem) -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(14.dp)
+    ) {
+        themes.chunked(2).forEach { rowThemes ->
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(14.dp)
+            ) {
+                rowThemes.forEach { themeOption ->
+                    val isSelected = activeThemeId == themeOption.id
+                    AbstractThemeCard(
+                        themeOption = themeOption,
+                        isSelected = isSelected,
+                        showKeyBorders = showKeyBorders,
+                        showKeyShadows = showKeyShadows,
+                        modifier = Modifier.weight(1f),
+                        onSelect = { onThemeClick(themeOption) }
+                    )
+                }
+                repeat(2 - rowThemes.size) {
+                    Spacer(modifier = Modifier.weight(1f))
+                }
+            }
         }
     }
 }
@@ -856,20 +956,15 @@ private fun AbstractThemeCard(
     showKeyBorders: Boolean = true,
     showKeyShadows: Boolean = true,
     modifier: Modifier = Modifier,
-    onSelect: () -> Unit,
-    onLongClick: (() -> Unit)? = null
+    onSelect: () -> Unit
 ) {
     val scheme = themeOption.scheme
     val cardShape = RoundedCornerShape(22.dp)
 
     Card(
         shape = cardShape,
-        colors = CardDefaults.cardColors(
-            containerColor = Color.White
-        ),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = if (isSelected) 4.dp else 2.dp
-        ),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        elevation = CardDefaults.cardElevation(defaultElevation = if (isSelected) 4.dp else 2.dp),
         border = BorderStroke(
             width = if (isSelected) 2.5.dp else 1.dp,
             color = if (isSelected) Color(0xFF147268) else Color(0xFFE2EFEF)
@@ -884,7 +979,6 @@ private fun AbstractThemeCard(
                 .padding(12.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Miniature Keyboard Preview Box (104.dp height, 16.dp rounded shape)
             val previewShape = RoundedCornerShape(16.dp)
             val gradientBrush = remember(scheme) {
                 scheme.themeSpec?.background?.gradient?.toBrush(androidx.compose.ui.geometry.Size(260f, 160f))
@@ -985,10 +1079,9 @@ private fun AbstractThemeCard(
 
             Spacer(modifier = Modifier.height(10.dp))
 
-            // Theme Name (Bold, 15.5.sp, dark color, centered)
             Text(
                 text = themeOption.name,
-                fontSize = 15.5.sp,
+                fontSize = 15.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color(0xFF1B2A28),
                 textAlign = TextAlign.Center,
@@ -998,7 +1091,6 @@ private fun AbstractThemeCard(
 
             Spacer(modifier = Modifier.height(2.dp))
 
-            // Theme Vibe / Description (Soft grey, 12.sp, centered)
             val vibeDescription = remember(themeOption.id, themeOption.description) {
                 when (themeOption.id) {
                     "ocean_teal" -> "Fresh & energizing"
@@ -1049,8 +1141,8 @@ private fun ThemePreviewBottomSheetContent(
     val themeHasShadow = remember(themeOption.scheme) {
         val s = themeOption.scheme
         s.keyShadow.alpha > 0.01f ||
-            (s.themeSpec?.characterKey?.shadow != null &&
-             (s.themeSpec?.characterKey?.shadow?.elevationDp ?: 0f) > 0f)
+                (s.themeSpec?.characterKey?.shadow != null &&
+                        (s.themeSpec?.characterKey?.shadow?.elevationDp ?: 0f) > 0f)
     }
 
     Column(
@@ -1149,9 +1241,7 @@ private fun ThemePreviewBottomSheetContent(
                         .fillMaxWidth()
                         .height(50.dp),
                     shape = CircleShape,
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = colors.accent
-                    )
+                    colors = ButtonDefaults.buttonColors(containerColor = colors.accent)
                 ) {
                     Text(
                         text = "Import Theme",
@@ -1188,9 +1278,7 @@ private fun ThemePreviewBottomSheetContent(
                         .fillMaxWidth()
                         .height(50.dp),
                     shape = CircleShape,
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = colors.accent
-                    )
+                    colors = ButtonDefaults.buttonColors(containerColor = colors.accent)
                 ) {
                     Text(
                         text = "Apply Theme",
@@ -1223,7 +1311,7 @@ private fun ThemePreviewBottomSheetContent(
                                     imageVector = Icons.Outlined.Edit,
                                     contentDescription = "Edit Theme",
                                     tint = colors.textPrimary,
-                                    modifier = Modifier.size(21.dp)
+                                    modifier = Modifier.size(20.dp)
                                 )
                             }
                         }
@@ -1242,7 +1330,7 @@ private fun ThemePreviewBottomSheetContent(
                                     imageVector = Icons.Outlined.Share,
                                     contentDescription = "Share Theme",
                                     tint = colors.textPrimary,
-                                    modifier = Modifier.size(21.dp)
+                                    modifier = Modifier.size(20.dp)
                                 )
                             }
                         }
@@ -1252,15 +1340,16 @@ private fun ThemePreviewBottomSheetContent(
                                 modifier = Modifier
                                     .size(48.dp)
                                     .clip(CircleShape)
-                                    .background(Color(0xFFE53935))
+                                    .background(neutralCircleBg)
+                                    .border(1.dp, colors.cardBorder, CircleShape)
                                     .clickable(onClick = onDeleteTheme),
                                 contentAlignment = Alignment.Center
                             ) {
                                 Icon(
                                     imageVector = Icons.Outlined.Delete,
                                     contentDescription = "Delete Theme",
-                                    tint = Color.White,
-                                    modifier = Modifier.size(21.dp)
+                                    tint = Color(0xFFEF4444),
+                                    modifier = Modifier.size(20.dp)
                                 )
                             }
                         }
@@ -1270,17 +1359,3 @@ private fun ThemePreviewBottomSheetContent(
         }
     }
 }
-
-private fun getFileName(context: android.content.Context, uri: Uri): String? {
-    if (uri.scheme == "content") {
-        context.contentResolver.query(uri, null, null, null, null)?.use { cursor ->
-            val nameIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
-            if (nameIndex != -1 && cursor.moveToFirst()) {
-                return cursor.getString(nameIndex)
-            }
-        }
-    }
-    return uri.lastPathSegment
-}
-
-

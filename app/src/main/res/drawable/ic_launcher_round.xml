@@ -6,9 +6,41 @@
     android:viewportWidth="512"
     android:viewportHeight="512">
 
-    <!-- Circular Background -->
+    <!-- Circular Light Aesthetic Background with soft white to light-blue gradient -->
     <path
-        android:pathData="M256,256 m-216,0 a216,216 0,1,0 432,0 a216,216 0,1,0 -432,0">
+        android:pathData="M256,0 A256,256 0,1,1 255.9,0 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:angle="135"
+                android:startColor="#FFFFFF"
+                android:centerColor="#F8FAFC"
+                android:endColor="#E0F2FE"
+                android:type="linear" />
+        </aapt:attr>
+    </path>
+
+    <!-- Decorative background light rays -->
+    <path
+        android:pathData="M0,0 L512,0 L320,512 L0,512 Z"
+        android:fillAlpha="0.40">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:angle="45"
+                android:startColor="#F0F9FF"
+                android:endColor="#E0F2FE"
+                android:type="linear" />
+        </aapt:attr>
+    </path>
+
+    <!-- Ambient Shadow for Central Artwork Squircle -->
+    <path
+        android:pathData="M160,88 L352,88 A76,76 0,0,1 428,164 L428,356 A76,76 0,0,1 352,432 L160,432 A76,76 0,0,1 84,356 L84,164 A76,76 0,0,1 160,88 Z"
+        android:fillAlpha="0.18"
+        android:fillColor="#0C4A6E" />
+
+    <!-- Central Decorative Blue-to-Cyan Squircle Badge -->
+    <path
+        android:pathData="M164,84 L348,84 A72,72 0,0,1 420,156 L420,340 A72,72 0,0,1 348,412 L164,412 A72,72 0,0,1 92,340 L92,156 A72,72 0,0,1 164,84 Z">
         <aapt:attr name="android:fillColor">
             <gradient
                 android:angle="45"
@@ -19,10 +51,10 @@
         </aapt:attr>
     </path>
 
-    <!-- Faceted diagonal light ray -->
+    <!-- Diagonal Faceted Light Ray across central badge -->
     <path
-        android:pathData="M240,44 L468,44 L468,240 L300,468 L150,468 Z"
-        android:fillAlpha="0.22">
+        android:pathData="M240,84 L420,84 L420,240 L280,412 L180,412 Z"
+        android:fillAlpha="0.24">
         <aapt:attr name="android:fillColor">
             <gradient
                 android:angle="45"
@@ -32,14 +64,14 @@
         </aapt:attr>
     </path>
 
-    <!-- Soft Drop Shadow for L -->
+    <!-- Drop Shadow for 'L' glyph -->
     <path
-        android:pathData="M250,122 C224,122 208,138 208,164 L208,314 C208,352 236,380 274,380 L330,380 C348,380 362,366 362,348 C362,330 348,316 330,316 L278,316 C263,316 252,305 252,290 L252,164 C252,138 250,122 250,122 Z"
+        android:pathData="M250,154 C228,154 214,168 214,190 L214,312 C214,342 236,366 268,366 L316,366 C332,366 344,354 344,338 C344,322 332,310 316,310 L272,310 C258,310 248,300 248,286 L248,190 C248,168 250,154 250,154 Z"
         android:fillAlpha="0.30"
         android:fillColor="#172554" />
 
-    <!-- Pure white rounded Lipika L glyph -->
+    <!-- Pure white rounded Lipika 'L' glyph -->
     <path
-        android:pathData="M246,114 C220,114 204,130 204,156 L204,306 C204,344 232,372 270,372 L326,372 C344,372 358,358 358,340 C358,322 344,308 326,308 L274,308 C259,308 248,297 248,282 L248,156 C248,130 246,114 246,114 Z"
+        android:pathData="M246,146 C224,146 210,160 210,182 L210,304 C210,334 232,358 264,358 L312,358 C328,358 340,346 340,330 C340,314 328,302 312,302 L268,302 C254,302 244,292 244,278 L244,182 C244,160 246,146 246,146 Z"
         android:fillColor="#FFFFFF" />
 </vector>

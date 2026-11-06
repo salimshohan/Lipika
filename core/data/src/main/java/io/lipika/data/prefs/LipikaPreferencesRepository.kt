@@ -59,6 +59,8 @@ class LipikaPreferencesRepository private constructor(private val context: Conte
         val THEME = stringPreferencesKey("pref_theme")
         val SELECTED_FONT = stringPreferencesKey("pref_selected_font")
         val ACCENT_COLOR = stringPreferencesKey("pref_accent_color")
+        val ACCENT_MODE = stringPreferencesKey("pref_accent_mode")
+        val MULTIPLE_ACCENTS = stringPreferencesKey("pref_multiple_accents")
         val CUSTOM_FONT_PATH = stringPreferencesKey("pref_custom_font_path")
         val KEYBOARD_HEIGHT_SCALE = floatPreferencesKey("pref_keyboard_height_scale")
         val KEYBOARD_HEIGHT_SCALE_LANDSCAPE = floatPreferencesKey("pref_keyboard_height_scale_landscape")
@@ -136,6 +138,8 @@ class LipikaPreferencesRepository private constructor(private val context: Conte
                 theme = prefs[PreferencesKeys.THEME] ?: LipikaPreferences.THEME_LIPIKA_GRADIENT,
                 selectedFont = prefs[PreferencesKeys.SELECTED_FONT] ?: LipikaPreferences.FONT_TW_CENT_MT,
                 accentColor = prefs[PreferencesKeys.ACCENT_COLOR] ?: LipikaPreferences.ACCENT_CYAN,
+                accentMode = prefs[PreferencesKeys.ACCENT_MODE] ?: LipikaPreferences.ACCENT_MODE_SINGLE,
+                multipleAccentsRaw = prefs[PreferencesKeys.MULTIPLE_ACCENTS] ?: "",
                 customFontPath = prefs[PreferencesKeys.CUSTOM_FONT_PATH] ?: "",
                 keyboardHeightScale = prefs[PreferencesKeys.KEYBOARD_HEIGHT_SCALE] ?: 1.0f,
                 keyboardHeightScaleLandscape = prefs[PreferencesKeys.KEYBOARD_HEIGHT_SCALE_LANDSCAPE] ?: 1.0f,
@@ -255,6 +259,30 @@ class LipikaPreferencesRepository private constructor(private val context: Conte
     // Appearance & Theming mutators
     suspend fun updateAccentColor(accent: String) {
         context.lipikaDataStore.edit { it[PreferencesKeys.ACCENT_COLOR] = accent }
+    }
+
+    suspend fun updateAccentMode(mode: String) {
+        context.lipikaDataStore.edit { it[PreferencesKeys.ACCENT_MODE] = mode }
+    }
+
+    suspend fun updateMultipleAccents(map: Map<String, String>) {
+        val raw = map.entries.joinToString(",") { "${it.key}:${it.value}" }
+        context.lipikaDataStore.edit { it[PreferencesKeys.MULTIPLE_ACCENTS] = raw }
+    }
+
+    suspend fun updateComponentAccent(component: String, hexColor: String) {
+        context.lipikaDataStore.edit { prefs ->
+            val currentRaw = prefs[PreferencesKeys.MULTIPLE_ACCENTS] ?: ""
+            val currentMap = if (currentRaw.isBlank()) mutableMapOf() else currentRaw.split(",")
+                .mapNotNull { item ->
+                    val parts = item.split(":")
+                    if (parts.size == 2 && parts[0].isNotBlank() && parts[1].isNotBlank()) {
+                        parts[0].trim() to parts[1].trim()
+                    } else null
+                }.toMap().toMutableMap()
+            currentMap[component] = hexColor
+            prefs[PreferencesKeys.MULTIPLE_ACCENTS] = currentMap.entries.joinToString(",") { "${it.key}:${it.value}" }
+        }
     }
 
     suspend fun updateTheme(theme: String) {

@@ -5,26 +5,37 @@
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
-    <path
-        android:pathData="M0,0h108v108h-108z">
+    <!-- Soft light background with pale light-blue gradient -->
+    <path android:pathData="M0,0h108v108h-108z">
         <aapt:attr name="android:fillColor">
             <gradient
-                android:angle="45"
-                android:startColor="#2563EB"
-                android:centerColor="#38BDF8"
-                android:endColor="#06B6D4"
+                android:angle="135"
+                android:startColor="#FFFFFF"
+                android:centerColor="#F8FAFC"
+                android:endColor="#E0F2FE"
                 android:type="linear" />
         </aapt:attr>
     </path>
-    <!-- Faceted diagonal light ray -->
+    <!-- Decorative subtle light-blue geometric artwork & sheen -->
     <path
-        android:pathData="M40,0 L108,0 L108,60 L70,108 L30,108 Z"
-        android:fillAlpha="0.22">
+        android:pathData="M0,0 L108,0 L60,108 L0,108 Z"
+        android:fillAlpha="0.45">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:angle="45"
+                android:startColor="#F0F9FF"
+                android:endColor="#E0F2FE"
+                android:type="linear" />
+        </aapt:attr>
+    </path>
+    <path
+        android:pathData="M70,0 L108,0 L108,80 L30,108 Z"
+        android:fillAlpha="0.30">
         <aapt:attr name="android:fillColor">
             <gradient
                 android:angle="45"
                 android:startColor="#FFFFFF"
-                android:endColor="#38BDF8"
+                android:endColor="#BAE6FD"
                 android:type="linear" />
         </aapt:attr>
     </path>
