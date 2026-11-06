@@ -72,13 +72,14 @@ jobs:
           body: |
             ### 🌟 Lipika Keyboard ${{ github.ref_name }} Release
             
-            - **🌄 Edge-to-Edge Sunrise Dashboard**: Removed top header section completely from the main settings screen; the scenic mountain sunrise artwork now seamlessly extends right from the status bar.
-            - **🔤 Dedicated Fonts Screen**: Renamed "Shop" to "Fonts" with typography icon; removed Themes/Font Studio tab switcher; displays each font name with the full sentence preview (`"The quick brown fox jumps over the lazy dog"`).
-            - **🌐 Direct Language Cards & Individual Toggles**: Renamed "Customize" to "Language"; English, Provat (`bn_probhat`), and Avro (`bn_avro`) enabled by default; every layout (including all Bangla layouts) features its own dedicated ON/OFF toggle switch and direct layout picture preview.
-            - **⚙️ Preferences with Dynamic App Accent**: Renamed "Settings" to "Preferences" with modern tune/sliders icon; Vibrate on keypress is OFF by default; Long-press delay slider now continuously adjustable from 100 ms to 600 ms; added dynamic App Accent Color customization (Cyan, Emerald, Orange, Violet, Rose, Amber).
-            - **ℹ️ Comprehensive Technical About Screen**: Renamed "Survey" to "About" with info icon; added extensive architectural & technical keyboard documentation (hybrid zero-latency Rust core, 100% offline privacy, Salim Hosen Shohan, University of Rajshahi).
-            - **📋 Persistent Sandboxed Image Clipboard**: Permanent disk storage for image clips with real visual thumbnails in clipboard settings and quick-paste bar.
-            - **😀 iOS-Style Emoji Picker & Shortcuts**: Bottom bar emoji key, iOS-style grid preview, and English-exclusive cut/copy/paste keys.
+            - **🎨 Dedicated Appearance Section**: Comprehensive appearance controls with Display Mode (Light, Dark, System Default), App Theme (Light, Dark, System, Dynamic Color), Keyboard Theme (Light, Dark, Custom with embedded live interactive preview), Dark Style (Pure Black `#000000`, AMOLED `#18181B`, Dark Gray `#22242B`), and Scheduling (Always Light, Always Dark, Sunset to Sunrise, Custom Schedule with time sliders).
+            - **🎛️ Modern 4×2 Symmetrical Dashboard Grid**: Smart Typing, Fonts, Theme, Language, Preferences, Clipboard, Appearance, and About in rectangular frosted glass cards.
+            - **⚡ Smart Typing Intelligence**: Consolidated Smart Typing screen with offline bilingual (Bengali & English) emoji predictions and corrections.
+            - **🌄 Edge-to-Edge Sunrise Dashboard**: Scenic mountain sunrise artwork seamlessly extending right from the status bar.
+            - **🔤 Dedicated Fonts Screen**: Tw Cent MT, Kalpurush, and 11+ fonts with typography preview.
+            - **🌐 Multi-Language Layouts & Toggles**: English, Provat, and Avro with direct picture previews and individual toggles.
+            - **⚙️ Preferences & Dynamic Accent**: Haptic feedback, adjustable long-press delay (100–600ms), and custom accent palette.
+            - **📋 Sandboxed Image Clipboard**: Offline clipboard with image capture and pin support.
           files: dist/Lipika.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

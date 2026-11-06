@@ -11,8 +11,8 @@
 ---
 
 <p align="center">
-  <a href="https://github.com/salimshohan/Lipika/releases/tag/v0.2.3">
-    <img src="https://img.shields.io/badge/Release-v0.2.3-06B6D4?style=for-the-badge&logo=android&logoColor=white" alt="Version 0.2.1" />
+  <a href="https://github.com/salimshohan/Lipika/releases/tag/v0.2.4">
+    <img src="https://img.shields.io/badge/Release-v0.2.4-06B6D4?style=for-the-badge&logo=android&logoColor=white" alt="Version 0.2.4" />
   </a>
   <a href="https://github.com/salimshohan/Lipika/releases/latest/download/Lipika.apk">
     <img src="https://img.shields.io/badge/Download-Lipika%20APK-10B981?style=for-the-badge&logo=android&logoColor=white" alt="Download APK" />
@@ -35,7 +35,9 @@
 
 ## ✨ Key Highlights
 
-- **🎨 Luminous Aurora Gradient Theme (Default)**: Out-of-the-box frosted glass gradient styling with translucent keycaps and vivid accents.
+- **🎨 Dedicated Appearance Section**: Comprehensive appearance controls with Display Mode (Light, Dark, System Default), App Theme (Light, Dark, System, Dynamic Color), Keyboard Theme (Light, Dark, Custom with live interactive preview), Dark Style (Pure Black `#000000`, AMOLED `#18181B`, Dark Gray `#22242B`), and Scheduling (Always Light, Always Dark, Sunset to Sunrise, Custom Schedule with time sliders).
+- **🎛️ Modern 4×2 Dashboard Grid**: Smart Typing, Fonts, Theme, Language, Preferences, Clipboard, Appearance, and About in rectangular frosted glass cards.
+- **⚡ Smart Typing Intelligence**: Consolidated Smart Typing with offline bilingual (Bengali & English) emoji predictions and corrections.
 - **🔤 Font Studio with Tw Cent MT & 11+ Fonts**: Built-in real TTF typography selection including **Tw Cent MT**, **Kalpurush (বাংলা)**, Segoe UI, Georgia, Consolas, Candara, Comic Sans, Trebuchet MS, Verdana, Calibri, Corbel, plus direct custom font file loader (`.ttf` / `.otf`).
 - **✂️ Direct Cut, Copy & Paste Shortcuts**: Integrated shortcuts directly on the English keyboard:
   - **`x` key**: Cut (✂️)
@@ -74,6 +76,6 @@ Lipika features 5 carefully chosen layouts:
 
 Download the stable pre-built APK directly from GitHub Releases:
 
-👉 **[Download Lipika v0.2.3 APK](https://github.com/salimshohan/Lipika/releases/download/v0.2.3/Lipika.apk)**
+👉 **[Download Lipika v0.2.4 APK](https://github.com/salimshohan/Lipika/releases/download/v0.2.4/Lipika.apk)**
 
 👉 **[Download Latest Lipika APK](https://github.com/salimshohan/Lipika/releases/latest/download/Lipika.apk)**

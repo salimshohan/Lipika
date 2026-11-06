@@ -89,9 +89,9 @@ fun AboutScreen(
     val colors = LocalSettingsColors.current
     val versionName = androidx.compose.runtime.remember {
         try {
-            context.packageManager.getPackageInfo(context.packageName, 0).versionName ?: "0.2.3"
+            context.packageManager.getPackageInfo(context.packageName, 0).versionName ?: "0.2.4"
         } catch (_: Exception) {
-            "0.2.3"
+            "0.2.4"
         }
     }
 
