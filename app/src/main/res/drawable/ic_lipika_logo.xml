@@ -6,72 +6,53 @@
     android:viewportWidth="512"
     android:viewportHeight="512">
 
-    <!-- Outer Light Aesthetic Background with soft white to light-blue gradient -->
+    <!-- Solid Pure White Background - No Border -->
     <path
-        android:pathData="M112,0 L400,0 A112,112 0,0,1 512,112 L512,400 A112,112 0,0,1 400,512 L112,512 A112,112 0,0,1 0,400 L0,112 A112,112 0,0,1 112,0 Z">
-        <aapt:attr name="android:fillColor">
-            <gradient
-                android:angle="135"
-                android:startColor="#FFFFFF"
-                android:centerColor="#F8FAFC"
-                android:endColor="#E0F2FE"
-                android:type="linear" />
-        </aapt:attr>
-    </path>
-
-    <!-- Decorative background light rays -->
-    <path
-        android:pathData="M0,0 L512,0 L320,512 L0,512 Z"
-        android:fillAlpha="0.40">
-        <aapt:attr name="android:fillColor">
-            <gradient
-                android:angle="45"
-                android:startColor="#F0F9FF"
-                android:endColor="#E0F2FE"
-                android:type="linear" />
-        </aapt:attr>
-    </path>
-
-    <!-- Ambient Shadow for Central Artwork Squircle -->
-    <path
-        android:pathData="M160,88 L352,88 A76,76 0,0,1 428,164 L428,356 A76,76 0,0,1 352,432 L160,432 A76,76 0,0,1 84,356 L84,164 A76,76 0,0,1 160,88 Z"
-        android:fillAlpha="0.18"
-        android:fillColor="#0C4A6E" />
-
-    <!-- Central Decorative Blue-to-Cyan Squircle Badge -->
-    <path
-        android:pathData="M164,84 L348,84 A72,72 0,0,1 420,156 L420,340 A72,72 0,0,1 348,412 L164,412 A72,72 0,0,1 92,340 L92,156 A72,72 0,0,1 164,84 Z">
-        <aapt:attr name="android:fillColor">
-            <gradient
-                android:angle="45"
-                android:startColor="#2563EB"
-                android:centerColor="#38BDF8"
-                android:endColor="#06B6D4"
-                android:type="linear" />
-        </aapt:attr>
-    </path>
-
-    <!-- Diagonal Faceted Light Ray across central badge -->
-    <path
-        android:pathData="M240,84 L420,84 L420,240 L280,412 L180,412 Z"
-        android:fillAlpha="0.24">
-        <aapt:attr name="android:fillColor">
-            <gradient
-                android:angle="45"
-                android:startColor="#FFFFFF"
-                android:endColor="#38BDF8"
-                android:type="linear" />
-        </aapt:attr>
-    </path>
-
-    <!-- Drop Shadow for 'L' glyph -->
-    <path
-        android:pathData="M250,154 C228,154 214,168 214,190 L214,312 C214,342 236,366 268,366 L316,366 C332,366 344,354 344,338 C344,322 332,310 316,310 L272,310 C258,310 248,300 248,286 L248,190 C248,168 250,154 250,154 Z"
-        android:fillAlpha="0.30"
-        android:fillColor="#172554" />
-
-    <!-- Pure white rounded Lipika 'L' glyph -->
-    <path
-        android:pathData="M246,146 C224,146 210,160 210,182 L210,304 C210,334 232,358 264,358 L312,358 C328,358 340,346 340,330 C340,314 328,302 312,302 L268,302 C254,302 244,292 244,278 L244,182 C244,160 246,146 246,146 Z"
+        android:pathData="M0,0h512v512h-512z"
         android:fillColor="#FFFFFF" />
+
+    <!-- Center Soft Glow -->
+    <path
+        android:pathData="M256,96 A160,160 0,1,1 255.9,96 Z"
+        android:fillAlpha="0.10"
+        android:fillColor="#38BDF8" />
+
+    <!-- Top Horizontal Bar ('Matra') -->
+    <path
+        android:pathData="M143,160 L369,160 A13,13 0,0,1 382,173 A13,13 0,0,1 369,186 L143,186 A13,13 0,0,1 130,173 A13,13 0,0,1 143,160 Z"
+        android:fillColor="#0F172A" />
+
+    <!-- Stylized Modern Bengali 'ল' Loops Shadow -->
+    <path
+        android:pathData="M157,316 C137,281 147,226 182,202 C212,182 244,194 254,224 C267,194 300,182 330,202 C362,226 372,281 352,316 C342,336 317,356 282,351 L282,324 C302,328 322,316 328,301 C340,276 332,236 308,221 C290,208 267,216 258,244 L244,244 C235,216 212,208 194,221 C170,236 162,276 174,301 C180,316 200,328 220,324 L220,351 C185,356 160,336 157,316 Z"
+        android:fillAlpha="0.18"
+        android:fillColor="#0369A1" />
+
+    <!-- Stylized Modern Bengali 'ল' Loops -->
+    <path
+        android:pathData="M155,310 C135,275 145,220 180,196 C210,176 242,188 252,218 C265,188 298,176 328,196 C360,220 370,275 350,310 C340,330 315,350 280,345 L280,318 C300,322 320,310 326,295 C338,270 330,230 306,215 C288,202 265,210 256,238 L242,238 C233,210 210,202 192,215 C168,230 160,270 172,295 C178,310 198,322 218,318 L218,345 C183,350 158,330 155,310 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:angle="90"
+                android:startColor="#06B6D4"
+                android:centerColor="#0EA5E9"
+                android:endColor="#0284C7"
+                android:type="linear" />
+        </aapt:attr>
+    </path>
+
+    <!-- Vertical Stem of 'ল' -->
+    <path
+        android:pathData="M369,160 L369,160 A13,13 0,0,1 382,173 L382,342 A13,13 0,0,1 369,355 A13,13 0,0,1 356,342 L356,173 A13,13 0,0,1 369,160 Z"
+        android:fillColor="#0F172A" />
+
+    <!-- Foot Accent -->
+    <path
+        android:pathData="M341,340 L371,340 A11,11 0,0,1 382,351 A11,11 0,0,1 371,362 L341,362 A11,11 0,0,1 330,351 A11,11 0,0,1 341,340 Z"
+        android:fillColor="#0F172A" />
+
+    <!-- Electric Cyan Typing Cursor Spark -->
+    <path
+        android:pathData="M403,170 L403,170 A7,7 0,0,1 410,177 L410,211 A7,7 0,0,1 403,218 A7,7 0,0,1 396,211 L396,177 A7,7 0,0,1 403,170 Z"
+        android:fillColor="#06B6D4" />
 </vector>

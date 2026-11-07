@@ -50,7 +50,8 @@ data class LipikaPreferences(
     val longPressDeleteEnabled: Boolean = true,
     val selectiveDeleteMode: String = DELETE_MODE_WORD,
 
-    // Keyboard Layouts
+    // Keyboard Layouts & Language
+    val appLanguage: String = APP_LANG_EN,
     val primaryLayoutId: String = LAYOUT_EN_QWERTY,
     val enabledLayoutIds: Set<String> = linkedSetOf(
         LAYOUT_EN_QWERTY,
@@ -288,6 +289,9 @@ data class LipikaPreferences(
 
         const val SUGGESTION_BAR_MODE_NORMAL = "normal"
         const val SUGGESTION_BAR_MODE_SCROLLABLE = "scrollable"
+
+        const val APP_LANG_EN = "en"
+        const val APP_LANG_BN = "bn"
 
         const val LAYOUT_EN_QWERTY = "en_qwerty"
         const val LAYOUT_BN_BORNO = "bn_borno"

@@ -92,6 +92,7 @@ class LipikaPreferencesRepository private constructor(private val context: Conte
         val LONG_PRESS_DELETE_ENABLED = booleanPreferencesKey("pref_long_press_delete_enabled")
         val SELECTIVE_DELETE_MODE = stringPreferencesKey("pref_selective_delete_mode")
 
+        val APP_LANGUAGE = stringPreferencesKey("pref_app_language")
         val PRIMARY_LAYOUT_ID = stringPreferencesKey("pref_primary_layout_id")
         val ENABLED_LAYOUT_IDS = stringSetPreferencesKey("pref_enabled_layout_ids")
         val ENABLED_LAYOUT_ORDER = stringPreferencesKey("pref_enabled_layout_order")
@@ -201,6 +202,7 @@ class LipikaPreferencesRepository private constructor(private val context: Conte
                 longPressDeleteEnabled = prefs[PreferencesKeys.LONG_PRESS_DELETE_ENABLED] ?: true,
                 selectiveDeleteMode = prefs[PreferencesKeys.SELECTIVE_DELETE_MODE] ?: LipikaPreferences.DELETE_MODE_WORD,
 
+                appLanguage = prefs[PreferencesKeys.APP_LANGUAGE] ?: LipikaPreferences.APP_LANG_EN,
                 primaryLayoutId = prefs[PreferencesKeys.PRIMARY_LAYOUT_ID] ?: LipikaPreferences.LAYOUT_EN_QWERTY,
                 enabledLayoutIds = run {
                     val rawSet = prefs[PreferencesKeys.ENABLED_LAYOUT_IDS] ?: linkedSetOf(
@@ -463,6 +465,10 @@ class LipikaPreferencesRepository private constructor(private val context: Conte
 
     suspend fun updateSelectiveDeleteMode(mode: String) {
         context.lipikaDataStore.edit { it[PreferencesKeys.SELECTIVE_DELETE_MODE] = mode }
+    }
+
+    suspend fun updateAppLanguage(lang: String) {
+        context.lipikaDataStore.edit { it[PreferencesKeys.APP_LANGUAGE] = lang }
     }
 
     // Layout mutators

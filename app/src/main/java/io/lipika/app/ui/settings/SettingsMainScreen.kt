@@ -90,21 +90,13 @@ fun SettingsMainScreen(
     val colors = LocalSettingsColors.current
     var testInputText by remember { mutableStateOf("") }
 
+    val context = androidx.compose.ui.platform.LocalContext.current
     val activeFontFamily = remember(preferences.selectedFont, preferences.customFontPath) {
         resolveKeyboardFontFamily(preferences.selectedFont, preferences.customFontPath)
     }
 
-    val activeThemeName = remember(preferences.theme) {
-        when (preferences.theme) {
-            "frosted_glass" -> "Frosted Glass Effect"
-            "lipika_gradient" -> "Luminous Aurora"
-            "default_dark" -> "Default Dark"
-            "amoled_black" -> "AMOLED Black"
-            "tokyo_night" -> "Tokyo Night"
-            "nord" -> "Nord Frost"
-            else -> preferences.theme.replace("_", " ").split(" ")
-                .joinToString(" ") { it.replaceFirstChar { c -> c.uppercase() } }
-        }
+    val activeThemeName = remember(preferences.theme, context) {
+        io.lipika.theme.ThemeDisplayUtils.resolveDisplayName(preferences.theme, context)
     }
 
     val activeLayoutName = remember(preferences.primaryLayoutId) {
@@ -481,7 +473,7 @@ fun SettingsMainScreen(
                     DashboardOptionCard(
                         modifier = Modifier.weight(1f),
                         title = "Theme",
-                        subtitle = "Colors & key styles",
+                        subtitle = activeThemeName,
                         icon = Icons.Outlined.Palette,
                         colors = colors,
                         onClick = { onNavigate(SettingsScreen.AppearanceThemes(0)) }

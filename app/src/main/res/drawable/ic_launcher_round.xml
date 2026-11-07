@@ -6,51 +6,16 @@
     android:viewportWidth="512"
     android:viewportHeight="512">
 
-    <!-- Ambient Shadow for Keycap -->
+    <!-- Solid Pure White Background - No Border -->
     <path
-        android:pathData="M132,46 L380,46 A96,96 0,0,1 476,142 L476,390 A96,96 0,0,1 380,486 L132,486 A96,96 0,0,1 36,390 L36,142 A96,96 0,0,1 132,46 Z"
-        android:fillAlpha="0.14"
-        android:fillColor="#0F172A" />
+        android:pathData="M0,0h512v512h-512z"
+        android:fillColor="#FFFFFF" />
 
-    <!-- Keycap Body (Light Pearlescent Surface) -->
+    <!-- Center Soft Glow -->
     <path
-        android:pathData="M132,36 L380,36 A96,96 0,0,1 476,132 L476,380 A96,96 0,0,1 380,476 L132,476 A96,96 0,0,1 36,380 L36,132 A96,96 0,0,1 132,36 Z">
-        <aapt:attr name="android:fillColor">
-            <gradient
-                android:angle="135"
-                android:startColor="#FFFFFF"
-                android:centerColor="#F8FAFC"
-                android:endColor="#E0F2FE"
-                android:type="linear" />
-        </aapt:attr>
-    </path>
-
-    <!-- Keycap Frosted Cyan-Blue Stroke Border -->
-    <path
-        android:pathData="M132,36 L380,36 A96,96 0,0,1 476,132 L476,380 A96,96 0,0,1 380,476 L132,476 A96,96 0,0,1 36,380 L36,132 A96,96 0,0,1 132,36 Z"
-        android:strokeWidth="7">
-        <aapt:attr name="android:strokeColor">
-            <gradient
-                android:angle="45"
-                android:startColor="#38BDF8"
-                android:centerColor="#0EA5E9"
-                android:endColor="#2563EB"
-                android:type="linear" />
-        </aapt:attr>
-    </path>
-
-    <!-- Glossy Glass Sheen -->
-    <path
-        android:pathData="M40,132 C40,81 81,40 132,40 L380,40 C431,40 472,81 472,132 L472,180 Q256,120 40,180 Z"
-        android:fillAlpha="0.65">
-        <aapt:attr name="android:fillColor">
-            <gradient
-                android:angle="90"
-                android:startColor="#FFFFFF"
-                android:endColor="#00FFFFFF"
-                android:type="linear" />
-        </aapt:attr>
-    </path>
+        android:pathData="M256,96 A160,160 0,1,1 255.9,96 Z"
+        android:fillAlpha="0.10"
+        android:fillColor="#38BDF8" />
 
     <!-- Top Horizontal Bar ('Matra') -->
     <path

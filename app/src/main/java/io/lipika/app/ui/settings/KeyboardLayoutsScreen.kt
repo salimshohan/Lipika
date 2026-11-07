@@ -108,6 +108,7 @@ fun KeyboardLayoutsScreen(
     onToggleLayoutEnabled: (String, Boolean) -> Unit,
     onReorderEnabledLayouts: (List<String>) -> Unit = {},
     onToggleExtraRow: (String, String, Boolean) -> Unit = { _, _, _ -> },
+    onUpdateAppLanguage: (String) -> Unit = {},
     onBack: () -> Unit = {}
 ) {
     val context = LocalContext.current
@@ -255,6 +256,67 @@ fun KeyboardLayoutsScreen(
 
 
 
+    var showAppLanguageDialog by remember { mutableStateOf(false) }
+
+    if (showAppLanguageDialog) {
+        AlertDialog(
+            onDismissRequest = { showAppLanguageDialog = false },
+            containerColor = colors.dialogBackground,
+            title = {
+                Text(
+                    text = "App Language",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = colors.textPrimary
+                )
+            },
+            text = {
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    val languages = listOf(
+                        LipikaPreferences.APP_LANG_EN to "English (Default)",
+                        LipikaPreferences.APP_LANG_BN to "বাংলা (Bengali)"
+                    )
+                    for ((code, label) in languages) {
+                        val isSelected = preferences.appLanguage == code
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clip(RoundedCornerShape(12.dp))
+                                .background(if (isSelected) colors.accent.copy(alpha = 0.15f) else Color.Transparent)
+                                .clickable {
+                                    onUpdateAppLanguage(code)
+                                    showAppLanguageDialog = false
+                                }
+                                .padding(horizontal = 14.dp, vertical = 12.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                text = label,
+                                fontSize = 15.sp,
+                                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
+                                color = if (isSelected) colors.accent else colors.textPrimary
+                            )
+                            if (isSelected) {
+                                Icon(
+                                    imageVector = Icons.Filled.Check,
+                                    contentDescription = null,
+                                    tint = colors.accent,
+                                    modifier = Modifier.size(20.dp)
+                                )
+                            }
+                        }
+                    }
+                }
+            },
+            confirmButton = {
+                androidx.compose.material3.TextButton(onClick = { showAppLanguageDialog = false }) {
+                    Text(text = "Close", color = colors.accent)
+                }
+            }
+        )
+    }
+
     if (pendingDeleteCard != null) {
         val target = pendingDeleteCard!!
         AlertDialog(
@@ -317,6 +379,74 @@ fun KeyboardLayoutsScreen(
             .verticalScroll(scrollState)
             .padding(bottom = 32.dp)
     ) {
+        // App Language Setting
+        SettingsCategoryHeader(title = "App Language")
+        SettingsGroup(modifier = Modifier.padding(horizontal = 16.dp)) {
+            SettingsItemCard(
+                position = GroupPosition.ALONE,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { showAppLanguageDialog = true }
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 14.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(14.dp),
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .size(36.dp)
+                                .clip(RoundedCornerShape(10.dp))
+                                .background(colors.accent.copy(alpha = 0.14f)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                imageVector = Icons.Outlined.Language,
+                                contentDescription = null,
+                                tint = colors.accent,
+                                modifier = Modifier.size(20.dp)
+                            )
+                        }
+                        Column {
+                            Text(
+                                text = "App Language",
+                                fontSize = 15.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = colors.textPrimary
+                            )
+                            Text(
+                                text = if (preferences.appLanguage == LipikaPreferences.APP_LANG_BN) "বাংলা (Bengali)" else "English (Default)",
+                                fontSize = 12.sp,
+                                color = colors.textSecondary
+                            )
+                        }
+                    }
+                    Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(colors.accent.copy(alpha = 0.12f))
+                            .padding(horizontal = 10.dp, vertical = 4.dp)
+                    ) {
+                        Text(
+                            text = if (preferences.appLanguage == LipikaPreferences.APP_LANG_BN) "বাংলা" else "EN",
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = colors.accent
+                        )
+                    }
+                }
+            }
+        }
+
+        Spacer(modifier = Modifier.height(14.dp))
+
         SettingsCategoryHeader(title = "Active Layouts (${activeCards.size})")
 
         SettingsGroup(modifier = Modifier.padding(horizontal = 16.dp)) {
