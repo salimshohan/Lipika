@@ -64,16 +64,16 @@ data class AccentPreset(
 )
 
 val CuratedAccentPresets = listOf(
-    AccentPreset(LipikaPreferences.ACCENT_PREMIUM_BLUE, "Premium Blue", Color(0xFF0284C7), "#0284C7"),
+    AccentPreset(LipikaPreferences.ACCENT_CYAN, "Electric Cyan", Color(0xFF06B6D4), "#06B6D4"),
     AccentPreset(LipikaPreferences.ACCENT_ROYAL_BLUE, "Royal Blue", Color(0xFF2563EB), "#2563EB"),
-    AccentPreset(LipikaPreferences.ACCENT_SKY_BLUE, "Sky Blue", Color(0xFF0EA5E9), "#0EA5E9"),
-    AccentPreset(LipikaPreferences.ACCENT_TEAL, "Teal", Color(0xFF0D9488), "#0D9488"),
-    AccentPreset(LipikaPreferences.ACCENT_MINT_GREEN, "Mint Green", Color(0xFF10B981), "#10B981"),
-    AccentPreset(LipikaPreferences.ACCENT_PURPLE, "Purple", Color(0xFF7C3AED), "#7C3AED"),
-    AccentPreset(LipikaPreferences.ACCENT_LAVENDER, "Lavender", Color(0xFF8B5CF6), "#8B5CF6"),
-    AccentPreset(LipikaPreferences.ACCENT_ROSE, "Rose", Color(0xFFF43F5E), "#F43F5E"),
-    AccentPreset(LipikaPreferences.ACCENT_CORAL, "Coral Sunset", Color(0xFFF97316), "#F97316"),
-    AccentPreset(LipikaPreferences.ACCENT_NEUTRAL_SLATE, "Slate Grey", Color(0xFF475569), "#475569")
+    AccentPreset(LipikaPreferences.ACCENT_EMERALD, "Emerald Green", Color(0xFF10B981), "#10B981"),
+    AccentPreset(LipikaPreferences.ACCENT_MINT_GREEN, "Neon Lime", Color(0xFF84CC16), "#84CC16"),
+    AccentPreset(LipikaPreferences.ACCENT_ORANGE, "Radiant Orange", Color(0xFFF97316), "#F97316"),
+    AccentPreset(LipikaPreferences.ACCENT_GOLD, "Golden Amber", Color(0xFFEAB308), "#EAB308"),
+    AccentPreset(LipikaPreferences.ACCENT_RED, "Crimson Red", Color(0xFFEF4444), "#EF4444"),
+    AccentPreset(LipikaPreferences.ACCENT_PINK, "Hot Pink", Color(0xFFEC4899), "#EC4899"),
+    AccentPreset(LipikaPreferences.ACCENT_PURPLE, "Vivid Purple", Color(0xFF7C3AED), "#7C3AED"),
+    AccentPreset(LipikaPreferences.ACCENT_VIOLET, "Indigo Blue", Color(0xFF6366F1), "#6366F1")
 )
 
 @Composable
@@ -104,138 +104,7 @@ fun AppearanceScreen(
         Spacer(modifier = Modifier.height(8.dp))
 
         // ==========================================
-        // 1. DISPLAY MODE
-        // ==========================================
-        SettingsCategoryHeader(title = "Display Mode")
-
-        SettingsGroup(modifier = Modifier.padding(horizontal = 16.dp)) {
-            SettingsRadioOption(
-                title = "System Default",
-                subtitle = "Follow current Android system night mode",
-                selected = preferences.displayMode == LipikaPreferences.DISPLAY_MODE_SYSTEM,
-                position = GroupPosition.TOP,
-                onSelect = { onUpdateDisplayMode(LipikaPreferences.DISPLAY_MODE_SYSTEM) }
-            )
-            SettingsRadioOption(
-                title = "Light",
-                subtitle = "Bright clean background and high contrast",
-                selected = preferences.displayMode == LipikaPreferences.DISPLAY_MODE_LIGHT,
-                position = GroupPosition.MIDDLE,
-                onSelect = { onUpdateDisplayMode(LipikaPreferences.DISPLAY_MODE_LIGHT) }
-            )
-            SettingsRadioOption(
-                title = "Dark",
-                subtitle = "Comfortable dark interface for low-light environments",
-                selected = preferences.displayMode == LipikaPreferences.DISPLAY_MODE_DARK,
-                position = GroupPosition.BOTTOM,
-                onSelect = { onUpdateDisplayMode(LipikaPreferences.DISPLAY_MODE_DARK) }
-            )
-        }
-
-        Spacer(modifier = Modifier.height(14.dp))
-
-        // ==========================================
-        // 2. APP THEME
-        // ==========================================
-        SettingsCategoryHeader(title = "App Theme")
-
-        SettingsGroup(modifier = Modifier.padding(horizontal = 16.dp)) {
-            SettingsRadioOption(
-                title = "System Default",
-                subtitle = "Adapt automatically to system theme changes",
-                selected = preferences.appTheme == LipikaPreferences.APP_THEME_SYSTEM,
-                position = GroupPosition.TOP,
-                onSelect = { onUpdateAppTheme(LipikaPreferences.APP_THEME_SYSTEM) }
-            )
-            SettingsRadioOption(
-                title = "Light",
-                subtitle = "Always maintain light aesthetic throughout the app",
-                selected = preferences.appTheme == LipikaPreferences.APP_THEME_LIGHT,
-                position = GroupPosition.MIDDLE,
-                onSelect = { onUpdateAppTheme(LipikaPreferences.APP_THEME_LIGHT) }
-            )
-            SettingsRadioOption(
-                title = "Dark",
-                subtitle = "Always maintain dark frosted glass appearance",
-                selected = preferences.appTheme == LipikaPreferences.APP_THEME_DARK,
-                position = GroupPosition.MIDDLE,
-                onSelect = { onUpdateAppTheme(LipikaPreferences.APP_THEME_DARK) }
-            )
-            SettingsRadioOption(
-                title = "Dynamic Color",
-                subtitle = "Extract Material You wallpaper colors (Android 12+)",
-                selected = preferences.appTheme == LipikaPreferences.APP_THEME_DYNAMIC,
-                position = GroupPosition.BOTTOM,
-                onSelect = { onUpdateAppTheme(LipikaPreferences.APP_THEME_DYNAMIC) }
-            )
-        }
-
-        Spacer(modifier = Modifier.height(14.dp))
-
-        // ==========================================
-        // 3. KEYBOARD THEME MODE
-        // ==========================================
-        SettingsCategoryHeader(title = "Keyboard Theme")
-
-        SettingsGroup(modifier = Modifier.padding(horizontal = 16.dp)) {
-            SettingsRadioOption(
-                title = "Dark",
-                subtitle = "Deep dark keyboard theme with high contrast labels",
-                selected = preferences.keyboardThemeMode == LipikaPreferences.KEYBOARD_THEME_DARK,
-                position = GroupPosition.TOP,
-                onSelect = { onUpdateKeyboardThemeMode(LipikaPreferences.KEYBOARD_THEME_DARK) }
-            )
-            SettingsRadioOption(
-                title = "Light",
-                subtitle = "Clean bright keys with crisp legible typography",
-                selected = preferences.keyboardThemeMode == LipikaPreferences.KEYBOARD_THEME_LIGHT,
-                position = GroupPosition.MIDDLE,
-                onSelect = { onUpdateKeyboardThemeMode(LipikaPreferences.KEYBOARD_THEME_LIGHT) }
-            )
-            SettingsRadioOption(
-                title = "Custom",
-                subtitle = "Use your custom designed theme from Theme Studio",
-                selected = preferences.keyboardThemeMode == LipikaPreferences.KEYBOARD_THEME_CUSTOM,
-                position = GroupPosition.BOTTOM,
-                onSelect = { onUpdateKeyboardThemeMode(LipikaPreferences.KEYBOARD_THEME_CUSTOM) }
-            )
-        }
-
-        Spacer(modifier = Modifier.height(14.dp))
-
-        // ==========================================
-        // 4. DARK STYLE
-        // ==========================================
-        SettingsCategoryHeader(title = "Dark Style")
-
-        SettingsGroup(modifier = Modifier.padding(horizontal = 16.dp)) {
-            SettingsRadioOption(
-                title = "Dark Gray",
-                subtitle = "Standard soft dark with comfortable elevation",
-                selected = preferences.darkStyle == LipikaPreferences.DARK_STYLE_DARK_GRAY,
-                position = GroupPosition.TOP,
-                onSelect = { onUpdateDarkStyle(LipikaPreferences.DARK_STYLE_DARK_GRAY) }
-            )
-            SettingsRadioOption(
-                title = "AMOLED",
-                subtitle = "Ultra deep black tailored for OLED power saving",
-                selected = preferences.darkStyle == LipikaPreferences.DARK_STYLE_AMOLED,
-                position = GroupPosition.MIDDLE,
-                onSelect = { onUpdateDarkStyle(LipikaPreferences.DARK_STYLE_AMOLED) }
-            )
-            SettingsRadioOption(
-                title = "Pure Black",
-                subtitle = "#000000 true pitch black background",
-                selected = preferences.darkStyle == LipikaPreferences.DARK_STYLE_PURE_BLACK,
-                position = GroupPosition.BOTTOM,
-                onSelect = { onUpdateDarkStyle(LipikaPreferences.DARK_STYLE_PURE_BLACK) }
-            )
-        }
-
-        Spacer(modifier = Modifier.height(14.dp))
-
-        // ==========================================
-        // 5. THEME SCHEDULE
+        // 1. THEME SCHEDULE
         // ==========================================
         SettingsCategoryHeader(title = "Theme Schedule")
 
@@ -343,7 +212,7 @@ fun AppearanceScreen(
         Spacer(modifier = Modifier.height(14.dp))
 
         // ==========================================
-        // 6. ACCENT COLOR (10 Curated Presets)
+        // 2. ACCENT COLOR (10 Curated Presets)
         // ==========================================
         SettingsCategoryHeader(title = "Accent Color")
 

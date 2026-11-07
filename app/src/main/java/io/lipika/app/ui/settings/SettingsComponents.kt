@@ -193,8 +193,8 @@ fun SettingsUnifiedTopBar(
 
     val subtitle: String? = when (screen) {
         is SettingsScreen.Main -> null
-        is SettingsScreen.AppearanceThemes -> "Themes & key styling"
-        is SettingsScreen.Appearance -> "Display, themes & dark style"
+        is SettingsScreen.AppearanceThemes -> "Customize keyboard colors & styles"
+        is SettingsScreen.Appearance -> "Theme schedule & accent palette"
         is SettingsScreen.Fonts -> "Select keyboard typography"
         is SettingsScreen.ThemeDesigner -> if (screen.editingThemeId != null) "Edit custom theme" else "Create & customize theme"
         is SettingsScreen.KeyboardLayouts -> "Active layouts & preview"
@@ -215,7 +215,7 @@ fun SettingsUnifiedTopBar(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 20.dp, end = 20.dp, top = 10.dp, bottom = 10.dp),
+            .padding(horizontal = 16.dp, vertical = 10.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         AnimatedContent(
@@ -228,25 +228,30 @@ fun SettingsUnifiedTopBar(
                     painter = painterResource(R.drawable.ic_launcher),
                     contentDescription = "Lipika Logo",
                     modifier = Modifier
-                        .size(48.dp)
-                        .clip(RoundedCornerShape(12.dp))
+                        .size(42.dp)
+                        .clip(RoundedCornerShape(11.dp))
                 )
             } else {
-                IconButton(
-                    onClick = onBack,
-                    modifier = Modifier.size(48.dp)
+                Box(
+                    modifier = Modifier
+                        .size(40.dp)
+                        .clip(CircleShape)
+                        .background(colors.accent.copy(alpha = 0.12f))
+                        .border(BorderStroke(1.dp, colors.accent.copy(alpha = 0.28f)), CircleShape)
+                        .clickable(onClick = onBack),
+                    contentAlignment = Alignment.Center
                 ) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = "Back",
                         tint = colors.textPrimary,
-                        modifier = Modifier.size(26.dp)
+                        modifier = Modifier.size(20.dp)
                     )
                 }
             }
         }
 
-        Spacer(modifier = Modifier.width(16.dp))
+        Spacer(modifier = Modifier.width(14.dp))
 
         AnimatedContent(
             targetState = title to subtitle,
@@ -254,31 +259,36 @@ fun SettingsUnifiedTopBar(
             label = "TopBarTitleTransition",
             modifier = Modifier.weight(1f)
         ) { (t, s) ->
-            Column {
+            Column(verticalArrangement = Arrangement.Center) {
                 if (isMain) {
                     MorphGreetingText(
                         words = listOf("Lipika Keyboard"),
                         textColor = colors.textPrimary,
-                        fontSize = 28.sp,
-                        height = 36.dp,
+                        fontSize = 26.sp,
+                        height = 34.dp,
                         centerAligned = false,
                         holdDurationMs = 2600L
                     )
                 } else {
                     Text(
                         text = t,
-                        fontSize = 22.sp,
+                        fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
                         color = colors.textPrimary,
-                        lineHeight = 28.sp
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        lineHeight = 26.sp
                     )
                 }
                 if (!s.isNullOrBlank()) {
                     Text(
                         text = s,
-                        fontSize = 13.sp,
+                        fontSize = 12.5.sp,
+                        fontWeight = FontWeight.Medium,
                         color = colors.textSecondary,
-                        lineHeight = 18.sp
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        lineHeight = 16.sp
                     )
                 }
             }
@@ -296,37 +306,47 @@ fun SettingsTopAppBar(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 20.dp, end = 20.dp, top = 26.dp, bottom = 12.dp),
+            .padding(horizontal = 16.dp, vertical = 10.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        IconButton(
-            onClick = onBack,
-            modifier = Modifier.size(48.dp)
+        Box(
+            modifier = Modifier
+                .size(40.dp)
+                .clip(CircleShape)
+                .background(colors.accent.copy(alpha = 0.12f))
+                .border(BorderStroke(1.dp, colors.accent.copy(alpha = 0.28f)), CircleShape)
+                .clickable(onClick = onBack),
+            contentAlignment = Alignment.Center
         ) {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                 contentDescription = "Back",
                 tint = colors.textPrimary,
-                modifier = Modifier.size(26.dp)
+                modifier = Modifier.size(20.dp)
             )
         }
 
-        Spacer(modifier = Modifier.width(16.dp))
+        Spacer(modifier = Modifier.width(14.dp))
 
-        Column {
+        Column(verticalArrangement = Arrangement.Center) {
             Text(
                 text = title,
-                fontSize = 22.sp,
+                fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
                 color = colors.textPrimary,
-                lineHeight = 28.sp
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                lineHeight = 26.sp
             )
             if (subtitle != null) {
                 Text(
                     text = subtitle,
-                    fontSize = 13.sp,
+                    fontSize = 12.5.sp,
+                    fontWeight = FontWeight.Medium,
                     color = colors.textSecondary,
-                    lineHeight = 18.sp
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    lineHeight = 16.sp
                 )
             }
         }

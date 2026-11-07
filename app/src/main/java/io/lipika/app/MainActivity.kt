@@ -129,24 +129,24 @@ class MainActivity : ComponentActivity() {
                     return runCatching { Color(android.graphics.Color.parseColor(raw)) }.getOrElse { fallback }
                 }
                 return when (raw) {
-                    LipikaPreferences.ACCENT_PREMIUM_BLUE -> Color(0xFF0284C7)
+                    LipikaPreferences.ACCENT_CYAN -> Color(0xFF06B6D4)
                     LipikaPreferences.ACCENT_ROYAL_BLUE -> Color(0xFF2563EB)
+                    LipikaPreferences.ACCENT_EMERALD -> Color(0xFF10B981)
+                    LipikaPreferences.ACCENT_MINT_GREEN -> Color(0xFF84CC16)
+                    LipikaPreferences.ACCENT_ORANGE -> Color(0xFFF97316)
+                    LipikaPreferences.ACCENT_GOLD -> Color(0xFFEAB308)
+                    LipikaPreferences.ACCENT_RED -> Color(0xFFEF4444)
+                    LipikaPreferences.ACCENT_PINK -> Color(0xFFEC4899)
+                    LipikaPreferences.ACCENT_PURPLE -> Color(0xFF7C3AED)
+                    LipikaPreferences.ACCENT_VIOLET -> Color(0xFF6366F1)
+                    LipikaPreferences.ACCENT_PREMIUM_BLUE -> Color(0xFF0284C7)
                     LipikaPreferences.ACCENT_SKY_BLUE -> Color(0xFF0EA5E9)
                     LipikaPreferences.ACCENT_TEAL -> Color(0xFF0D9488)
-                    LipikaPreferences.ACCENT_MINT_GREEN -> Color(0xFF10B981)
-                    LipikaPreferences.ACCENT_EMERALD -> Color(0xFF059669)
-                    LipikaPreferences.ACCENT_PURPLE -> Color(0xFF7C3AED)
                     LipikaPreferences.ACCENT_LAVENDER -> Color(0xFF8B5CF6)
-                    LipikaPreferences.ACCENT_VIOLET -> Color(0xFF6D28D9)
-                    LipikaPreferences.ACCENT_PINK -> Color(0xFFEC4899)
                     LipikaPreferences.ACCENT_ROSE -> Color(0xFFF43F5E)
                     LipikaPreferences.ACCENT_CORAL -> Color(0xFFF97316)
-                    LipikaPreferences.ACCENT_ORANGE -> Color(0xFFEA580C)
-                    LipikaPreferences.ACCENT_AMBER -> Color(0xFFD97706)
-                    LipikaPreferences.ACCENT_GOLD -> Color(0xFFCA8A04)
-                    LipikaPreferences.ACCENT_RED -> Color(0xFFDC2626)
+                    LipikaPreferences.ACCENT_AMBER -> Color(0xFFEAB308)
                     LipikaPreferences.ACCENT_NEUTRAL_SLATE -> Color(0xFF475569)
-                    LipikaPreferences.ACCENT_CYAN -> Color(0xFF06B6D4)
                     else -> fallback
                 }
             }
@@ -548,11 +548,11 @@ fun LipikaSettingsApp(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .then(if (!isMainScreen && currentScreen != SettingsScreen.Onboarding) Modifier.statusBarsPadding() else Modifier)
+            .statusBarsPadding()
             .navigationBarsPadding()
     ) {
         // Persistent Top Bar that stays anchored, only transitioning title/back-icon smoothly
-        if (!isMainScreen && currentScreen != SettingsScreen.Onboarding && currentScreen !is SettingsScreen.AppearanceThemes) {
+        if (!isMainScreen && currentScreen != SettingsScreen.Onboarding) {
             SettingsUnifiedTopBar(
                 screen = currentScreen,
                 onBack = navigateBack
@@ -889,6 +889,12 @@ fun LipikaSettingsApp(
                             onUpdateSoundVolume = { volume ->
                                 scope.launch { preferencesRepo.updateSoundVolume(volume) }
                             },
+                            onUpdateSoundProfile = { profile ->
+                                scope.launch { preferencesRepo.updateSoundProfile(profile) }
+                            },
+                            onUpdateSoundDistinctKeys = { enabled ->
+                                scope.launch { preferencesRepo.updateSoundDistinctKeys(enabled) }
+                            },
                             onUpdateVibrateOnKeypress = { enabled ->
                                 scope.launch { preferencesRepo.updateVibrateOnKeypress(enabled) }
                             },
@@ -900,6 +906,12 @@ fun LipikaSettingsApp(
                             },
                             onUpdateVibrationDuration = { duration ->
                                 scope.launch { preferencesRepo.updateVibrationDurationMs(duration) }
+                            },
+                            onUpdateVibrateOnLongPress = { enabled ->
+                                scope.launch { preferencesRepo.updateVibrateOnLongPress(enabled) }
+                            },
+                            onUpdateVibrateOnSpaceSwipe = { enabled ->
+                                scope.launch { preferencesRepo.updateVibrateOnSpaceSwipe(enabled) }
                             },
                             onBack = navigateBack
                         )

@@ -12,8 +12,11 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -148,15 +151,24 @@ fun OnboardingScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {
             if (currentStep != OnboardingStep.WELCOME) {
-                IconButton(onClick = { navigateBack() }) {
+                Box(
+                    modifier = Modifier
+                        .size(40.dp)
+                        .clip(CircleShape)
+                        .background(colors.accent.copy(alpha = 0.12f))
+                        .border(BorderStroke(1.dp, colors.accent.copy(alpha = 0.28f)), CircleShape)
+                        .clickable(onClick = { navigateBack() }),
+                    contentAlignment = Alignment.Center
+                ) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = "Back",
-                        tint = colors.textPrimary
+                        tint = colors.textPrimary,
+                        modifier = Modifier.size(20.dp)
                     )
                 }
             } else {
-                Spacer(modifier = Modifier.size(48.dp))
+                Spacer(modifier = Modifier.size(40.dp))
             }
 
             Spacer(modifier = Modifier.weight(1f))

@@ -82,6 +82,10 @@ class LipikaPreferencesRepository private constructor(private val context: Conte
         val VIBRATION_DURATION_MS = intPreferencesKey("pref_vibration_duration_ms")
         val SOUND_ON_KEYPRESS = booleanPreferencesKey("pref_sound_on_keypress")
         val SOUND_VOLUME = intPreferencesKey("pref_sound_volume")
+        val SOUND_PROFILE = stringPreferencesKey("pref_sound_profile")
+        val SOUND_DISTINCT_KEYS = booleanPreferencesKey("pref_sound_distinct_keys")
+        val VIBRATE_ON_LONG_PRESS = booleanPreferencesKey("pref_vibrate_on_long_press")
+        val VIBRATE_ON_SPACE_SWIPE = booleanPreferencesKey("pref_vibrate_on_space_swipe")
         val LONG_PRESS_DELAY_MS = intPreferencesKey("pref_long_press_delay_ms")
         val CURSOR_TRACKPAD_ENABLED = booleanPreferencesKey("pref_cursor_trackpad_enabled")
         val ONE_HANDED_MODE = stringPreferencesKey("pref_one_handed_mode")
@@ -138,6 +142,9 @@ class LipikaPreferencesRepository private constructor(private val context: Conte
         val STATS_NUMBERS_TYPED = longPreferencesKey("pref_stats_numbers_typed")
         val STATS_KEYSTROKES = longPreferencesKey("pref_stats_keystrokes")
         val STATS_AUDIO_CLICKS = longPreferencesKey("pref_stats_audio_clicks")
+        val STATS_BACKSPACES = longPreferencesKey("pref_stats_backspaces")
+        val STATS_EMOJIS = longPreferencesKey("pref_stats_emojis")
+        val STATS_SYMBOLS = longPreferencesKey("pref_stats_symbols")
     }
 
     val preferencesFlow: Flow<LipikaPreferences> = context.lipikaDataStore.data
@@ -184,6 +191,10 @@ class LipikaPreferencesRepository private constructor(private val context: Conte
                 vibrationDurationMs = prefs[PreferencesKeys.VIBRATION_DURATION_MS] ?: 25,
                 soundOnKeypress = prefs[PreferencesKeys.SOUND_ON_KEYPRESS] ?: false,
                 soundVolume = prefs[PreferencesKeys.SOUND_VOLUME] ?: 80,
+                soundProfile = prefs[PreferencesKeys.SOUND_PROFILE] ?: LipikaPreferences.SOUND_PROFILE_DEFAULT,
+                soundDistinctKeys = prefs[PreferencesKeys.SOUND_DISTINCT_KEYS] ?: true,
+                vibrateOnLongPress = prefs[PreferencesKeys.VIBRATE_ON_LONG_PRESS] ?: true,
+                vibrateOnSpaceSwipe = prefs[PreferencesKeys.VIBRATE_ON_SPACE_SWIPE] ?: true,
                 longPressDelayMs = prefs[PreferencesKeys.LONG_PRESS_DELAY_MS] ?: 300,
                 cursorTrackpadEnabled = prefs[PreferencesKeys.CURSOR_TRACKPAD_ENABLED] ?: true,
                 oneHandedMode = prefs[PreferencesKeys.ONE_HANDED_MODE] ?: LipikaPreferences.ONE_HANDED_OFF,
@@ -274,6 +285,9 @@ class LipikaPreferencesRepository private constructor(private val context: Conte
                 statsNumbersTyped = prefs[PreferencesKeys.STATS_NUMBERS_TYPED] ?: 0L,
                 statsKeystrokes = prefs[PreferencesKeys.STATS_KEYSTROKES] ?: 0L,
                 statsAudioClicks = prefs[PreferencesKeys.STATS_AUDIO_CLICKS] ?: 0L,
+                statsBackspaces = prefs[PreferencesKeys.STATS_BACKSPACES] ?: 0L,
+                statsEmojis = prefs[PreferencesKeys.STATS_EMOJIS] ?: 0L,
+                statsSymbols = prefs[PreferencesKeys.STATS_SYMBOLS] ?: 0L,
 
                 setupCompleted = (prefs[PreferencesKeys.SETUP_COMPLETED] ?: false).also { isCompleted ->
                     if (isCompleted && !fastCache.getBoolean("setup_completed", false)) {
@@ -641,6 +655,22 @@ class LipikaPreferencesRepository private constructor(private val context: Conte
         return fastCache.getInt("pref_clipboard_expiry_hours", 5)
     }
 
+    suspend fun updateSoundProfile(profile: String) {
+        context.lipikaDataStore.edit { it[PreferencesKeys.SOUND_PROFILE] = profile }
+    }
+
+    suspend fun updateSoundDistinctKeys(enabled: Boolean) {
+        context.lipikaDataStore.edit { it[PreferencesKeys.SOUND_DISTINCT_KEYS] = enabled }
+    }
+
+    suspend fun updateVibrateOnLongPress(enabled: Boolean) {
+        context.lipikaDataStore.edit { it[PreferencesKeys.VIBRATE_ON_LONG_PRESS] = enabled }
+    }
+
+    suspend fun updateVibrateOnSpaceSwipe(enabled: Boolean) {
+        context.lipikaDataStore.edit { it[PreferencesKeys.VIBRATE_ON_SPACE_SWIPE] = enabled }
+    }
+
     suspend fun recordStatsBatch(
         bangla: Long = 0L,
         english: Long = 0L,
@@ -648,7 +678,10 @@ class LipikaPreferencesRepository private constructor(private val context: Conte
         words: Long = 0L,
         numbers: Long = 0L,
         keystrokes: Long = 0L,
-        audio: Long = 0L
+        audio: Long = 0L,
+        backspaces: Long = 0L,
+        emojis: Long = 0L,
+        symbols: Long = 0L
     ) {
         context.lipikaDataStore.edit { prefs ->
             if (bangla > 0L) {
@@ -679,6 +712,18 @@ class LipikaPreferencesRepository private constructor(private val context: Conte
                 val current = prefs[PreferencesKeys.STATS_AUDIO_CLICKS] ?: 0L
                 prefs[PreferencesKeys.STATS_AUDIO_CLICKS] = current + audio
             }
+            if (backspaces > 0L) {
+                val current = prefs[PreferencesKeys.STATS_BACKSPACES] ?: 0L
+                prefs[PreferencesKeys.STATS_BACKSPACES] = current + backspaces
+            }
+            if (emojis > 0L) {
+                val current = prefs[PreferencesKeys.STATS_EMOJIS] ?: 0L
+                prefs[PreferencesKeys.STATS_EMOJIS] = current + emojis
+            }
+            if (symbols > 0L) {
+                val current = prefs[PreferencesKeys.STATS_SYMBOLS] ?: 0L
+                prefs[PreferencesKeys.STATS_SYMBOLS] = current + symbols
+            }
         }
     }
 
@@ -691,6 +736,9 @@ class LipikaPreferencesRepository private constructor(private val context: Conte
             prefs[PreferencesKeys.STATS_NUMBERS_TYPED] = 0L
             prefs[PreferencesKeys.STATS_KEYSTROKES] = 0L
             prefs[PreferencesKeys.STATS_AUDIO_CLICKS] = 0L
+            prefs[PreferencesKeys.STATS_BACKSPACES] = 0L
+            prefs[PreferencesKeys.STATS_EMOJIS] = 0L
+            prefs[PreferencesKeys.STATS_SYMBOLS] = 0L
         }
     }
 

@@ -377,7 +377,7 @@ class LipikaService : InputMethodService() {
                     },
                     onDismissVoiceTyping = { voiceInputManager.stop() },
                     voiceTypingEnabled = preferencesState.voiceTypingEnabled,
-                    onKeyPress = { performKeyFeedback() },
+                    onKeyPress = { performKeyFeedback(it) },
                     onKeyTap = ::handleKeyTap,
                     onKeyLongPress = ::handleKeyLongPress,
                     onTextAction = ::handleTextAction,
@@ -798,6 +798,9 @@ class LipikaService : InputMethodService() {
     private var pendingWords: Long = 0L
     private var pendingNumbers: Long = 0L
     private var pendingAudio: Long = 0L
+    private var pendingBackspaces: Long = 0L
+    private var pendingEmojis: Long = 0L
+    private var pendingSymbols: Long = 0L
     private var lastStatsFlushTime: Long = System.currentTimeMillis()
 
     private fun initSoundPool() {
@@ -836,6 +839,7 @@ class LipikaService : InputMethodService() {
                 ch in '\u0980'..'\u09FF' -> pendingBangla++
                 (ch in 'a'..'z') || (ch in 'A'..'Z') -> pendingEnglish++
                 ch.isDigit() || ch in '০'..'৯' -> pendingNumbers++
+                !ch.isWhitespace() && !ch.isLetterOrDigit() -> pendingSymbols++
             }
         }
         if (isAvroCandidate || activeLayout.id == "bn_avro") {
@@ -850,7 +854,7 @@ class LipikaService : InputMethodService() {
     }
 
     private fun flushStatsBatch() {
-        if (pendingKeystrokes == 0L && pendingWords == 0L && pendingAudio == 0L) return
+        if (pendingKeystrokes == 0L && pendingWords == 0L && pendingAudio == 0L && pendingBackspaces == 0L) return
         val k = pendingKeystrokes
         val b = pendingBangla
         val e = pendingEnglish
@@ -858,6 +862,9 @@ class LipikaService : InputMethodService() {
         val w = pendingWords
         val n = pendingNumbers
         val au = pendingAudio
+        val bs = pendingBackspaces
+        val em = pendingEmojis
+        val sy = pendingSymbols
         pendingKeystrokes = 0L
         pendingBangla = 0L
         pendingEnglish = 0L
@@ -865,6 +872,9 @@ class LipikaService : InputMethodService() {
         pendingWords = 0L
         pendingNumbers = 0L
         pendingAudio = 0L
+        pendingBackspaces = 0L
+        pendingEmojis = 0L
+        pendingSymbols = 0L
         lastStatsFlushTime = System.currentTimeMillis()
 
         serviceScope.launch {
@@ -875,27 +885,60 @@ class LipikaService : InputMethodService() {
                 words = w,
                 numbers = n,
                 keystrokes = k,
-                audio = au
+                audio = au,
+                backspaces = bs,
+                emojis = em,
+                symbols = sy
             )
         }
     }
 
-    private fun performKeyFeedback() {
+    private fun performKeyFeedback(key: KeyDef? = null) {
         pendingKeystrokes++
+        if (key?.type == KeyType.DELETE) {
+            pendingBackspaces++
+        } else if (key?.type == KeyType.SWITCH_LANGUAGE) {
+            pendingEmojis++
+        }
+
         if (preferencesState.soundOnKeypress) {
             pendingAudio++
             initSoundPool()
             val volume = (preferencesState.soundVolume / 100f).coerceIn(0.01f, 1.0f)
+
+            // Dynamic Pitch depending on Sound Profile & Key Type
+            var pitch = when (preferencesState.soundProfile) {
+                LipikaPreferences.SOUND_PROFILE_MECHANICAL -> 1.08f
+                LipikaPreferences.SOUND_PROFILE_TYPEWRITER -> 0.93f
+                LipikaPreferences.SOUND_PROFILE_BUBBLE -> 1.28f
+                else -> 1.0f
+            }
+
+            if (preferencesState.soundDistinctKeys && key != null) {
+                pitch = when (key.type) {
+                    KeyType.SPACE -> pitch * 0.84f
+                    KeyType.DELETE -> pitch * 0.90f
+                    KeyType.ACTION -> pitch * 1.16f
+                    else -> pitch
+                }
+            }
+
             var played = false
             if (soundPoolLoaded && soundPoolClickId > 0) {
                 try {
-                    val streamId = soundPool?.play(soundPoolClickId, volume, volume, 1, 0, 1.0f) ?: 0
+                    val streamId = soundPool?.play(soundPoolClickId, volume, volume, 1, 0, pitch.coerceIn(0.5f, 2.0f)) ?: 0
                     if (streamId > 0) played = true
                 } catch (_: Throwable) {}
             }
             if (!played) {
                 try {
-                    audioManager?.playSoundEffect(android.media.AudioManager.FX_KEYPRESS_STANDARD, volume)
+                    val fx = when (key?.type) {
+                        KeyType.SPACE -> android.media.AudioManager.FX_KEYPRESS_SPACEBAR
+                        KeyType.DELETE -> android.media.AudioManager.FX_KEYPRESS_DELETE
+                        KeyType.ACTION -> android.media.AudioManager.FX_KEYPRESS_RETURN
+                        else -> android.media.AudioManager.FX_KEYPRESS_STANDARD
+                    }
+                    audioManager?.playSoundEffect(fx, volume)
                 } catch (_: Throwable) {
                     try {
                         audioManager?.playSoundEffect(android.media.AudioManager.FX_KEYPRESS_STANDARD)
@@ -1349,6 +1392,16 @@ class LipikaService : InputMethodService() {
     }
 
     private fun handleKeyLongPress(key: KeyDef) {
+        if (preferencesState.vibrateOnLongPress) {
+            try {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    vibratorService?.vibrate(VibrationEffect.createPredefined(VibrationEffect.EFFECT_HEAVY_CLICK))
+                } else {
+                    @Suppress("DEPRECATION")
+                    vibratorService?.vibrate(35L)
+                }
+            } catch (_: Throwable) {}
+        }
         if (key.type == KeyType.SWITCH_LANGUAGE) {
             val availableMeta = layoutRepo.getAvailableLayouts().map { it.id }.toSet()
             val enabledIds = preferencesState.enabledLayoutIds.toList().filter { id ->

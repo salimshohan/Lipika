@@ -76,31 +76,26 @@ jobs:
           body: |
             ### 🌟 Lipika Keyboard ${{ github.ref_name }} Release
 
-            - **🖼️ Official App Icon & Branding**:
-              - Restored the exact high-resolution light background canvas artwork with diagonal gradient, soft shadows, and centered vibrant blue-cyan squircle "L" badge across all screen densities.
-            - **📊 Real-time Typing Insights & Statistics**:
-              - Added dedicated **Typing Insights** dashboard tracking total keystrokes, Bengali letters, English letters, Avro phonetic transliterations, total words, numeric digits, and audio clicks.
-              - Includes one-tap reset with confirmation dialog.
-            - **🔤 Expanded Typography — 15 Bengali & 15 English Fonts**:
-              - Expanded Bengali font collection to 15 fonts (**Kalpurush**, **SolaimanLipi**, **Siyam Rupali**, **Noto Sans Bengali**, **Hind Siliguri**, **AponaLohit**, **Bensen**, **Galada**, **Atma**, **Mina**, **Shonar Bangla**, **Sutonny**, **Charu Chandan**, **Sagar**, **Ador**).
-              - Simultaneous selection and independent rendering of English and Bengali fonts with instant live preview.
-            - **🔊 Reliable Keypress Audio Click Fix (SoundPool)**:
-              - Built a dedicated direct `SoundPool` audio pipeline for system keypress sound effects, guaranteeing audible click feedback on all Android devices regardless of OEM system touch sound toggles.
-              - Sound & Vibration controls moved exclusively to the dedicated Sound & Vibration settings screen.
-            - **⏱️ Configurable Clipboard Auto-Expiration**:
-              - Automatic retention system for clipboard items (1h, 2h, 5h default, 6h, 12h, 1 day, 15 days, 30 days, or Never).
-              - Pinned clips are permanently protected from expiration.
-            - **⏱️ Key Touch & Timing Full Slider Control (100ms–500ms)**:
-              - Added fine-grained slider control for long-press delay from 100ms to 500ms with real-time feedback.
-            - **🎨 Appearance Settings Streamline**:
-              - Redesigned Appearance screen matching Preferences card design with 10 curated single accents.
-              - Removed unnecessary live preview boxes and clutter.
-            - **📱 Smart Header & Status Bar Polish**:
-              - Eliminated duplicate headers and status bar overlapping across all settings sub-screens.
-              - Streamlined card subtitles with single-line truncation and bold 10.5sp typography.
-              - Removed Typing Intelligence section from Smart Typing screen.
-            - **👤 Direct Developer Contact**:
-              - Added clickable developer cards for WhatsApp (`01522106283`) and Facebook (`@salimhosenshohan`) in the About screen.
+            - **📱 Global Unified Header & Navigation**:
+              - Positioned consistently below the status bar using proper Android Window Insets across ALL pages.
+              - Highlighted circular back button with accent tint and border for consistent navigation UX everywhere.
+            - **🎨 Theme Page Redesign**:
+              - Completely redesigned to seamlessly match Lipika's visual identity, typography, cards, and theme colors in both Light & Dark modes.
+              - 2-column theme cards with miniature keyboard previews, active theme checkmark indicator, and full custom theme management.
+            - **🌈 10 Distinct Vibrant Accent Colors**:
+              - Fully updated accent palette with non-overlapping colors across the spectrum: Electric Cyan, Royal Blue, Emerald Green, Neon Lime, Radiant Orange, Golden Amber, Crimson Red, Hot Pink, Vivid Purple, and Indigo Blue.
+            - **🔊 Sound & Vibration Expansion**:
+              - Added 4 Key Sound Profiles: Modern Crisp, Mechanical Switch, Retro Typewriter, and Soft Bubble.
+              - Key-Specific Audio Pitch toggle (distinct pitch for Spacebar, Backspace, and Enter).
+              - Added Vibrate on Long-Press and Vibrate on Spacebar Swipe controls.
+              - Added interactive "Tap to Test Feedback" card for instant real-time sound and vibration testing in settings.
+            - **📈 Advanced Typing Insights**:
+              - Added Typist Level Badges (Novice, Rising Wordsmith, Fluent Scribe, Keyboard Artisan, Grandmaster).
+              - Bengali vs English Language Ratio progress bar.
+              - Typing Accuracy Rate (%) and Estimated Time Saved metrics.
+              - Dedicated counters for Backspaces/Edits, Emojis, Symbols, and Numbers.
+            - **🖼️ 100% Faithful Branding**:
+              - Official Lipika squircle logo integrated into main dashboard and settings headers matching docs/logo.svg.
           files: dist/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

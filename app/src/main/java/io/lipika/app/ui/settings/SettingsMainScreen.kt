@@ -70,6 +70,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.foundation.Image
+import androidx.compose.ui.res.painterResource
+import io.lipika.app.R
 import io.lipika.data.prefs.LipikaPreferences
 import io.lipika.theme.resolveKeyboardFontFamily
 import kotlinx.coroutines.delay
@@ -153,19 +156,31 @@ fun SettingsMainScreen(
                         .fillMaxWidth()
                         .padding(18.dp)
                 ) {
-                    // Header Row: [Lipika Keyboard]  [• Active]
+                    // Header Row: [Logo + Lipika Keyboard]  [• Active]
                     val isActive = isImeEnabled && isImeSelected
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Text(
-                            text = "Lipika Keyboard",
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = colors.textPrimary
-                        )
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(10.dp)
+                        ) {
+                            Image(
+                                painter = painterResource(R.drawable.ic_launcher),
+                                contentDescription = "Lipika Logo",
+                                modifier = Modifier
+                                    .size(32.dp)
+                                    .clip(RoundedCornerShape(8.dp))
+                            )
+                            Text(
+                                text = "Lipika Keyboard",
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = colors.textPrimary
+                            )
+                        }
 
                         // Green Active Status Indicator
                         Row(

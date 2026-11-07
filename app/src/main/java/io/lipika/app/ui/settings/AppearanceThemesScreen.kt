@@ -32,7 +32,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.AutoAwesome
@@ -223,13 +222,12 @@ fun AppearanceThemesScreen(
         }
     }
 
-    val backgroundBrush = remember {
+    val backgroundBrush = remember(colors.isDark, colors.accent, colors.background) {
         Brush.verticalGradient(
             colors = listOf(
-                Color(0xFFD6F5F2),
-                Color(0xFFF1FAF9),
-                Color(0xFFE4F8F6),
-                Color(0xFFD0F4F0)
+                colors.accent.copy(alpha = if (colors.isDark) 0.08f else 0.06f),
+                colors.background,
+                colors.background
             )
         )
     }
@@ -242,53 +240,10 @@ fun AppearanceThemesScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .statusBarsPadding()
                 .verticalScroll(scrollState)
                 .padding(bottom = 36.dp)
         ) {
-            // ==========================================
-            // TOP SECTION: Back Button & Header
-            // ==========================================
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 12.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Box(
-                    modifier = Modifier
-                        .size(40.dp)
-                        .clip(CircleShape)
-                        .background(Color.White.copy(alpha = 0.85f))
-                        .clickable(onClick = onBack),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "Back",
-                        tint = Color(0xFF0E332F),
-                        modifier = Modifier.size(20.dp)
-                    )
-                }
-
-                Spacer(modifier = Modifier.width(14.dp))
-
-                Column {
-                    Text(
-                        text = "Theme Gallery",
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color(0xFF0E332F)
-                    )
-                    Text(
-                        text = "Customize keyboard colors & styles",
-                        fontSize = 12.5.sp,
-                        color = Color(0xFF5A7A77)
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(6.dp))
 
             // ==========================================
             // TOP SECTION: Create Theme & My Themes Options
@@ -842,11 +797,12 @@ fun AppearanceThemesScreen(
 
 @Composable
 private fun ThemeCategoryHeader(title: String) {
+    val colors = LocalSettingsColors.current
     Text(
         text = title,
-        fontSize = 16.5.sp,
+        fontSize = 15.sp,
         fontWeight = FontWeight.Bold,
-        color = Color(0xFF0E332F),
+        color = colors.textPrimary,
         modifier = Modifier.padding(horizontal = 20.dp, vertical = 2.dp)
     )
 }
@@ -859,13 +815,14 @@ private fun TopActionOptionCard(
     modifier: Modifier = Modifier,
     onClick: () -> Unit
 ) {
+    val colors = LocalSettingsColors.current
     val cardShape = RoundedCornerShape(18.dp)
 
     Card(
         shape = cardShape,
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+        colors = CardDefaults.cardColors(containerColor = colors.cardBackground),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-        border = BorderStroke(width = 1.dp, color = Color(0xFFE2EFEF)),
+        border = BorderStroke(width = 1.dp, color = colors.cardBorder),
         modifier = modifier
             .fillMaxWidth()
             .clickable(onClick = onClick)
@@ -881,13 +838,13 @@ private fun TopActionOptionCard(
                 modifier = Modifier
                     .size(42.dp)
                     .clip(RoundedCornerShape(12.dp))
-                    .background(Color(0xFFE0F4F1)),
+                    .background(colors.accent.copy(alpha = 0.12f)),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
                     imageVector = icon,
                     contentDescription = title,
-                    tint = Color(0xFF147268),
+                    tint = colors.accent,
                     modifier = Modifier.size(22.dp)
                 )
             }
@@ -897,12 +854,12 @@ private fun TopActionOptionCard(
                     text = title,
                     fontSize = 15.sp,
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFF0E332F)
+                    color = colors.textPrimary
                 )
                 Text(
                     text = subtitle,
                     fontSize = 12.sp,
-                    color = Color(0xFF5A7A77),
+                    color = colors.textSecondary,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -958,16 +915,17 @@ private fun AbstractThemeCard(
     modifier: Modifier = Modifier,
     onSelect: () -> Unit
 ) {
+    val colors = LocalSettingsColors.current
     val scheme = themeOption.scheme
-    val cardShape = RoundedCornerShape(22.dp)
+    val cardShape = RoundedCornerShape(20.dp)
 
     Card(
         shape = cardShape,
-        colors = CardDefaults.cardColors(containerColor = Color.White),
-        elevation = CardDefaults.cardElevation(defaultElevation = if (isSelected) 4.dp else 2.dp),
+        colors = CardDefaults.cardColors(containerColor = colors.cardBackground),
+        elevation = CardDefaults.cardElevation(defaultElevation = if (isSelected) 4.dp else 1.dp),
         border = BorderStroke(
-            width = if (isSelected) 2.5.dp else 1.dp,
-            color = if (isSelected) Color(0xFF147268) else Color(0xFFE2EFEF)
+            width = if (isSelected) 2.dp else 1.dp,
+            color = if (isSelected) colors.accent else colors.cardBorder
         ),
         modifier = modifier
             .fillMaxWidth()
@@ -979,7 +937,7 @@ private fun AbstractThemeCard(
                 .padding(12.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            val previewShape = RoundedCornerShape(16.dp)
+            val previewShape = RoundedCornerShape(14.dp)
             val gradientBrush = remember(scheme) {
                 scheme.themeSpec?.background?.gradient?.toBrush(androidx.compose.ui.geometry.Size(260f, 160f))
             }
@@ -987,7 +945,7 @@ private fun AbstractThemeCard(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(104.dp)
+                    .height(100.dp)
                     .clip(previewShape)
                     .then(
                         if (gradientBrush != null) {
@@ -1005,18 +963,18 @@ private fun AbstractThemeCard(
                     )
                 }
 
-                // White / translucent keycap bar at bottom representing miniature keyboard
+                // Miniature keycap bar at bottom representing keyboard preview
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
                         .align(Alignment.BottomCenter)
-                        .height(44.dp)
-                        .background(Color.White.copy(alpha = 0.95f))
+                        .height(42.dp)
+                        .background(if (colors.isDark) Color(0xFF1E293B) else Color.White.copy(alpha = 0.95f))
                         .padding(horizontal = 8.dp, vertical = 6.dp)
                 ) {
                     val keyShape = RoundedCornerShape(5.dp)
                     val spaceHex = scheme.themeSpec?.spaceKey?.background ?: scheme.themeSpec?.characterKey?.background
-                    val spaceColor = if (spaceHex != null) ThemeColorUtils.parseHexColor(spaceHex, Color(0xFFF1F5F9)) else Color(0xFFF1F5F9)
+                    val spaceColor = if (spaceHex != null) ThemeColorUtils.parseHexColor(spaceHex, if (colors.isDark) Color(0xFF334155) else Color(0xFFF1F5F9)) else if (colors.isDark) Color(0xFF334155) else Color(0xFFF1F5F9)
                     val enterHex = scheme.themeSpec?.actionKey?.background
                     val enterColor = if (enterHex != null) ThemeColorUtils.parseHexColor(enterHex, scheme.accentColor) else scheme.accentColor
 
@@ -1033,7 +991,7 @@ private fun AbstractThemeCard(
                                 .weight(0.2f)
                                 .height(22.dp)
                                 .clip(keyShape)
-                                .background(Color(0xFFE2E8F0))
+                                .background(if (colors.isDark) Color(0xFF475569) else Color(0xFFE2E8F0))
                         )
                         // Space bar
                         Box(
@@ -1042,7 +1000,7 @@ private fun AbstractThemeCard(
                                 .height(22.dp)
                                 .clip(keyShape)
                                 .background(spaceColor)
-                                .border(0.5.dp, Color(0x33000000), keyShape)
+                                .border(0.5.dp, colors.cardBorder, keyShape)
                         )
                         // Action / Enter key
                         Box(
@@ -1062,7 +1020,7 @@ private fun AbstractThemeCard(
                             .padding(8.dp)
                             .size(22.dp)
                             .clip(CircleShape)
-                            .background(Color(0xFF147268))
+                            .background(colors.accent)
                             .border(1.5.dp, Color.White, CircleShape)
                             .align(Alignment.TopEnd),
                         contentAlignment = Alignment.Center
@@ -1083,7 +1041,7 @@ private fun AbstractThemeCard(
                 text = themeOption.name,
                 fontSize = 15.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF1B2A28),
+                color = colors.textPrimary,
                 textAlign = TextAlign.Center,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
@@ -1111,7 +1069,7 @@ private fun AbstractThemeCard(
                 text = vibeDescription,
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Normal,
-                color = Color(0xFF70807E),
+                color = colors.textSecondary,
                 textAlign = TextAlign.Center,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis

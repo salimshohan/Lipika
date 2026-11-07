@@ -11,13 +11,13 @@
 ---
 
 <p align="center">
-  <a href="https://github.com/salimshohan/Lipika/releases/tag/v0.3.0">
-    <img src="https://img.shields.io/badge/Release-v0.3.0-06B6D4?style=for-the-badge&logo=android&logoColor=white" alt="Version 0.3.0" />
+  <a href="https://github.com/salimshohan/Lipika/releases/tag/v0.3.1">
+    <img src="https://img.shields.io/badge/Release-v0.3.1-06B6D4?style=for-the-badge&logo=android&logoColor=white" alt="Version 0.3.1" />
   </a>
-  <a href="https://github.com/salimshohan/Lipika/releases/download/v0.3.0/Lipika.v0.3.0.apk">
-    <img src="https://img.shields.io/badge/Download-Lipika%20v0.3.0%20APK-10B981?style=for-the-badge&logo=android&logoColor=white" alt="Download APK" />
+  <a href="https://github.com/salimshohan/Lipika/releases/download/v0.3.1/Lipika.v0.3.1.apk">
+    <img src="https://img.shields.io/badge/Download-Lipika%20v0.3.1%20APK-10B981?style=for-the-badge&logo=android&logoColor=white" alt="Download APK" />
   </a>
-  <a href="https://github.com/salimshohan/Lipika/releases/download/v0.3.0/Lipika.apk">
+  <a href="https://github.com/salimshohan/Lipika/releases/download/v0.3.1/Lipika.apk">
     <img src="https://img.shields.io/badge/Direct%20APK-Lipika.apk-0284C7?style=for-the-badge&logo=android&logoColor=white" alt="Download Direct APK" />
   </a>
   <a href="https://github.com/salimshohan/Lipika">
@@ -36,18 +36,28 @@
 
 ---
 
-## ✨ Key Highlights in v0.3.0
+## ✨ Key Highlights in v0.3.1
 
-- **📊 Real-time Typing Insights & Statistics**:
-  - Live statistics tracking: Total Keystrokes, Bangla letters, English letters, Avro phonetic transliterations, Total words, Numbers typed, and Audio key clicks.
-  - Reset option with clear dialog confirmation.
-- **🔤 15 Bengali & 15 English Fonts**:
-  - Expanded Bengali font selection to 15 curated fonts: **Kalpurush**, **SolaimanLipi**, **Siyam Rupali**, **Noto Sans Bengali**, **Hind Siliguri**, **AponaLohit**, **Bensen**, **Galada**, **Atma**, **Mina**, **Shonar Bangla**, **Sutonny**, **Charu Chandan**, **Sagar**, **Ador**.
-  - 15 English fonts with simultaneous selection and real-time preview.
-- **🔊 SoundPool Keypress Audio Feedback Fix**:
-  - Direct low-latency `SoundPool` audio pipeline guaranteeing audible key click feedback on all Android devices, even when global system touch sounds are disabled.
-  - Dedicated Sound & Vibration settings section with volume, vibration mode, intensity, and duration controls.
-- **⏱️ Configurable Clipboard Auto-Expiration**:
+- **📱 Global Unified Header & Navigation**:
+  - Consistent header positioning below the status bar using centralized Window Insets across ALL pages.
+  - Highlighted circular back button with accent tint and border providing identical tap target and visual feel everywhere.
+- **🎨 Theme Page Redesign**:
+  - Re-architected theme gallery adapting seamlessly to system Light & Dark modes without hardcoded color clashes.
+  - Elegant 2-column theme cards with miniature keyboard preview keycaps and active theme indicator badge.
+- **🌈 10 Distinct Vibrant Accent Colors**:
+  - Curated, non-overlapping palette across the spectrum: Electric Cyan, Royal Blue, Emerald Green, Neon Lime, Radiant Orange, Golden Amber, Crimson Red, Hot Pink, Vivid Purple, and Indigo Blue.
+- **🔊 Sound & Vibration Expansion**:
+  - Added 4 Key Sound Profiles: Modern Crisp, Mechanical Switch, Retro Typewriter, and Soft Bubble.
+  - Key-Specific Audio Pitch toggle (lower pitch for Spacebar, deeper for Backspace, higher for Enter).
+  - Vibrate on Long-Press and Vibrate on Spacebar Swipe controls.
+  - Interactive "Tap to Test Feedback" card for instant real-time haptic and audio testing.
+- **📊 Advanced Typing Insights**:
+  - Typist Level Badges (Novice, Rising Wordsmith, Fluent Scribe, Keyboard Artisan, Grandmaster).
+  - Bengali vs English Language Ratio progress bar.
+  - Typing Accuracy Rate (%) and Estimated Time Saved metrics.
+  - Dedicated counters for Backspaces/Edits, Emojis, Symbols, Words, and Numbers.
+- **🖼️ 100% Faithful Branding**:
+  - Official Lipika squircle logo integrated into the dashboard and settings headers matching `docs/logo.svg`.
   - Automatically deletes unpinned clipboard history after a configurable duration (1 hour, 2 hours, 5 hours default, 6 hours, 12 hours, 1 day, 15 days, 30 days, or Never).
   - Pinned clips are permanently protected from deletion.
 - **⏱️ Precision Key Touch & Timing Control (100ms–500ms)**:
@@ -91,6 +101,6 @@ Lipika features 5 carefully chosen layouts:
 
 Download the stable pre-built APK directly from GitHub Releases:
 
-👉 **[Download Lipika v0.2.9 APK](https://github.com/salimshohan/Lipika/releases/download/v0.2.9/Lipika%20v0.2.9.apk)**
+👉 **[Download Lipika v0.3.1 APK](https://github.com/salimshohan/Lipika/releases/download/v0.3.1/Lipika.v0.3.1.apk)**
 
-👉 **[Download Latest Lipika APK](https://github.com/salimshohan/Lipika/releases/latest/download/Lipika%20v0.2.9.apk)**
+👉 **[Download Latest Lipika APK](https://github.com/salimshohan/Lipika/releases/download/v0.3.1/Lipika.apk)**

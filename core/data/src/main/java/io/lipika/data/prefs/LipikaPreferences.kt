@@ -40,6 +40,10 @@ data class LipikaPreferences(
     val vibrationDurationMs: Int = 25, // 5 - 100 ms
     val soundOnKeypress: Boolean = false,
     val soundVolume: Int = 80, // 0 - 100%
+    val soundProfile: String = SOUND_PROFILE_DEFAULT, // "default", "mechanical", "typewriter", "bubble"
+    val soundDistinctKeys: Boolean = true,
+    val vibrateOnLongPress: Boolean = true,
+    val vibrateOnSpaceSwipe: Boolean = true,
     val longPressDelayMs: Int = 220, // 100 - 600 ms
     val cursorTrackpadEnabled: Boolean = true,
     val oneHandedMode: String = ONE_HANDED_OFF,
@@ -98,6 +102,9 @@ data class LipikaPreferences(
     val statsNumbersTyped: Long = 0L,
     val statsKeystrokes: Long = 0L,
     val statsAudioClicks: Long = 0L,
+    val statsBackspaces: Long = 0L,
+    val statsEmojis: Long = 0L,
+    val statsSymbols: Long = 0L,
 
     // Onboarding / Setup status
     val setupCompleted: Boolean = false
@@ -273,6 +280,11 @@ data class LipikaPreferences(
 
         const val VIBRATION_TYPE_HAPTIC = "haptic"
         const val VIBRATION_TYPE_VIBRATION = "vibration"
+
+        const val SOUND_PROFILE_DEFAULT = "default"
+        const val SOUND_PROFILE_MECHANICAL = "mechanical"
+        const val SOUND_PROFILE_TYPEWRITER = "typewriter"
+        const val SOUND_PROFILE_BUBBLE = "bubble"
 
         const val SUGGESTION_BAR_MODE_NORMAL = "normal"
         const val SUGGESTION_BAR_MODE_SCROLLABLE = "scrollable"
