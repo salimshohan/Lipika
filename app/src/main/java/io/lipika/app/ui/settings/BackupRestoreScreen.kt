@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.FileDownload
 import androidx.compose.material.icons.outlined.FileUpload
 import androidx.compose.material.icons.outlined.Restore
 import androidx.compose.material3.AlertDialog
@@ -145,22 +144,7 @@ fun BackupRestoreScreen(
     ) {
         Spacer(modifier = Modifier.height(4.dp))
 
-        SettingsCategoryHeader(title = "Borno Keyboard")
-
-        SettingsGroup {
-            SettingsNavigationItem(
-                title = "Import Borno Clipboard Backup",
-                icon = Icons.Outlined.FileDownload,
-                position = GroupPosition.ALONE,
-                onClick = {
-                    importClipboardLauncher.launch(arrayOf("*/*"))
-                }
-            )
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        SettingsCategoryHeader(title = "Backup")
+        SettingsCategoryHeader(title = "Clipboard Backup")
 
         SettingsGroup {
             SettingsNavigationItem(

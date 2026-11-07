@@ -222,20 +222,10 @@ fun AppearanceThemesScreen(
         }
     }
 
-    val backgroundBrush = remember(colors.isDark, colors.accent, colors.background) {
-        Brush.verticalGradient(
-            colors = listOf(
-                colors.accent.copy(alpha = if (colors.isDark) 0.08f else 0.06f),
-                colors.background,
-                colors.background
-            )
-        )
-    }
-
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(backgroundBrush)
+            .background(colors.background)
     ) {
         Column(
             modifier = Modifier
@@ -256,7 +246,7 @@ fun AppearanceThemesScreen(
             ) {
                 TopActionOptionCard(
                     title = "Create Theme",
-                    subtitle = "Design in Studio",
+                    subtitle = "New custom style",
                     icon = Icons.Outlined.Palette,
                     modifier = Modifier.weight(1f),
                     onClick = {
@@ -518,14 +508,14 @@ fun AppearanceThemesScreen(
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(12.dp),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(12.dp)
+                                    .padding(14.dp),
+                                verticalAlignment = Alignment.Top,
+                                horizontalArrangement = Arrangement.spacedBy(14.dp)
                             ) {
                                 // Miniature preview box
                                 Box(
                                     modifier = Modifier
-                                        .size(64.dp)
+                                        .size(60.dp)
                                         .clip(RoundedCornerShape(12.dp))
                                         .background(customTheme.scheme.containerBackground)
                                         .border(1.dp, colors.cardBorder, RoundedCornerShape(12.dp))
@@ -539,98 +529,148 @@ fun AppearanceThemesScreen(
                                         imageVector = Icons.Outlined.Palette,
                                         contentDescription = null,
                                         tint = customTheme.scheme.accentColor,
-                                        modifier = Modifier.size(24.dp)
+                                        modifier = Modifier.size(26.dp)
                                     )
                                 }
 
-                                Column(modifier = Modifier.weight(1f)) {
-                                    Text(
-                                        text = sequentialName,
-                                        fontSize = 15.sp,
-                                        fontWeight = FontWeight.Bold,
-                                        color = colors.textPrimary
-                                    )
-                                    Text(
-                                        text = if (preferences.theme == customTheme.id) "Active Theme" else "Custom Theme",
-                                        fontSize = 12.sp,
-                                        color = if (preferences.theme == customTheme.id) colors.accent else colors.textSecondary
-                                    )
-                                }
-
-                                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                                    // Apply button
-                                    Button(
-                                        onClick = {
-                                            onUpdateTheme(customTheme.id)
-                                            Toast.makeText(context, "Theme '$sequentialName' applied", Toast.LENGTH_SHORT).show()
-                                            showMyThemesSheet = false
-                                        },
-                                        shape = RoundedCornerShape(8.dp),
-                                        colors = ButtonDefaults.buttonColors(containerColor = colors.accent),
-                                        modifier = Modifier.height(34.dp)
-                                    ) {
-                                        Text(text = "Apply", fontSize = 12.sp, color = Color.White)
-                                    }
-
-                                    // Rename button
-                                    Box(
-                                        modifier = Modifier
-                                            .size(34.dp)
-                                            .clip(RoundedCornerShape(8.dp))
-                                            .background(colors.iconBackground)
-                                            .clickable {
-                                                themeToRename = customTheme
-                                                renameInputText = sequentialName
-                                            },
-                                        contentAlignment = Alignment.Center
-                                    ) {
-                                        Icon(
-                                            imageVector = Icons.Outlined.DriveFileRenameOutline,
-                                            contentDescription = "Rename",
-                                            tint = colors.textPrimary,
-                                            modifier = Modifier.size(16.dp)
+                                // Column with title, subtitle, and action buttons row underneath
+                                Column(
+                                    modifier = Modifier.weight(1f),
+                                    verticalArrangement = Arrangement.spacedBy(6.dp)
+                                ) {
+                                    // Inline block text
+                                    Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                                        Text(
+                                            text = sequentialName,
+                                            fontSize = 15.sp,
+                                            fontWeight = FontWeight.Bold,
+                                            color = colors.textPrimary,
+                                            maxLines = 1,
+                                            overflow = TextOverflow.Ellipsis
+                                        )
+                                        Text(
+                                            text = if (preferences.theme == customTheme.id) "Active Theme" else "Custom Theme",
+                                            fontSize = 12.sp,
+                                            fontWeight = if (preferences.theme == customTheme.id) FontWeight.SemiBold else FontWeight.Normal,
+                                            color = if (preferences.theme == customTheme.id) colors.accent else colors.textSecondary
                                         )
                                     }
 
-                                    // Edit button
-                                    if (io.lipika.theme.designer.ThemeDesignerRegistry.isAvailable) {
+                                    Spacer(modifier = Modifier.height(2.dp))
+
+                                    // Function icons / action buttons underneath the text
+                                    Row(
+                                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        // Apply button / Active Badge
+                                        if (preferences.theme == customTheme.id) {
+                                            Box(
+                                                modifier = Modifier
+                                                    .height(32.dp)
+                                                    .clip(RoundedCornerShape(8.dp))
+                                                    .background(colors.accent.copy(alpha = 0.15f))
+                                                    .border(1.dp, colors.accent.copy(alpha = 0.35f), RoundedCornerShape(8.dp))
+                                                    .padding(horizontal = 10.dp),
+                                                contentAlignment = Alignment.Center
+                                            ) {
+                                                Row(
+                                                    verticalAlignment = Alignment.CenterVertically,
+                                                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                                                ) {
+                                                    Icon(
+                                                        imageVector = Icons.Filled.Check,
+                                                        contentDescription = null,
+                                                        tint = colors.accent,
+                                                        modifier = Modifier.size(14.dp)
+                                                    )
+                                                    Text(
+                                                        text = "Applied",
+                                                        fontSize = 12.sp,
+                                                        fontWeight = FontWeight.Bold,
+                                                        color = colors.accent
+                                                    )
+                                                }
+                                            }
+                                        } else {
+                                            Button(
+                                                onClick = {
+                                                    onUpdateTheme(customTheme.id)
+                                                    Toast.makeText(context, "Theme '$sequentialName' applied", Toast.LENGTH_SHORT).show()
+                                                    showMyThemesSheet = false
+                                                },
+                                                shape = RoundedCornerShape(8.dp),
+                                                colors = ButtonDefaults.buttonColors(containerColor = colors.accent),
+                                                contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 12.dp, vertical = 0.dp),
+                                                modifier = Modifier.height(32.dp)
+                                            ) {
+                                                Text(text = "Apply", fontSize = 12.sp, fontWeight = FontWeight.SemiBold, color = Color.White)
+                                            }
+                                        }
+
+                                        // Edit in Studio button
+                                        if (io.lipika.theme.designer.ThemeDesignerRegistry.isAvailable) {
+                                            Box(
+                                                modifier = Modifier
+                                                    .size(32.dp)
+                                                    .clip(RoundedCornerShape(8.dp))
+                                                    .background(colors.iconBackground)
+                                                    .border(1.dp, colors.cardBorder, RoundedCornerShape(8.dp))
+                                                    .clickable {
+                                                        showMyThemesSheet = false
+                                                        onOpenThemeDesigner(customTheme.id)
+                                                    },
+                                                contentAlignment = Alignment.Center
+                                            ) {
+                                                Icon(
+                                                    imageVector = Icons.Outlined.Edit,
+                                                    contentDescription = "Edit in Studio",
+                                                    tint = colors.textPrimary,
+                                                    modifier = Modifier.size(16.dp)
+                                                )
+                                            }
+                                        }
+
+                                        // Rename button
                                         Box(
                                             modifier = Modifier
-                                                .size(34.dp)
+                                                .size(32.dp)
                                                 .clip(RoundedCornerShape(8.dp))
                                                 .background(colors.iconBackground)
+                                                .border(1.dp, colors.cardBorder, RoundedCornerShape(8.dp))
                                                 .clickable {
-                                                    showMyThemesSheet = false
-                                                    onOpenThemeDesigner(customTheme.id)
+                                                    themeToRename = customTheme
+                                                    renameInputText = sequentialName
                                                 },
                                             contentAlignment = Alignment.Center
                                         ) {
                                             Icon(
-                                                imageVector = Icons.Outlined.Edit,
-                                                contentDescription = "Edit",
+                                                imageVector = Icons.Outlined.DriveFileRenameOutline,
+                                                contentDescription = "Rename",
                                                 tint = colors.textPrimary,
                                                 modifier = Modifier.size(16.dp)
                                             )
                                         }
-                                    }
 
-                                    // Delete button
-                                    Box(
-                                        modifier = Modifier
-                                            .size(34.dp)
-                                            .clip(RoundedCornerShape(8.dp))
-                                            .background(colors.iconBackground)
-                                            .clickable {
-                                                themeToDelete = customTheme
-                                            },
-                                        contentAlignment = Alignment.Center
-                                    ) {
-                                        Icon(
-                                            imageVector = Icons.Outlined.Delete,
-                                            contentDescription = "Delete",
-                                            tint = Color(0xFFEF4444),
-                                            modifier = Modifier.size(16.dp)
-                                        )
+                                        // Delete button
+                                        Box(
+                                            modifier = Modifier
+                                                .size(32.dp)
+                                                .clip(RoundedCornerShape(8.dp))
+                                                .background(Color(0xFFEF4444).copy(alpha = 0.12f))
+                                                .border(1.dp, Color(0xFFEF4444).copy(alpha = 0.28f), RoundedCornerShape(8.dp))
+                                                .clickable {
+                                                    themeToDelete = customTheme
+                                                },
+                                            contentAlignment = Alignment.Center
+                                        ) {
+                                            Icon(
+                                                imageVector = Icons.Outlined.Delete,
+                                                contentDescription = "Delete",
+                                                tint = Color(0xFFEF4444),
+                                                modifier = Modifier.size(16.dp)
+                                            )
+                                        }
                                     }
                                 }
                             }

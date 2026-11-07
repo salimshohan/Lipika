@@ -3,55 +3,99 @@
     xmlns:aapt="http://schemas.android.com/aapt"
     android:width="108dp"
     android:height="108dp"
-    android:viewportWidth="108"
-    android:viewportHeight="108">
+    android:viewportWidth="512"
+    android:viewportHeight="512">
 
-    <!-- Soft ambient drop shadow underneath squircle badge -->
-    <path
-        android:pathData="M23,25 C23,21 26,18 30,18 L78,18 C82,18 85,21 85,25 L85,87 C85,91 82,94 78,94 L30,94 C26,94 23,91 23,87 Z"
-        android:fillAlpha="0.22"
-        android:fillColor="#0C4A6E" />
+    <group
+        android:pivotX="256"
+        android:pivotY="256"
+        android:scaleX="0.76"
+        android:scaleY="0.76">
 
-    <!-- Vibrant Blue-to-Cyan Squircle Badge centered in safe zone (22, 20 to 86, 84, width=64, height=64) -->
-    <path
-        android:pathData="M39,20 L69,20 C80,20 86,26 86,37 L86,67 C86,78 80,84 69,84 L39,84 C28,84 22,78 22,67 L22,37 C22,26 28,20 39,20 Z">
-        <aapt:attr name="android:fillColor">
-            <gradient
-                android:angle="45"
-                android:startColor="#2563EB"
-                android:centerColor="#38BDF8"
-                android:endColor="#06B6D4"
-                android:type="linear" />
-        </aapt:attr>
-    </path>
+        <!-- Ambient Shadow for Keycap -->
+        <path
+            android:pathData="M132,46 L380,46 A96,96 0,0,1 476,142 L476,390 A96,96 0,0,1 380,486 L132,486 A96,96 0,0,1 36,390 L36,142 A96,96 0,0,1 132,46 Z"
+            android:fillAlpha="0.14"
+            android:fillColor="#0F172A" />
 
-    <!-- Diagonal Faceted Light Ray across squircle badge -->
-    <path
-        android:pathData="M52,20 L86,20 L86,52 L58,84 L40,84 Z"
-        android:fillAlpha="0.24">
-        <aapt:attr name="android:fillColor">
-            <gradient
-                android:angle="45"
-                android:startColor="#FFFFFF"
-                android:endColor="#38BDF8"
-                android:type="linear" />
-        </aapt:attr>
-    </path>
+        <!-- Keycap Body (Light Pearlescent Surface) -->
+        <path
+            android:pathData="M132,36 L380,36 A96,96 0,0,1 476,132 L476,380 A96,96 0,0,1 380,476 L132,476 A96,96 0,0,1 36,380 L36,132 A96,96 0,0,1 132,36 Z">
+            <aapt:attr name="android:fillColor">
+                <gradient
+                    android:angle="135"
+                    android:startColor="#FFFFFF"
+                    android:centerColor="#F8FAFC"
+                    android:endColor="#E0F2FE"
+                    android:type="linear" />
+            </aapt:attr>
+        </path>
 
-    <!-- Subtle faceted darker facet shadow -->
-    <path
-        android:pathData="M86,40 L86,76 L68,84 L54,84 Z"
-        android:fillAlpha="0.08"
-        android:fillColor="#000000" />
+        <!-- Keycap Frosted Cyan-Blue Stroke Border -->
+        <path
+            android:pathData="M132,36 L380,36 A96,96 0,0,1 476,132 L476,380 A96,96 0,0,1 380,476 L132,476 A96,96 0,0,1 36,380 L36,132 A96,96 0,0,1 132,36 Z"
+            android:strokeWidth="7">
+            <aapt:attr name="android:strokeColor">
+                <gradient
+                    android:angle="45"
+                    android:startColor="#38BDF8"
+                    android:centerColor="#0EA5E9"
+                    android:endColor="#2563EB"
+                    android:type="linear" />
+            </aapt:attr>
+        </path>
 
-    <!-- Ambient drop shadow for the 'L' glyph -->
-    <path
-        android:pathData="M53,34 C49,34 46,37 46,41 L46,65 C46,72 51,76 57,76 L68,76 C71,76 74,73 74,70 C74,67 71,64 68,64 L59,64 C56,64 54,62 54,59 L54,41 C54,37 53,34 53,34 Z"
-        android:fillAlpha="0.32"
-        android:fillColor="#172554" />
+        <!-- Glossy Glass Sheen -->
+        <path
+            android:pathData="M40,132 C40,81 81,40 132,40 L380,40 C431,40 472,81 472,132 L472,180 Q256,120 40,180 Z"
+            android:fillAlpha="0.65">
+            <aapt:attr name="android:fillColor">
+                <gradient
+                    android:angle="90"
+                    android:startColor="#FFFFFF"
+                    android:endColor="#00FFFFFF"
+                    android:type="linear" />
+            </aapt:attr>
+        </path>
 
-    <!-- Pure white rounded Lipika 'L' glyph -->
-    <path
-        android:pathData="M52,32 C48,32 45,35 45,39 L45,63 C45,70 50,74 56,74 L67,74 C70,74 73,71 73,68 C73,65 70,62 67,62 L58,62 C55,62 53,60 53,57 L53,39 C53,35 52,32 52,32 Z"
-        android:fillColor="#FFFFFF" />
+        <!-- Top Horizontal Bar ('Matra') -->
+        <path
+            android:pathData="M143,160 L369,160 A13,13 0,0,1 382,173 A13,13 0,0,1 369,186 L143,186 A13,13 0,0,1 130,173 A13,13 0,0,1 143,160 Z"
+            android:fillColor="#0F172A" />
+
+        <!-- Stylized Modern Bengali 'ল' Loops Shadow -->
+        <path
+            android:pathData="M157,316 C137,281 147,226 182,202 C212,182 244,194 254,224 C267,194 300,182 330,202 C362,226 372,281 352,316 C342,336 317,356 282,351 L282,324 C302,328 322,316 328,301 C340,276 332,236 308,221 C290,208 267,216 258,244 L244,244 C235,216 212,208 194,221 C170,236 162,276 174,301 C180,316 200,328 220,324 L220,351 C185,356 160,336 157,316 Z"
+            android:fillAlpha="0.18"
+            android:fillColor="#0369A1" />
+
+        <!-- Stylized Modern Bengali 'ল' Loops -->
+        <path
+            android:pathData="M155,310 C135,275 145,220 180,196 C210,176 242,188 252,218 C265,188 298,176 328,196 C360,220 370,275 350,310 C340,330 315,350 280,345 L280,318 C300,322 320,310 326,295 C338,270 330,230 306,215 C288,202 265,210 256,238 L242,238 C233,210 210,202 192,215 C168,230 160,270 172,295 C178,310 198,322 218,318 L218,345 C183,350 158,330 155,310 Z">
+            <aapt:attr name="android:fillColor">
+                <gradient
+                    android:angle="90"
+                    android:startColor="#06B6D4"
+                    android:centerColor="#0EA5E9"
+                    android:endColor="#0284C7"
+                    android:type="linear" />
+            </aapt:attr>
+        </path>
+
+        <!-- Vertical Stem of 'ল' -->
+        <path
+            android:pathData="M369,160 L369,160 A13,13 0,0,1 382,173 L382,342 A13,13 0,0,1 369,355 A13,13 0,0,1 356,342 L356,173 A13,13 0,0,1 369,160 Z"
+            android:fillColor="#0F172A" />
+
+        <!-- Foot Accent -->
+        <path
+            android:pathData="M341,340 L371,340 A11,11 0,0,1 382,351 A11,11 0,0,1 371,362 L341,362 A11,11 0,0,1 330,351 A11,11 0,0,1 341,340 Z"
+            android:fillColor="#0F172A" />
+
+        <!-- Electric Cyan Typing Cursor Spark -->
+        <path
+            android:pathData="M403,170 L403,170 A7,7 0,0,1 410,177 L410,211 A7,7 0,0,1 403,218 A7,7 0,0,1 396,211 L396,177 A7,7 0,0,1 403,170 Z"
+            android:fillColor="#06B6D4" />
+
+    </group>
 </vector>

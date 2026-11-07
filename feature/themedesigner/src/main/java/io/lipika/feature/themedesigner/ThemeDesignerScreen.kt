@@ -486,23 +486,6 @@ internal fun ThemeDesignerScreenContent(
                             shape = RoundedCornerShape(14.dp),
                             modifier = Modifier.fillMaxWidth()
                         )
-                        OutlinedTextField(
-                            value = state.designerName,
-                            onValueChange = { state = state.copy(designerName = it) },
-                            label = { Text("Designer Name") },
-                            placeholder = { Text("Your name or handle") },
-                            singleLine = true,
-                            colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = colors.accent,
-                                unfocusedBorderColor = colors.inputBorder,
-                                focusedContainerColor = colors.inputBackground,
-                                unfocusedContainerColor = colors.inputBackground,
-                                focusedTextColor = colors.textPrimary,
-                                unfocusedTextColor = colors.textPrimary
-                            ),
-                            shape = RoundedCornerShape(14.dp),
-                            modifier = Modifier.fillMaxWidth()
-                        )
                     }
                 }
 

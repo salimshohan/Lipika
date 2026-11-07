@@ -103,11 +103,45 @@ fun PreferencesScreen(
                 subtitle = "Hold duration required to trigger more-keys and symbols (100–500 ms)",
                 value = delayMs.toFloat().coerceIn(100f, 500f),
                 valueRange = 100f..500f,
-                steps = 40,
+                steps = 0,
                 valueLabel = delayLabel,
-                position = GroupPosition.ALONE,
-                onValueChange = { onUpdateLongPressDelay(it.roundToInt()) }
+                position = GroupPosition.TOP,
+                onValueChange = { onUpdateLongPressDelay(it.roundToInt().coerceIn(100, 500)) }
             )
+
+            // Quick preset pills for 100 to 500 ms
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 12.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                listOf(100, 150, 200, 250, 300, 400, 500).forEach { preset ->
+                    val isSelected = delayMs == preset
+                    Box(
+                        modifier = Modifier
+                            .weight(1f)
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(if (isSelected) colors.accent else colors.inputBackground)
+                            .border(
+                                1.dp,
+                                if (isSelected) colors.accent else colors.cardBorder,
+                                RoundedCornerShape(8.dp)
+                            )
+                            .clickable { onUpdateLongPressDelay(preset) }
+                            .padding(vertical = 6.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "$preset",
+                            fontSize = 11.5.sp,
+                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
+                            color = if (isSelected) Color.White else colors.textPrimary
+                        )
+                    }
+                }
+            }
         }
 
         Spacer(modifier = Modifier.height(8.dp))

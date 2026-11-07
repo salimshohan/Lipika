@@ -5,7 +5,7 @@
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
-    <!-- Outer Light Aesthetic Background Canvas from docs/logo.svg -->
+    <!-- Soft Pearlescent Light Background -->
     <path android:pathData="M0,0h108v108h-108z">
         <aapt:attr name="android:fillColor">
             <gradient
@@ -16,10 +16,10 @@
                 android:type="linear" />
         </aapt:attr>
     </path>
-    <!-- Decorative background light ray from docs/logo.svg -->
+    <!-- Subtle Ambient Cyan Accent Ray -->
     <path
-        android:pathData="M0,0 L108,0 L68,108 L0,108 Z"
-        android:fillAlpha="0.45">
+        android:pathData="M0,0 L108,0 L64,108 L0,108 Z"
+        android:fillAlpha="0.35">
         <aapt:attr name="android:fillColor">
             <gradient
                 android:angle="45"

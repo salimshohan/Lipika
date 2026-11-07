@@ -237,15 +237,21 @@ fun SettingsUnifiedTopBar(
                     modifier = Modifier
                         .size(40.dp)
                         .clip(CircleShape)
-                        .background(colors.accent.copy(alpha = 0.12f))
-                        .border(BorderStroke(1.dp, colors.accent.copy(alpha = 0.28f)), CircleShape)
+                        .background(if (colors.isDark) Color(0xFF1E293B) else Color.White)
+                        .border(
+                            BorderStroke(
+                                1.dp,
+                                if (colors.isDark) Color(0xFF334155) else Color(0xFFE2E8F0)
+                            ),
+                            CircleShape
+                        )
                         .clickable(onClick = onBack),
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = "Back",
-                        tint = colors.textPrimary,
+                        tint = if (colors.isDark) Color(0xFFF8FAFC) else Color(0xFF0F172A),
                         modifier = Modifier.size(20.dp)
                     )
                 }
@@ -314,15 +320,21 @@ fun SettingsTopAppBar(
             modifier = Modifier
                 .size(40.dp)
                 .clip(CircleShape)
-                .background(colors.accent.copy(alpha = 0.12f))
-                .border(BorderStroke(1.dp, colors.accent.copy(alpha = 0.28f)), CircleShape)
+                .background(if (colors.isDark) Color(0xFF1E293B) else Color.White)
+                .border(
+                    BorderStroke(
+                        1.dp,
+                        if (colors.isDark) Color(0xFF334155) else Color(0xFFE2E8F0)
+                    ),
+                    CircleShape
+                )
                 .clickable(onClick = onBack),
             contentAlignment = Alignment.Center
         ) {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                 contentDescription = "Back",
-                tint = colors.textPrimary,
+                tint = if (colors.isDark) Color(0xFFF8FAFC) else Color(0xFF0F172A),
                 modifier = Modifier.size(20.dp)
             )
         }

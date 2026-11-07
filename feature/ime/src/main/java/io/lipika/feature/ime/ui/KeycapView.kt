@@ -256,11 +256,7 @@ fun KeycapView(
                             var isLongPressTriggered = false
                             var isDeleteLongPressActive = false
                             val longPressJob = if (isSlidingInitiator || isSymbolsToggleKey) null else launch {
-                                val delayDuration = if (initialKey.type == KeyType.DELETE) {
-                                    currentLongPressDelay.value.coerceIn(250L, 400L)
-                                } else {
-                                    currentLongPressDelay.value
-                                }
+                                val delayDuration = currentLongPressDelay.value.coerceIn(100L, 500L)
                                 delay(delayDuration)
                                 val coords = keyCoordinates
                                 isLongPressTriggered = true

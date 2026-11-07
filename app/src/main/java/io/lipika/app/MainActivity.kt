@@ -436,8 +436,10 @@ fun LipikaSettingsApp(
         SideEffect {
             val window = (view.context as? android.app.Activity)?.window
             if (window != null) {
+                window.statusBarColor = android.graphics.Color.TRANSPARENT
+                window.navigationBarColor = android.graphics.Color.TRANSPARENT
                 val insetsController = androidx.core.view.WindowCompat.getInsetsController(window, view)
-                insetsController.isAppearanceLightStatusBars = if (isMainScreen) false else !isDark
+                insetsController.isAppearanceLightStatusBars = !isDark
                 insetsController.isAppearanceLightNavigationBars = !isDark
             }
         }

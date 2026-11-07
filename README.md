@@ -11,13 +11,13 @@
 ---
 
 <p align="center">
-  <a href="https://github.com/salimshohan/Lipika/releases/tag/v0.3.1">
-    <img src="https://img.shields.io/badge/Release-v0.3.1-06B6D4?style=for-the-badge&logo=android&logoColor=white" alt="Version 0.3.1" />
+  <a href="https://github.com/salimshohan/Lipika/releases/tag/v0.3.2">
+    <img src="https://img.shields.io/badge/Release-v0.3.2-06B6D4?style=for-the-badge&logo=android&logoColor=white" alt="Version 0.3.2" />
   </a>
-  <a href="https://github.com/salimshohan/Lipika/releases/download/v0.3.1/Lipika.v0.3.1.apk">
-    <img src="https://img.shields.io/badge/Download-Lipika%20v0.3.1%20APK-10B981?style=for-the-badge&logo=android&logoColor=white" alt="Download APK" />
+  <a href="https://github.com/salimshohan/Lipika/releases/download/v0.3.2/Lipika.v0.3.2.apk">
+    <img src="https://img.shields.io/badge/Download-Lipika%20v0.3.2%20APK-10B981?style=for-the-badge&logo=android&logoColor=white" alt="Download APK" />
   </a>
-  <a href="https://github.com/salimshohan/Lipika/releases/download/v0.3.1/Lipika.apk">
+  <a href="https://github.com/salimshohan/Lipika/releases/download/v0.3.2/Lipika.apk">
     <img src="https://img.shields.io/badge/Direct%20APK-Lipika.apk-0284C7?style=for-the-badge&logo=android&logoColor=white" alt="Download Direct APK" />
   </a>
   <a href="https://github.com/salimshohan/Lipika">
@@ -101,6 +101,6 @@ Lipika features 5 carefully chosen layouts:
 
 Download the stable pre-built APK directly from GitHub Releases:
 
-👉 **[Download Lipika v0.3.1 APK](https://github.com/salimshohan/Lipika/releases/download/v0.3.1/Lipika.v0.3.1.apk)**
+👉 **[Download Lipika v0.3.2 APK](https://github.com/salimshohan/Lipika/releases/download/v0.3.2/Lipika.v0.3.2.apk)**
 
-👉 **[Download Latest Lipika APK](https://github.com/salimshohan/Lipika/releases/download/v0.3.1/Lipika.apk)**
+👉 **[Download Latest Lipika APK](https://github.com/salimshohan/Lipika/releases/download/v0.3.2/Lipika.apk)**
