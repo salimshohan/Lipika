@@ -420,7 +420,7 @@ private fun MoreKeyCell(
             else -> {
                 val isBangla = isBanglaText(item)
                 val finalFontSize = if (isBangla) fontSizeSp * 0.88f else fontSizeSp
-                if (BengaliMatraUtils.isStandaloneBengaliCombiningMark(item)) {
+                if (BengaliMatraUtils.isBengaliCombiningMark(item) || BengaliMatraUtils.isStandaloneBengaliCombiningMark(item)) {
                     BengaliMatraCanvasLabel(
                         text = item,
                         color = contentColor,

@@ -54,10 +54,15 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
@@ -84,7 +89,9 @@ fun SettingsMainScreen(
     isImeSelected: Boolean,
     onOpenSettings: () -> Unit,
     onSwitchIme: () -> Unit,
-    onNavigate: (SettingsScreen) -> Unit
+    onNavigate: (SettingsScreen) -> Unit,
+    onToggleDarkMode: () -> Unit = {},
+    onToggleAppLanguage: () -> Unit = {}
 ) {
     val scrollState = rememberScrollState()
     val colors = LocalSettingsColors.current
@@ -116,10 +123,12 @@ fun SettingsMainScreen(
             .fillMaxSize()
             .verticalScroll(scrollState)
     ) {
-        // 1. Header Design & Minimal Typing Animation (Replaces sunset mountain illustration)
+        // 1. Header Design & Minimal Typing Animation (Lipika Smart Engine Box)
         MinimalTypingHeader(
             colors = colors,
-            activeFontFamily = activeFontFamily
+            activeFontFamily = activeFontFamily,
+            onToggleDarkMode = onToggleDarkMode,
+            onToggleAppLanguage = onToggleAppLanguage
         )
 
         Column(
@@ -590,7 +599,9 @@ fun SettingsMainScreen(
 @Composable
 private fun MinimalTypingHeader(
     colors: SettingsColors,
-    activeFontFamily: FontFamily
+    activeFontFamily: FontFamily,
+    onToggleDarkMode: () -> Unit,
+    onToggleAppLanguage: () -> Unit
 ) {
     val phrases = remember {
         listOf(
@@ -729,6 +740,39 @@ private fun MinimalTypingHeader(
     val currentPhrase = playlist.getOrElse(playlistIndex) { phrases[0] }
     val displayedText = currentPhrase.take(displayedLength)
 
+    val haptic = LocalHapticFeedback.current
+    val coroutineScope = rememberCoroutineScope()
+    var tapCount by remember { mutableIntStateOf(0) }
+    var lastTapTime by remember { mutableLongStateOf(0L) }
+    var tapJob by remember { mutableStateOf<kotlinx.coroutines.Job?>(null) }
+
+    val handleHeaderTap: () -> Unit = {
+        val now = android.os.SystemClock.uptimeMillis()
+        tapJob?.cancel()
+        if (now - lastTapTime < 420L) {
+            tapCount++
+        } else {
+            tapCount = 1
+        }
+        lastTapTime = now
+        val recordedCount = tapCount
+
+        tapJob = coroutineScope.launch {
+            delay(420L)
+            when (recordedCount) {
+                2 -> {
+                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                    onToggleDarkMode()
+                }
+                3 -> {
+                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                    onToggleAppLanguage()
+                }
+            }
+            tapCount = 0
+        }
+    }
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -741,7 +785,13 @@ private fun MinimalTypingHeader(
                         Color.Transparent
                     )
                 )
-            ),
+            )
+            .clickable(
+                interactionSource = remember { androidx.compose.foundation.interaction.MutableInteractionSource() },
+                indication = null
+            ) {
+                handleHeaderTap()
+            },
         contentAlignment = Alignment.Center
     ) {
         // Floating ambient characters
@@ -788,13 +838,14 @@ private fun MinimalTypingHeader(
             verticalArrangement = Arrangement.Center,
             modifier = Modifier.padding(horizontal = 24.dp)
         ) {
-            // Minimalist badge
+            // Minimalist badge (Lipika Smart Engine box)
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(6.dp),
                 modifier = Modifier
                     .clip(RoundedCornerShape(10.dp))
                     .background(colors.accent.copy(alpha = 0.12f))
+                    .clickable { handleHeaderTap() }
                     .padding(horizontal = 10.dp, vertical = 4.dp)
             ) {
                 Box(

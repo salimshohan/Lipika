@@ -56,9 +56,9 @@ fun BengaliMatraCanvasLabel(
         val baselineY = (height - fontMetrics.ascent - fontMetrics.descent) / 2f
         val centerX = width / 2f
 
-        BengaliMatraUtils.drawCombiningMark(
+        BengaliMatraUtils.drawStandaloneBengaliMark(
             canvas = drawContext.canvas.nativeCanvas,
-            text = text,
+            mark = text,
             centerX = centerX,
             baselineY = baselineY,
             paint = textPaint

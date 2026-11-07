@@ -1160,8 +1160,8 @@ private fun KeyboardMiniPreview(
                             val totalH = lineHeight * lines.size
                             val startY = rowY + (rowHeight - totalH) / 2f - fontMetrics.ascent
                             for ((lineIdx, line) in lines.withIndex()) {
-                                if (BengaliMatraUtils.isStandaloneBengaliCombiningMark(line)) {
-                                    BengaliMatraUtils.drawCombiningMark(drawContext.canvas.nativeCanvas, line, centerX, startY + lineIdx * lineHeight, textPaint)
+                                if (BengaliMatraUtils.isBengaliCombiningMark(line) || BengaliMatraUtils.isStandaloneBengaliCombiningMark(line)) {
+                                    BengaliMatraUtils.drawStandaloneBengaliMark(drawContext.canvas.nativeCanvas, line, centerX, startY + lineIdx * lineHeight, textPaint)
                                 } else {
                                     drawContext.canvas.nativeCanvas.drawText(line, centerX, startY + lineIdx * lineHeight, textPaint)
                                 }
@@ -1170,8 +1170,8 @@ private fun KeyboardMiniPreview(
                             textPaint.textSize = (if (label.length > 2) 6.sp else 8.sp).toPx()
                             val fontMetrics = textPaint.fontMetrics
                             val baselineY = rowY + (rowHeight - fontMetrics.ascent - fontMetrics.descent) / 2f
-                            if (BengaliMatraUtils.isStandaloneBengaliCombiningMark(label)) {
-                                BengaliMatraUtils.drawCombiningMark(drawContext.canvas.nativeCanvas, label, centerX, baselineY, textPaint)
+                            if (BengaliMatraUtils.isBengaliCombiningMark(label) || BengaliMatraUtils.isStandaloneBengaliCombiningMark(label)) {
+                                BengaliMatraUtils.drawStandaloneBengaliMark(drawContext.canvas.nativeCanvas, label, centerX, baselineY, textPaint)
                             } else {
                                 drawContext.canvas.nativeCanvas.drawText(label, centerX, baselineY, textPaint)
                             }

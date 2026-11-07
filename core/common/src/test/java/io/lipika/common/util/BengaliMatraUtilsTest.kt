@@ -47,6 +47,32 @@ class BengaliMatraUtilsTest {
     }
 
     @Test
+    fun testIsBengaliCombiningMark() {
+        assertTrue(BengaliMatraUtils.isBengaliCombiningMark("া"))
+        assertTrue(BengaliMatraUtils.isBengaliCombiningMark("ি"))
+        assertTrue(BengaliMatraUtils.isBengaliCombiningMark("ী"))
+        assertTrue(BengaliMatraUtils.isBengaliCombiningMark("ু"))
+        assertTrue(BengaliMatraUtils.isBengaliCombiningMark("ূ"))
+        assertTrue(BengaliMatraUtils.isBengaliCombiningMark("ৃ"))
+        assertTrue(BengaliMatraUtils.isBengaliCombiningMark("ে"))
+        assertTrue(BengaliMatraUtils.isBengaliCombiningMark("ৈ"))
+        assertTrue(BengaliMatraUtils.isBengaliCombiningMark("ো"))
+        assertTrue(BengaliMatraUtils.isBengaliCombiningMark("ৌ"))
+        assertTrue(BengaliMatraUtils.isBengaliCombiningMark("্"))
+        assertTrue(BengaliMatraUtils.isBengaliCombiningMark("ঁ"))
+        assertTrue(BengaliMatraUtils.isBengaliCombiningMark("ং"))
+        assertTrue(BengaliMatraUtils.isBengaliCombiningMark("ঃ"))
+        assertTrue(BengaliMatraUtils.isBengaliCombiningMark("়"))
+
+        // Length != 1 or non-combining characters
+        assertFalse(BengaliMatraUtils.isBengaliCombiningMark("ক"))
+        assertFalse(BengaliMatraUtils.isBengaliCombiningMark("কা"))
+        assertFalse(BengaliMatraUtils.isBengaliCombiningMark("a"))
+        assertFalse(BengaliMatraUtils.isBengaliCombiningMark(""))
+        assertFalse(BengaliMatraUtils.isBengaliCombiningMark(null))
+    }
+
+    @Test
     fun testStandaloneBengaliCombiningMarks() {
         assertTrue(BengaliMatraUtils.isStandaloneBengaliCombiningMark("া"))
         assertTrue(BengaliMatraUtils.isStandaloneBengaliCombiningMark("ি"))

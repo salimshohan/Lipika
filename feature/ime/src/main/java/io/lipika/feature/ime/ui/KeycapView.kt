@@ -556,7 +556,7 @@ fun KeycapView(
                 .align(Alignment.TopEnd)
                 .padding(top = (2.2f * fontScaleFactor).dp, end = (3.8f * fontScaleFactor).dp)
 
-            if (BengaliMatraUtils.isStandaloneBengaliCombiningMark(activeFlickUp)) {
+            if (BengaliMatraUtils.isBengaliCombiningMark(activeFlickUp) || BengaliMatraUtils.isStandaloneBengaliCombiningMark(activeFlickUp)) {
                 val badgeBoxSize = with(LocalDensity.current) { badgeSizeSp.toDp() * 1.5f }
                 BengaliMatraCanvasLabel(
                     text = activeFlickUp,
@@ -744,7 +744,7 @@ fun KeycapView(
                     val isUppercase = displaySymbolLabel.length == 1 && displaySymbolLabel.first().isUpperCase()
                     val verticalShift = if (isUppercase) (1.2f * fontScaleFactor).dp else 0.dp
 
-                    if (BengaliMatraUtils.isStandaloneBengaliCombiningMark(displaySymbolLabel)) {
+                    if (BengaliMatraUtils.isBengaliCombiningMark(displaySymbolLabel) || BengaliMatraUtils.isStandaloneBengaliCombiningMark(displaySymbolLabel)) {
                         BengaliMatraCanvasLabel(
                             text = displaySymbolLabel,
                             color = foregroundColor,
@@ -858,7 +858,7 @@ fun KeycapView(
                 val isBanglaPreview = isBanglaText(displaySymbolLabel)
                 val popupFontSize = if (isBanglaPreview) 23.5f else 27f
                 val popupSizeSp = (popupFontSize * scaleFactor).coerceIn(18f, 34f).sp
-                if (BengaliMatraUtils.isStandaloneBengaliCombiningMark(displaySymbolLabel)) {
+                if (BengaliMatraUtils.isBengaliCombiningMark(displaySymbolLabel) || BengaliMatraUtils.isStandaloneBengaliCombiningMark(displaySymbolLabel)) {
                     BengaliMatraCanvasLabel(
                         text = displaySymbolLabel,
                         color = popupFg,

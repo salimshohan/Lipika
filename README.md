@@ -11,13 +11,13 @@
 ---
 
 <p align="center">
-  <a href="https://github.com/salimshohan/Lipika/releases/tag/v0.3.6">
-    <img src="https://img.shields.io/badge/Release-v0.3.6-06B6D4?style=for-the-badge&logo=android&logoColor=white" alt="Version 0.3.6" />
+  <a href="https://github.com/salimshohan/Lipika/releases/tag/v0.3.7">
+    <img src="https://img.shields.io/badge/Release-v0.3.7-06B6D4?style=for-the-badge&logo=android&logoColor=white" alt="Version 0.3.7" />
   </a>
-  <a href="https://github.com/salimshohan/Lipika/releases/download/v0.3.6/Lipika.v0.3.6.apk">
-    <img src="https://img.shields.io/badge/Download-Lipika%20v0.3.6%20APK-10B981?style=for-the-badge&logo=android&logoColor=white" alt="Download APK" />
+  <a href="https://github.com/salimshohan/Lipika/releases/download/v0.3.7/Lipika.v0.3.7.apk">
+    <img src="https://img.shields.io/badge/Download-Lipika%20v0.3.7%20APK-10B981?style=for-the-badge&logo=android&logoColor=white" alt="Download APK" />
   </a>
-  <a href="https://github.com/salimshohan/Lipika/releases/download/v0.3.6/Lipika.apk">
+  <a href="https://github.com/salimshohan/Lipika/releases/download/v0.3.7/Lipika.apk">
     <img src="https://img.shields.io/badge/Direct%20APK-Lipika.apk-0284C7?style=for-the-badge&logo=android&logoColor=white" alt="Download Direct APK" />
   </a>
   <a href="https://github.com/salimshohan/Lipika">
@@ -36,16 +36,19 @@
 
 ---
 
-## ✨ Key Highlights in v0.3.6
+## ✨ Key Highlights in v0.3.7
 
-- **🎯 Canvas-Level Bengali Matra Dotted Circle (◌ / U+25CC) Suppression**:
-  - Standalone Bengali dependent vowel signs (Kar/Matra: া, ি, ী, ু, ূ, ৃ, ে, ৈ, ো, ৌ), Hasanta (্), and diacritics (ঁ, ং, ঃ) now render cleanly without the unwanted HarfBuzz dotted circle (`U+25CC`).
-  - Implemented directly at the Canvas rendering level using transparent base shaping and space-offset masking without touching or altering `commitText` or `InputConnection`.
-  - Applied across primary keycap center labels, top-right flick hints, long-press MoreKeys popups, quick-symbol drag overlays, and keyboard layout preview screens.
-- **🎨 Restored Top Toolbar Icons Design**:
-  - Restored classic toolbar action icons (Assignment Clipboard, Mood Emoji, Pin Number Row, Settings, TextFields Font) and clean transparent default button styling.
-- **🔤 Complete Input & Typing Stability**:
-  - All character inputs, gestures, and layout commitments are preserved with zero lag and instant responsiveness.
+- **🎯 Strict Path Subtraction (`Path.Op.DIFFERENCE`) for Bengali Combining Marks**:
+  - Standalone Bengali dependent vowel signs (Kar/Matra: া, ি, ী, ু, ূ, ৃ, ে, ৈ, ো, ৌ), Hasanta (্), and diacritics (ঁ, ং, ঃ) are now rendered via mathematical vector subtraction:
+    - Extracts `\u25CC` + mark and `\u25CC` outlines with `paint.getTextPath`.
+    - Subtracts the dotted circle via `combinedPath.op(circlePath, Path.Op.DIFFERENCE)` so only pure matra geometry remains.
+    - Centers horizontally at `centerX` (`-bounds.centerX() + centerX`) and aligns vertically with `baselineY` with `Paint.Style.FILL`.
+  - Applied to primary center key labels, top-right flick-up hints, long-press MoreKeys popups, quick-symbol drag overlays, and keyboard layout previews.
+- **⚡ Lipika Smart Engine Multi-Tap Gestures in Settings**:
+  - **Double-Tap**: Instantly toggles between **Dark Mode** and **Light Mode** across the entire app with smooth haptics and toast confirmation.
+  - **Triple-Tap**: Instantly switches **App Language** between **বাংলা (Bengali)** and **English** with immediate UI updates.
+- **🔤 Zero Input Disturbance**:
+  - Character commitment to `InputConnection` is 100% preserved.
 
 ---
 
@@ -76,6 +79,6 @@ Lipika features 5 carefully chosen layouts:
 
 Download the stable pre-built APK directly from GitHub Releases:
 
-👉 **[Download Lipika v0.3.6 APK](https://github.com/salimshohan/Lipika/releases/download/v0.3.6/Lipika.v0.3.6.apk)**
+👉 **[Download Lipika v0.3.7 APK](https://github.com/salimshohan/Lipika/releases/download/v0.3.7/Lipika.v0.3.7.apk)**
 
-👉 **[Download Latest Lipika APK](https://github.com/salimshohan/Lipika/releases/download/v0.3.6/Lipika.apk)**
+👉 **[Download Latest Lipika APK](https://github.com/salimshohan/Lipika/releases/download/v0.3.7/Lipika.apk)**

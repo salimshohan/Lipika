@@ -157,7 +157,7 @@ fun QuickSymbolDragOverlay(
                 contentAlignment = Alignment.Center
             ) {
                 val symbolFontSize = (25 * scaleFactor).coerceIn(19f, 32f).sp
-                if (BengaliMatraUtils.isStandaloneBengaliCombiningMark(state.hoveredSymbol)) {
+                if (BengaliMatraUtils.isBengaliCombiningMark(state.hoveredSymbol) || BengaliMatraUtils.isStandaloneBengaliCombiningMark(state.hoveredSymbol)) {
                     BengaliMatraCanvasLabel(
                         text = state.hoveredSymbol,
                         color = popupFg,

@@ -77,12 +77,15 @@ jobs:
           body: |
             ### 🚀 Lipika Keyboard ${{ github.ref_name }} Release
 
-            - **🎯 Canvas-Level Bengali Matra Dotted Circle (◌ / U+25CC) Suppression**:
-              - Standalone Bengali dependent vowel signs (Kar/Matra: া, ি, ী, ু, ূ, ৃ, ে, ৈ, ো, ৌ), Hasanta (্), and diacritics (ঁ, ং, ঃ) now render cleanly without the unwanted HarfBuzz dotted circle (`U+25CC`).
-              - Implemented directly at the Canvas rendering level using transparent base shaping and space-offset masking without touching or altering `commitText` or `InputConnection`.
-              - Applied across primary keycap center labels, top-right flick hints, long-press MoreKeys popups, quick-symbol drag overlays, and keyboard layout preview screens.
-            - **🎨 Restored Top Toolbar Icons Design**:
-              - Restored classic toolbar action icons (Assignment Clipboard, Mood Emoji, Pin Number Row, Settings, TextFields Font) and clean transparent default button styling.
+            - **🎯 Strict Path Subtraction (Path.Op.DIFFERENCE) for Bengali Combining Marks**:
+              - Standalone Bengali dependent vowel signs (Kar/Matra: া, ি, ী, ু, ূ, ৃ, ে, ৈ, ো, ৌ), Hasanta (্), and diacritics (ঁ, ং, ঃ) are now rendered via mathematical vector subtraction:
+                - Extracts `\u25CC` + mark and `\u25CC` outlines with `paint.getTextPath`.
+                - Subtracts the dotted circle via `combinedPath.op(circlePath, Path.Op.DIFFERENCE)` so only pure matra geometry remains.
+                - Centers horizontally at `centerX` (`-bounds.centerX() + centerX`) and aligns vertically with `baselineY` with `Paint.Style.FILL`.
+              - Applied to primary center key labels, top-right flick-up hints, long-press MoreKeys popups, quick-symbol drag overlays, and keyboard layout previews.
+            - **⚡ Lipika Smart Engine Multi-Tap Gestures in Settings**:
+              - **Double-Tap**: Instantly toggles between **Dark Mode** and **Light Mode** across the entire app with smooth haptics and toast confirmation.
+              - **Triple-Tap**: Instantly switches **App Language** between **বাংলা (Bengali)** and **English** with immediate UI updates.
             - **🔤 Complete Input & Typing Stability**:
               - All character inputs, gestures, and layout commitments are preserved with zero lag and instant responsiveness.
           files: dist/*

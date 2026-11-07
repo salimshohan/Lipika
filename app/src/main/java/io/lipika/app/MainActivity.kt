@@ -600,7 +600,41 @@ fun LipikaSettingsApp(
                             isImeSelected = isImeSelected,
                             onOpenSettings = onOpenSettings,
                             onSwitchIme = onSwitchIme,
-                            onNavigate = navigateTo
+                            onNavigate = navigateTo,
+                            onToggleDarkMode = {
+                                val currentIsDark = preferences.resolveEffectiveIsDark(systemInDark)
+                                val nextTheme = if (currentIsDark) LipikaPreferences.APP_THEME_LIGHT else LipikaPreferences.APP_THEME_DARK
+                                val nextDisplay = if (currentIsDark) LipikaPreferences.DISPLAY_MODE_LIGHT else LipikaPreferences.DISPLAY_MODE_DARK
+                                val nextSchedule = if (currentIsDark) LipikaPreferences.SCHEDULE_ALWAYS_LIGHT else LipikaPreferences.SCHEDULE_ALWAYS_DARK
+                                scope.launch {
+                                    preferencesRepo.updateAppTheme(nextTheme)
+                                    preferencesRepo.updateDisplayMode(nextDisplay)
+                                    preferencesRepo.updateThemeSchedule(nextSchedule)
+                                }
+                                val isBn = preferences.appLanguage == LipikaPreferences.APP_LANG_BN
+                                val msg = if (currentIsDark) {
+                                    if (isBn) "লাইট মোড সক্রিয় করা হয়েছে" else "Light mode enabled"
+                                } else {
+                                    if (isBn) "ডার্ক মোড সক্রিয় করা হয়েছে" else "Dark mode enabled"
+                                }
+                                android.widget.Toast.makeText(this@MainActivity, msg, android.widget.Toast.LENGTH_SHORT).show()
+                            },
+                            onToggleAppLanguage = {
+                                val nextLang = if (preferences.appLanguage == LipikaPreferences.APP_LANG_BN) {
+                                    LipikaPreferences.APP_LANG_EN
+                                } else {
+                                    LipikaPreferences.APP_LANG_BN
+                                }
+                                scope.launch {
+                                    preferencesRepo.updateAppLanguage(nextLang)
+                                }
+                                val msg = if (nextLang == LipikaPreferences.APP_LANG_BN) {
+                                    "অ্যাপের ভাষা: বাংলা"
+                                } else {
+                                    "App Language: English"
+                                }
+                                android.widget.Toast.makeText(this@MainActivity, msg, android.widget.Toast.LENGTH_SHORT).show()
+                            }
                         )
                     }
 

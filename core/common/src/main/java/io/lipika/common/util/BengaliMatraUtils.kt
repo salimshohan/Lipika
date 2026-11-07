@@ -1,35 +1,40 @@
 package io.lipika.common.util
 
 import android.graphics.Canvas
-import android.graphics.Color
 import android.graphics.Paint
-import android.graphics.Region
-import android.os.Build
-import android.text.Layout
-import android.text.SpannableString
-import android.text.Spanned
-import android.text.StaticLayout
-import android.text.TextPaint
-import android.text.style.ForegroundColorSpan
+import android.graphics.Path
+import android.graphics.RectF
 
 /**
  * Utility for detecting standalone Bengali combining marks (dependent vowel signs / Kars,
  * Hasanta, and diacritics) and rendering them on Android Canvas without the unwanted
- * Unicode dotted circle (◌ / U+25CC) injected by HarfBuzz/Bidi text shapers.
+ * Unicode dotted circle (◌ / U+25CC) using Path Subtraction (Path.Op.DIFFERENCE).
  */
 object BengaliMatraUtils {
 
     /**
      * Identifies if a character is a Bengali dependent vowel sign (Kar/Matra), Hasanta, or diacritic:
-     * - \u0981 (ঁ Chandrabindu)
-     * - \u0982 (ং Anusvara)
-     * - \u0983 (ঃ Visarga)
+     * - \u0981..\u0983 (ঁ Chandrabindu, ং Anusvara, ঃ Visarga)
      * - \u09BC (় Nukta)
-     * - \u09BE to \u09CD (া, ি, ী, ু, ূ, ৃ, ৄ, ে, ৈ, ো, ৌ, ্)
+     * - \u09BE..\u09CD (া, ি, ী, ু, ূ, ৃ, ৄ, ে, ৈ, ো, ৌ, ্)
      * - \u09D7 (ৗ Au length mark)
-     * - \u09E2 to \u09E3 (ৢ, ৣ)
+     * - \u09E2..\u09E3 (ৢ, ৣ)
      */
     fun isBengaliCombiningChar(c: Char): Boolean {
+        return (c in '\u0981'..'\u0983') ||
+                c == '\u09BC' ||
+                (c in '\u09BE'..'\u09CD') ||
+                c == '\u09D7' ||
+                (c in '\u09E2'..'\u09E3')
+    }
+
+    /**
+     * Returns true if the string length is 1 and its char code is in the Bengali
+     * dependent vowel / diacritic ranges (\u0981..\u0983, \u09BC, \u09BE..\u09CD, or \u09D7).
+     */
+    fun isBengaliCombiningMark(text: String?): Boolean {
+        if (text == null || text.length != 1) return false
+        val c = text[0]
         return (c in '\u0981'..'\u0983') ||
                 c == '\u09BC' ||
                 (c in '\u09BE'..'\u09CD') ||
@@ -43,6 +48,7 @@ object BengaliMatraUtils {
      */
     fun isStandaloneBengaliCombiningMark(str: String?): Boolean {
         if (str.isNullOrEmpty()) return false
+        if (str.length == 1) return isBengaliCombiningMark(str)
         val clean = str.filter { it != '\u200C' && it != '\u200D' && it != ' ' && it != '\u00A0' && it != '\u25CC' }
         return clean.isNotEmpty() && clean.all { isBengaliCombiningChar(it) }
     }
@@ -51,22 +57,68 @@ object BengaliMatraUtils {
      * Prepares a string for Canvas / Text rendering with a prepended space or joiner.
      */
     fun getDisplayLabel(rawLabel: String): String {
-        if (isStandaloneBengaliCombiningMark(rawLabel)) {
+        if (isBengaliCombiningMark(rawLabel) || isStandaloneBengaliCombiningMark(rawLabel)) {
             return "\u00A0$rawLabel"
         }
         return rawLabel
     }
 
     /**
-     * Renders a standalone Bengali combining mark (or any label) onto the Canvas at (centerX, baselineY)
-     * completely eliminating the unwanted dotted circle (◌ / U+25CC) and ensuring the Matra remains
-     * properly centered on the keycap.
+     * Renders a standalone Bengali combining mark onto the Canvas at (centerX, baselineY)
+     * using Path Subtraction (Path.Op.DIFFERENCE) so that the Unicode dotted circle (U+25CC / ◌)
+     * forced by HarfBuzz is completely eliminated.
      *
-     * Implementation:
-     * 1. If TextPaint is available, renders via a transparent base (\u25CC) with ForegroundColorSpan,
-     *    which allows HarfBuzz to shape the mark with full glyph geometry without drawing the dotted circle.
-     * 2. In addition, clips/masks out any U+25CC dotted circle bounding area so that even if HarfBuzz
-     *    forces U+25CC onto the Canvas, the dotted circle is never drawn.
+     * 1. Shapes "\u25CC" + mark (combined) and "\u25CC" (baseCircle) as Path outlines at (0, 0).
+     * 2. Subtracts the circle path from the combined path using Path.Op.DIFFERENCE.
+     * 3. Calculates bounds of the resulting mark geometry.
+     * 4. Translates the path so it is centered horizontally at centerX (-bounds.centerX() + centerX)
+     *    and aligned vertically with baselineY.
+     * 5. Sets Paint.Style.FILL and draws the path onto the Canvas.
+     */
+    fun drawStandaloneBengaliMark(
+        canvas: Canvas,
+        mark: String,
+        centerX: Float,
+        baselineY: Float,
+        paint: Paint
+    ) {
+        val baseCircle = "\u25CC"
+        val combined = "$baseCircle$mark"
+        val combinedPath = Path()
+        val circlePath = Path()
+
+        try {
+            paint.getTextPath(combined, 0, combined.length, 0f, 0f, combinedPath)
+            paint.getTextPath(baseCircle, 0, baseCircle.length, 0f, 0f, circlePath)
+
+            combinedPath.op(circlePath, Path.Op.DIFFERENCE)
+
+            val bounds = RectF()
+            combinedPath.computeBounds(bounds, true)
+
+            if (!combinedPath.isEmpty) {
+                val offsetX = -bounds.centerX() + centerX
+                val offsetY = baselineY
+                combinedPath.offset(offsetX, offsetY)
+
+                val originalStyle = paint.style
+                paint.style = Paint.Style.FILL
+                try {
+                    canvas.drawPath(combinedPath, paint)
+                } finally {
+                    paint.style = originalStyle
+                }
+                return
+            }
+        } catch (_: Throwable) {
+            // Safe fallback
+        }
+
+        canvas.drawText(mark, centerX, baselineY, paint)
+    }
+
+    /**
+     * General delegation method for drawing Bengali marks or regular text.
      */
     fun drawCombiningMark(
         canvas: Canvas,
@@ -75,126 +127,10 @@ object BengaliMatraUtils {
         baselineY: Float,
         paint: Paint
     ) {
-        if (!isStandaloneBengaliCombiningMark(text)) {
-            canvas.drawText(text, centerX, baselineY, paint)
-            return
-        }
-
-        // Try transparent base layout method first for perfect HarfBuzz cluster rendering
-        if (paint is TextPaint) {
-            try {
-                drawWithTransparentBase(canvas, text, centerX, baselineY, paint)
-                return
-            } catch (_: Throwable) {
-                // Fall back to space-offset & clip method
-            }
-        }
-
-        drawWithSpaceOffsetAndClip(canvas, text, centerX, baselineY, paint)
-    }
-
-    /**
-     * Method A: Prepend Space (\u0020), offset X by space width, and clip out the dotted circle
-     * bounding box so only the standalone mark is drawn and centered on the key.
-     */
-    fun drawWithSpaceOffsetAndClip(
-        canvas: Canvas,
-        text: String,
-        centerX: Float,
-        baselineY: Float,
-        paint: Paint
-    ) {
-        val originalAlign = paint.textAlign
-        paint.textAlign = Paint.Align.LEFT
-        try {
-            val spaceStr = "\u0020"
-            val spaceWidth = paint.measureText(spaceStr)
-            val combined = "$spaceStr$text"
-            val totalWidth = paint.measureText(combined)
-            val markWidth = (totalWidth - spaceWidth).coerceAtLeast(0f)
-
-            // Center the mark itself at centerX
-            val drawX = centerX - spaceWidth - (markWidth / 2f)
-
-            // Dotted circle box to mask out
-            val circleWidth = paint.measureText("\u25CC").coerceAtLeast(spaceWidth)
-            val fontMetrics = paint.fontMetrics
-            val circleTop = baselineY + fontMetrics.ascent
-            val circleBottom = baselineY + fontMetrics.descent
-
-            val saveCount = canvas.save()
-            try {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    canvas.clipOutRect(drawX, circleTop, drawX + circleWidth, circleBottom)
-                } else {
-                    @Suppress("DEPRECATION")
-                    canvas.clipRect(drawX, circleTop, drawX + circleWidth, circleBottom, Region.Op.DIFFERENCE)
-                }
-                canvas.drawText(combined, drawX, baselineY, paint)
-            } catch (_: Throwable) {
-                canvas.drawText(combined, drawX, baselineY, paint)
-            } finally {
-                canvas.restoreToCount(saveCount)
-            }
-        } finally {
-            paint.textAlign = originalAlign
-        }
-    }
-
-    /**
-     * Method B: Renders using a SpannableString with a transparent base (\u25CC).
-     * HarfBuzz shapes the mark onto \u25CC, but \u25CC has Color.TRANSPARENT,
-     * so 100% of the dotted circle is invisible while the mark retains its exact glyph shape.
-     */
-    fun drawWithTransparentBase(
-        canvas: Canvas,
-        text: String,
-        centerX: Float,
-        baselineY: Float,
-        textPaint: TextPaint
-    ) {
-        val baseChar = "\u25CC"
-        val fullStr = "$baseChar$text"
-        val originalColor = textPaint.color
-        val spannable = SpannableString(fullStr).apply {
-            setSpan(
-                ForegroundColorSpan(Color.TRANSPARENT),
-                0, 1,
-                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
-            setSpan(
-                ForegroundColorSpan(originalColor),
-                1, fullStr.length,
-                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
-        }
-
-        val totalWidth = textPaint.measureText(fullStr)
-        val baseWidth = textPaint.measureText(baseChar)
-        val layoutWidth = (totalWidth.toInt() + 32).coerceAtLeast(1)
-
-        val staticLayout = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            StaticLayout.Builder.obtain(spannable, 0, spannable.length, textPaint, layoutWidth)
-                .setAlignment(Layout.Alignment.ALIGN_NORMAL)
-                .setIncludePad(false)
-                .build()
+        if (isBengaliCombiningMark(text) || isStandaloneBengaliCombiningMark(text)) {
+            drawStandaloneBengaliMark(canvas, text, centerX, baselineY, paint)
         } else {
-            @Suppress("DEPRECATION")
-            StaticLayout(spannable, textPaint, layoutWidth, Layout.Alignment.ALIGN_NORMAL, 1f, 0f, false)
-        }
-
-        val markWidth = (totalWidth - baseWidth).coerceAtLeast(0f)
-
-        // Center the mark itself at centerX
-        val layoutLeft = centerX - (baseWidth / 2f) - (markWidth / 2f)
-        val layoutTop = baselineY + textPaint.fontMetrics.ascent
-
-        val saveCount = canvas.save()
-        try {
-            canvas.translate(layoutLeft, layoutTop)
-            staticLayout.draw(canvas)
-        } finally {
-            canvas.restoreToCount(saveCount)
+            canvas.drawText(text, centerX, baselineY, paint)
         }
     }
 }
