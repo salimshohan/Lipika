@@ -195,6 +195,7 @@ data class LipikaPreferences(
         const val FONT_SOLAIMAN_LIPI = "solaiman_lipi"
         const val FONT_SIYAM_RUPALI = "siyam_rupali"
         const val FONT_NOTO_BENGALI = "noto_sans_bengali"
+        const val FONT_NOTO_SANS_BENGALI = "noto_sans_bengali"
         const val FONT_HIND_SILIGURI = "hind_siliguri"
         const val FONT_APONA_LOHIT = "apona_lohit"
 

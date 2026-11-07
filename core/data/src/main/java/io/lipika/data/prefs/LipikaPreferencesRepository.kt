@@ -398,6 +398,10 @@ class LipikaPreferencesRepository private constructor(private val context: Conte
         context.lipikaDataStore.edit { it[PreferencesKeys.VIBRATION_DURATION_MS] = durationMs.coerceIn(5, 100) }
     }
 
+    suspend fun updateVibrationDurationMs(durationMs: Int) {
+        updateVibrationDuration(durationMs)
+    }
+
     suspend fun updateSoundOnKeypress(enabled: Boolean) {
         context.lipikaDataStore.edit { it[PreferencesKeys.SOUND_ON_KEYPRESS] = enabled }
     }
