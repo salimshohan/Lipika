@@ -1,5 +1,8 @@
 package io.lipika.feature.ime.ui
 
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.awaitEachGesture
@@ -45,6 +48,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.findRootCoordinates
@@ -137,6 +141,14 @@ fun KeycapView(
     val fontScaleFactor = scaleFactor.coerceAtMost(1.0f)
     val iconScaleFactor = scaleFactor.coerceAtMost(1.0f)
     var isPressed by remember { mutableStateOf(false) }
+    val pressScale by animateFloatAsState(
+        targetValue = if (isPressed) 0.94f else 1.0f,
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessMedium
+        ),
+        label = "keycapPressScale"
+    )
     var isMoreKeysActive by remember { mutableStateOf(false) }
     var keyCoordinates by remember { mutableStateOf<LayoutCoordinates?>(null) }
 
@@ -489,6 +501,10 @@ fun KeycapView(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(horizontal = horizontalPadding, vertical = verticalPadding)
+                .graphicsLayer {
+                    scaleX = pressScale
+                    scaleY = pressScale
+                }
                 .then(
                     if (keyVisual.shadowElevationDp > 0.dp && keyVisual.shadowColor.alpha > 0.01f) {
                         Modifier.shadow(

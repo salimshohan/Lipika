@@ -9,7 +9,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.runtime.LaunchedEffect
+import kotlinx.coroutines.delay
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -209,6 +218,15 @@ fun EmojiPanelView(
         ContextThemeWrapper(context, themeResId)
     }
 
+    var previewEmoji by remember { mutableStateOf<String?>(null) }
+
+    LaunchedEffect(previewEmoji) {
+        if (previewEmoji != null) {
+            delay(700L)
+            previewEmoji = null
+        }
+    }
+
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -236,6 +254,7 @@ fun EmojiPanelView(
                     EmojiPickerView(themedContext).apply {
                         emojiGridColumns = calculatedColumns
                         setOnEmojiPickedListener { item ->
+                            previewEmoji = item.emoji
                             onEmojiSelected(item.emoji)
                         }
 
@@ -261,6 +280,30 @@ fun EmojiPanelView(
                     .fillMaxWidth()
                     .fillMaxHeight()
             )
+
+            // iOS-Style Floating Large Emoji Preview Bubble
+            val currentPreview = previewEmoji
+            if (currentPreview != null) {
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .shadow(16.dp, RoundedCornerShape(26.dp), spotColor = Color.Black.copy(alpha = 0.35f))
+                        .clip(RoundedCornerShape(26.dp))
+                        .background(if (isDark) Color(0xFF1E293B) else Color.White)
+                        .border(
+                            1.5.dp,
+                            if (isDark) Color(0x33FFFFFF) else Color(0x1F000000),
+                            RoundedCornerShape(26.dp)
+                        )
+                        .padding(horizontal = 26.dp, vertical = 18.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = currentPreview,
+                        fontSize = 54.sp
+                    )
+                }
+            }
         }
 
         // 2. Bottom Action Bar: [ABC], [Spacebar], [Delete] following keyboard key colors and shapes

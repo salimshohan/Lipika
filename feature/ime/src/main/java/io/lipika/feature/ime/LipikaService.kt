@@ -69,6 +69,8 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.isActive
 
 class LipikaService : InputMethodService() {
 
@@ -87,6 +89,7 @@ class LipikaService : InputMethodService() {
     private var isGestureAlternativeActive: Boolean = false
     private var lastSpaceTapTime: Long = 0L
     private var lastAutoSpacePunctuationTime: Long = 0L
+    private var suggestionJob: kotlinx.coroutines.Job? = null
 
     private fun isM17nLayout(): Boolean {
         return activeLayout.processor == "m17n" ||
@@ -2619,6 +2622,7 @@ class LipikaService : InputMethodService() {
     }
 
     private fun updateSuggestions() {
+        suggestionJob?.cancel()
         if (!preferencesState.suggestionsEnabled || !NativeEngine.isAvailable() || isSymbolsMode || PredefinedLayouts.isNumberLayout(activeLayout.id)) {
             activeSuggestions = emptyList()
             return
@@ -2633,202 +2637,231 @@ class LipikaService : InputMethodService() {
             return
         }
 
-        if (isTransliterationLayout()) {
-            val translitMgr = getTransliterationManager()
-            if (translitMgr.isComposing) {
-                val raw = translitMgr.currentRawInput
-                val translit = translitMgr.currentTransliteration
-                val primaryWord = if (translit.isNotEmpty() && !containsLatinText(translit)) {
-                    translit
-                } else ""
+        val currentLayoutId = activeLayout.id
+        val isTranslit = isTransliterationLayout()
+        val isEnglish = isEnglishLayout()
+        val isComposingTranslit = isTranslit && getTransliterationManager().isComposing
+        val rawInput = if (isComposingTranslit) getTransliterationManager().currentRawInput else ""
+        val translitInput = if (isComposingTranslit) getTransliterationManager().currentTransliteration else ""
+        val compBufStr = composingBuffer.toString()
+        val hasDoubleSpacing = hasDoubleOrGreaterSpacing()
+        val precedingWord = if (!isComposingTranslit && (isTranslit || !hasDoubleSpacing)) getPrecedingWord() else ""
+        val probhatPrefix = if (currentLayoutId == "bn_probhat") getBengaliWordBeforeCursor() else ""
 
-                val list = mutableListOf<SuggestionCandidate>()
+        suggestionJob = serviceScope.launch(Dispatchers.Default) {
+            val list = mutableListOf<SuggestionCandidate>()
+            if (isTranslit) {
+                if (isComposingTranslit) {
+                    val raw = rawInput
+                    val translit = translitInput
+                    val primaryWord = if (translit.isNotEmpty() && !containsLatinText(translit)) {
+                        translit
+                    } else ""
 
-                // 1. Raw typed English word as first candidate if toggle is enabled
-                if (preferencesState.bengaliShowRawInputCandidate && raw.isNotBlank()) {
-                    list.add(SuggestionCandidate(text = raw, isPrimary = false, rawInput = raw))
-                }
-
-                // 2. Primary transliterated word (strictly non-Latin/Bengali)
-                if (primaryWord.isNotEmpty()) {
-                    list.add(SuggestionCandidate(text = primaryWord, isPrimary = true, rawInput = raw))
-                }
-
-                // 2b. If phonetic auto-correct modified the word, offer literal uncorrected transliteration as alternative candidate
-                if (preferencesState.phoneticAutoCorrect && (activeLayout.id == LipikaPreferences.LAYOUT_BN_BORNO || activeLayout.id == LipikaPreferences.LAYOUT_BN_AVRO)) {
-                    val literalTranslit = if (NativeEngine.isAvailable()) {
-                        NativeEngine.transliterate(activeLayout.id, raw)
-                    } else raw
-                    if (literalTranslit.isNotEmpty() && literalTranslit != primaryWord && !containsLatinText(literalTranslit)) {
-                        list.add(SuggestionCandidate(text = literalTranslit, isPrimary = false, rawInput = raw))
+                    // 1. Raw typed English word as first candidate if toggle is enabled
+                    if (preferencesState.bengaliShowRawInputCandidate && raw.isNotBlank()) {
+                        list.add(SuggestionCandidate(text = raw, isPrimary = false, rawInput = raw))
                     }
-                }
 
-                val phoneticAlts = if (raw.isNotBlank() && activeLayout.id == LipikaPreferences.LAYOUT_BN_BORNO) {
-                    NativeEngine.queryTransliterationAlternatives(activeLayout.id, raw)
-                        .filter { it.isNotEmpty() && it != primaryWord && !containsLatinText(it) }
-                } else emptyList()
-
-                // 3. User learned words matching primary transliteration prefix or phonetic alternatives
-                // Prioritize personalized learned vocabulary immediately after primary transliteration (like in English)
-                if (preferencesState.learnedWordsEnabled) {
-                    val learnedCandidates = mutableListOf<String>()
-
-                    // Match completions for primary transliteration prefix (e.g. "আম" -> "আমাদের", "আমার")
+                    // 2. Primary transliterated word (strictly non-Latin/Bengali)
                     if (primaryWord.isNotEmpty()) {
-                        learnedCandidates.addAll(
-                            userDictionaryRepo.getCompletions(primaryWord, 5) { !containsLatinText(it) }
-                        )
+                        list.add(SuggestionCandidate(text = primaryWord, isPrimary = true, rawInput = raw))
                     }
 
-                    // Check exact learned matches and prefix completions for phonetic alternatives
-                    for (alt in phoneticAlts) {
-                        if (userDictionaryRepo.isLearned(alt)) {
-                            learnedCandidates.add(alt)
-                        }
-                        learnedCandidates.addAll(
-                            userDictionaryRepo.getCompletions(alt, 2) { !containsLatinText(it) }
-                        )
-                    }
-
-                    for (w in learnedCandidates.distinct()) {
-                        if (w != primaryWord && list.size < 12 && list.none { it.text == w }) {
-                            list.add(SuggestionCandidate(text = w, isPrimary = false))
+                    // 2b. If phonetic auto-correct modified the word, offer literal uncorrected transliteration as alternative candidate
+                    if (preferencesState.phoneticAutoCorrect && (currentLayoutId == LipikaPreferences.LAYOUT_BN_BORNO || currentLayoutId == LipikaPreferences.LAYOUT_BN_AVRO)) {
+                        val literalTranslit = if (NativeEngine.isAvailable()) {
+                            NativeEngine.transliterate(currentLayoutId, raw)
+                        } else raw
+                        if (literalTranslit.isNotEmpty() && literalTranslit != primaryWord && !containsLatinText(literalTranslit)) {
+                            list.add(SuggestionCandidate(text = literalTranslit, isPrimary = false, rawInput = raw))
                         }
                     }
-                }
 
-                // 4. Phonetic transliteration alternatives for raw Latin input
-                val hasComplexKarLower = raw.contains("ou", ignoreCase = true) ||
-                        raw.contains("oi", ignoreCase = true) ||
-                        (raw.contains("ri") && !raw.contains("rri"))
-                for ((idx, alt) in phoneticAlts.withIndex()) {
-                    if (list.size < 12 && list.none { it.text == alt }) {
-                        val isLearned = userDictionaryRepo.isLearned(alt)
-                        val isDirectComplexKarAlt = hasComplexKarLower && idx == 0
-                        val isDictWord = isLearned || isDirectComplexKarAlt || NativeEngine.isDictionaryWord(alt, "bn")
-                        if (isDictWord) {
-                            list.add(SuggestionCandidate(text = alt, isPrimary = false))
-                        }
-                    }
-                }
-
-                // 5. Dictionary completions from bn.dict matching primary transliteration prefix
-                if (primaryWord.isNotEmpty() && list.size < 12) {
-                    val dictMatches = if (preferencesState.bengaliSmartPhonetic && activeLayout.id == LipikaPreferences.LAYOUT_BN_BORNO) {
-                        NativeEngine.querySuggestions(primaryWord, activeLayout.id, 12)
-                    } else {
-                        NativeEngine.querySuggestions(primaryWord, "bn_exact", 12)
-                    }.filter { it != primaryWord && !containsLatinText(it) }
-
-                    for (match in dictMatches) {
-                        if (list.size < 12 && list.none { it.text == match }) {
-                            list.add(SuggestionCandidate(text = match, isPrimary = false))
-                        }
-                    }
-                }
-
-                activeSuggestions = filterAndMarkCandidates(list.take(12), primaryWord.ifEmpty { raw })
-            } else {
-                if (!preferencesState.nextWordPrediction || hasDoubleOrGreaterSpacing()) {
-                    activeSuggestions = emptyList()
-                    return
-                }
-                val prev = getPrecedingWord()
-                val learnedNext = if (preferencesState.learnedWordsEnabled && prev.isNotEmpty()) {
-                    userDictionaryRepo.getNextWords(prev, 5) { !containsLatinText(it) }
-                } else emptyList()
-                val predictions = if (prev.isNotEmpty()) {
-                    NativeEngine.queryNextWords(prev, activeLayout.id, 10).filter { !containsLatinText(it) }
-                } else emptyList()
-                val merged = (learnedNext + predictions).distinct().take(12)
-                activeSuggestions = filterAndMarkCandidates(merged.mapIndexed { idx, word ->
-                    SuggestionCandidate(text = word, isPrimary = idx == 0)
-                }, prev)
-            }
-            return
-        }
-
-        val layoutMode = if (isEnglishLayout()) "en_qwerty" else activeLayout.id
-        when (layoutMode) {
-            "bn_probhat", "bn_national", "bn_easy" -> {
-                val prefix = if (activeLayout.id == "bn_probhat") {
-                    getBengaliWordBeforeCursor()
-                } else {
-                    BengaliBstiEngine.cleanPending(composingBuffer.toString())
-                }
-                if (prefix.isNotEmpty()) {
-                    val learned = if (preferencesState.learnedWordsEnabled) {
-                        userDictionaryRepo.getCompletions(prefix, 4) { !containsLatinText(it) }
+                    val phoneticAlts = if (raw.isNotBlank() && currentLayoutId == LipikaPreferences.LAYOUT_BN_BORNO) {
+                        NativeEngine.queryTransliterationAlternatives(currentLayoutId, raw)
+                            .filter { it.isNotEmpty() && it != primaryWord && !containsLatinText(it) }
                     } else emptyList()
-                    val matches = NativeEngine.querySuggestions(prefix, activeLayout.id, 12)
-                        .filter { !containsLatinText(it) }
-                    val merged = (learned + matches).distinct().take(12)
-                    activeSuggestions = filterAndMarkCandidates(if (merged.isNotEmpty()) {
-                        merged.mapIndexed { i, w ->
-                            SuggestionCandidate(text = w, isPrimary = i == 0)
+
+                    // 3. User learned words matching primary transliteration prefix or phonetic alternatives
+                    if (preferencesState.learnedWordsEnabled) {
+                        val learnedCandidates = mutableListOf<String>()
+
+                        if (primaryWord.isNotEmpty()) {
+                            learnedCandidates.addAll(
+                                userDictionaryRepo.getCompletions(primaryWord, 5) { !containsLatinText(it) }
+                            )
                         }
-                    } else {
-                        if (!containsLatinText(prefix)) {
-                            listOf(SuggestionCandidate(text = prefix, isPrimary = true))
-                        } else emptyList()
-                    }, prefix)
-                } else {
-                    if (!preferencesState.nextWordPrediction || hasDoubleOrGreaterSpacing()) {
-                        activeSuggestions = emptyList()
-                        return
+
+                        for (alt in phoneticAlts) {
+                            if (userDictionaryRepo.isLearned(alt)) {
+                                learnedCandidates.add(alt)
+                            }
+                            learnedCandidates.addAll(
+                                userDictionaryRepo.getCompletions(alt, 2) { !containsLatinText(it) }
+                            )
+                        }
+
+                        for (w in learnedCandidates.distinct()) {
+                            if (w != primaryWord && list.size < 12 && list.none { it.text == w }) {
+                                list.add(SuggestionCandidate(text = w, isPrimary = false))
+                            }
+                        }
                     }
-                    val prev = getPrecedingWord()
+
+                    // 4. Phonetic transliteration alternatives for raw Latin input
+                    val hasComplexKarLower = raw.contains("ou", ignoreCase = true) ||
+                            raw.contains("oi", ignoreCase = true) ||
+                            (raw.contains("ri") && !raw.contains("rri"))
+                    for ((idx, alt) in phoneticAlts.withIndex()) {
+                        if (list.size < 12 && list.none { it.text == alt }) {
+                            val isLearned = userDictionaryRepo.isLearned(alt)
+                            val isDirectComplexKarAlt = hasComplexKarLower && idx == 0
+                            val isDictWord = isLearned || isDirectComplexKarAlt || NativeEngine.isDictionaryWord(alt, "bn")
+                            if (isDictWord) {
+                                list.add(SuggestionCandidate(text = alt, isPrimary = false))
+                            }
+                        }
+                    }
+
+                    // 5. Dictionary completions from bn.dict matching primary transliteration prefix
+                    if (primaryWord.isNotEmpty() && list.size < 12) {
+                        val dictMatches = if (preferencesState.bengaliSmartPhonetic && currentLayoutId == LipikaPreferences.LAYOUT_BN_BORNO) {
+                            NativeEngine.querySuggestions(primaryWord, currentLayoutId, 12)
+                        } else {
+                            NativeEngine.querySuggestions(primaryWord, "bn_exact", 12)
+                        }.filter { it != primaryWord && !containsLatinText(it) }
+
+                        for (match in dictMatches) {
+                            if (list.size < 12 && list.none { it.text == match }) {
+                                list.add(SuggestionCandidate(text = match, isPrimary = false))
+                            }
+                        }
+                    }
+
+                    val candidates = filterAndMarkCandidates(list.take(12), primaryWord.ifEmpty { raw })
+                    withContext(Dispatchers.Main) {
+                        if (isActive) activeSuggestions = candidates
+                    }
+                    return@launch
+                } else {
+                    if (!preferencesState.nextWordPrediction || hasDoubleSpacing) {
+                        withContext(Dispatchers.Main) { if (isActive) activeSuggestions = emptyList() }
+                        return@launch
+                    }
+                    val prev = precedingWord
                     val learnedNext = if (preferencesState.learnedWordsEnabled && prev.isNotEmpty()) {
                         userDictionaryRepo.getNextWords(prev, 5) { !containsLatinText(it) }
                     } else emptyList()
                     val predictions = if (prev.isNotEmpty()) {
-                        NativeEngine.queryNextWords(prev, activeLayout.id, 10).filter { !containsLatinText(it) }
+                        NativeEngine.queryNextWords(prev, currentLayoutId, 10).filter { !containsLatinText(it) }
                     } else emptyList()
                     val merged = (learnedNext + predictions).distinct().take(12)
-                activeSuggestions = filterAndMarkCandidates(merged.mapIndexed { idx, word ->
+                    val candidates = filterAndMarkCandidates(merged.mapIndexed { idx, word ->
                         SuggestionCandidate(text = word, isPrimary = idx == 0)
-                }, prev)
+                    }, prev)
+                    withContext(Dispatchers.Main) {
+                        if (isActive) activeSuggestions = candidates
+                    }
+                    return@launch
                 }
             }
-            "en_qwerty" -> {
-                val prefix = composingBuffer.toString()
-                if (prefix.isNotEmpty()) {
-                    val learned = if (preferencesState.learnedWordsEnabled) {
-                        userDictionaryRepo.getCompletions(prefix, 4) { !containsBengaliText(it) }
-                    } else emptyList()
-                    val matches = NativeEngine.querySuggestions(prefix, activeLayout.id, 12)
-                        .filter { !containsBengaliText(it) }
-                    val merged = (learned + matches).distinct().take(12)
-                    activeSuggestions = filterAndMarkCandidates(if (merged.isNotEmpty()) {
-                        merged.mapIndexed { i, w ->
-                            SuggestionCandidate(text = w, isPrimary = i == 0)
+
+            val layoutMode = if (isEnglish) "en_qwerty" else currentLayoutId
+            when (layoutMode) {
+                "bn_probhat", "bn_national", "bn_easy" -> {
+                    val prefix = if (currentLayoutId == "bn_probhat") {
+                        probhatPrefix
+                    } else {
+                        BengaliBstiEngine.cleanPending(compBufStr)
+                    }
+                    if (prefix.isNotEmpty()) {
+                        val learned = if (preferencesState.learnedWordsEnabled) {
+                            userDictionaryRepo.getCompletions(prefix, 4) { !containsLatinText(it) }
+                        } else emptyList()
+                        val matches = NativeEngine.querySuggestions(prefix, currentLayoutId, 12)
+                            .filter { !containsLatinText(it) }
+                        val merged = (learned + matches).distinct().take(12)
+                        val candidates = filterAndMarkCandidates(if (merged.isNotEmpty()) {
+                            merged.mapIndexed { i, w ->
+                                SuggestionCandidate(text = w, isPrimary = i == 0)
+                            }
+                        } else {
+                            if (!containsLatinText(prefix)) {
+                                listOf(SuggestionCandidate(text = prefix, isPrimary = true))
+                            } else emptyList()
+                        }, prefix)
+                        withContext(Dispatchers.Main) {
+                            if (isActive) activeSuggestions = candidates
                         }
                     } else {
-                        if (!containsBengaliText(prefix)) {
-                            listOf(SuggestionCandidate(text = prefix, isPrimary = true))
+                        if (!preferencesState.nextWordPrediction || hasDoubleSpacing) {
+                            withContext(Dispatchers.Main) { if (isActive) activeSuggestions = emptyList() }
+                            return@launch
+                        }
+                        val prev = precedingWord
+                        val learnedNext = if (preferencesState.learnedWordsEnabled && prev.isNotEmpty()) {
+                            userDictionaryRepo.getNextWords(prev, 5) { !containsLatinText(it) }
                         } else emptyList()
-                    }, prefix)
-                } else {
-                    if (!preferencesState.nextWordPrediction || hasDoubleOrGreaterSpacing()) {
-                        activeSuggestions = emptyList()
-                        return
+                        val predictions = if (prev.isNotEmpty()) {
+                            NativeEngine.queryNextWords(prev, currentLayoutId, 10).filter { !containsLatinText(it) }
+                        } else emptyList()
+                        val merged = (learnedNext + predictions).distinct().take(12)
+                        val candidates = filterAndMarkCandidates(merged.mapIndexed { idx, word ->
+                            SuggestionCandidate(text = word, isPrimary = idx == 0)
+                        }, prev)
+                        withContext(Dispatchers.Main) {
+                            if (isActive) activeSuggestions = candidates
+                        }
                     }
-                    val prev = getPrecedingWord()
-                    val learnedNext = if (preferencesState.learnedWordsEnabled && prev.isNotEmpty()) {
-                        userDictionaryRepo.getNextWords(prev, 5) { !containsBengaliText(it) }
-                    } else emptyList()
-                    val predictions = if (prev.isNotEmpty()) {
-                        NativeEngine.queryNextWords(prev, activeLayout.id, 10).filter { !containsBengaliText(it) }
-                    } else emptyList()
-                    val merged = (learnedNext + predictions).distinct().take(12)
-                activeSuggestions = filterAndMarkCandidates(merged.mapIndexed { idx, word ->
-                        SuggestionCandidate(text = word, isPrimary = idx == 0)
-                }, prev)
                 }
-            }
-            else -> {
-                activeSuggestions = emptyList()
+                "en_qwerty" -> {
+                    val prefix = compBufStr
+                    if (prefix.isNotEmpty()) {
+                        val learned = if (preferencesState.learnedWordsEnabled) {
+                            userDictionaryRepo.getCompletions(prefix, 4) { !containsBengaliText(it) }
+                        } else emptyList()
+                        val matches = NativeEngine.querySuggestions(prefix, currentLayoutId, 12)
+                            .filter { !containsBengaliText(it) }
+                        val merged = (learned + matches).distinct().take(12)
+                        val candidates = filterAndMarkCandidates(if (merged.isNotEmpty()) {
+                            merged.mapIndexed { i, w ->
+                                SuggestionCandidate(text = w, isPrimary = i == 0)
+                            }
+                        } else {
+                            if (!containsBengaliText(prefix)) {
+                                listOf(SuggestionCandidate(text = prefix, isPrimary = true))
+                            } else emptyList()
+                        }, prefix)
+                        withContext(Dispatchers.Main) {
+                            if (isActive) activeSuggestions = candidates
+                        }
+                    } else {
+                        if (!preferencesState.nextWordPrediction || hasDoubleSpacing) {
+                            withContext(Dispatchers.Main) { if (isActive) activeSuggestions = emptyList() }
+                            return@launch
+                        }
+                        val prev = precedingWord
+                        val learnedNext = if (preferencesState.learnedWordsEnabled && prev.isNotEmpty()) {
+                            userDictionaryRepo.getNextWords(prev, 5) { !containsBengaliText(it) }
+                        } else emptyList()
+                        val predictions = if (prev.isNotEmpty()) {
+                            NativeEngine.queryNextWords(prev, currentLayoutId, 10).filter { !containsBengaliText(it) }
+                        } else emptyList()
+                        val merged = (learnedNext + predictions).distinct().take(12)
+                        val candidates = filterAndMarkCandidates(merged.mapIndexed { idx, word ->
+                            SuggestionCandidate(text = word, isPrimary = idx == 0)
+                        }, prev)
+                        withContext(Dispatchers.Main) {
+                            if (isActive) activeSuggestions = candidates
+                        }
+                    }
+                }
+                else -> {
+                    withContext(Dispatchers.Main) {
+                        if (isActive) activeSuggestions = emptyList()
+                    }
+                }
             }
         }
     }

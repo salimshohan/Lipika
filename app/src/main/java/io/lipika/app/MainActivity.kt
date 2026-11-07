@@ -77,6 +77,10 @@ import io.lipika.app.ui.settings.LocalSettingsColors
 import io.lipika.app.ui.settings.PreferencesScreen
 import io.lipika.app.ui.settings.SettingsMainScreen
 import io.lipika.app.ui.settings.SettingsScreen
+import io.lipika.app.ui.settings.LipikaStrings
+import io.lipika.app.ui.settings.LipikaStringsBn
+import io.lipika.app.ui.settings.LipikaStringsEn
+import io.lipika.app.ui.settings.LocalLipikaStrings
 import io.lipika.app.ui.settings.SettingsUnifiedTopBar
 import io.lipika.app.ui.settings.TypingStatisticsScreen
 import io.lipika.app.ui.settings.VoiceTypingScreen
@@ -102,10 +106,6 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
-        WindowCompat.getInsetsController(window, window.decorView).apply {
-            hide(WindowInsetsCompat.Type.statusBars())
-            systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-        }
         lifecycleScope.launch(Dispatchers.IO) {
             LayoutRepository.getInstance(applicationContext).preload()
         }
@@ -207,8 +207,7 @@ class MainActivity : ComponentActivity() {
                     val window = (view.context as? android.app.Activity)?.window
                     if (window != null) {
                         val insetsController = WindowCompat.getInsetsController(window, view)
-                        insetsController.hide(WindowInsetsCompat.Type.statusBars())
-                        insetsController.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+                        insetsController.isAppearanceLightStatusBars = !isDark
                         insetsController.isAppearanceLightNavigationBars = !isDark
                     }
                 }
@@ -238,8 +237,13 @@ class MainActivity : ComponentActivity() {
                 )
             }
 
+            val currentStrings: LipikaStrings = remember(preferences.appLanguage) {
+                if (preferences.appLanguage == LipikaPreferences.APP_LANG_BN) LipikaStringsBn else LipikaStringsEn
+            }
+
             CompositionLocalProvider(
                 LocalSettingsColors provides settingsColors,
+                LocalLipikaStrings provides currentStrings,
                 LocalTextStyle provides TextStyle(fontFamily = currentFontFamily)
             ) {
                 MaterialTheme(
@@ -446,8 +450,7 @@ fun LipikaSettingsApp(
                 window.statusBarColor = android.graphics.Color.TRANSPARENT
                 window.navigationBarColor = android.graphics.Color.TRANSPARENT
                 val insetsController = WindowCompat.getInsetsController(window, view)
-                insetsController.hide(WindowInsetsCompat.Type.statusBars())
-                insetsController.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+                insetsController.isAppearanceLightStatusBars = !isDark
                 insetsController.isAppearanceLightNavigationBars = !isDark
             }
         }
@@ -558,6 +561,7 @@ fun LipikaSettingsApp(
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .statusBarsPadding()
             .navigationBarsPadding()
     ) {
         // Persistent Top Bar that stays anchored, only transitioning title/back-icon smoothly

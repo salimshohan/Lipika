@@ -62,6 +62,8 @@ fun SoundVibrationScreen(
     onBack: () -> Unit = {}
 ) {
     val colors = LocalSettingsColors.current
+    val strings = LocalLipikaStrings.current
+    val isBn = preferences.appLanguage == LipikaPreferences.APP_LANG_BN
     val scrollState = rememberScrollState()
 
     Column(
@@ -108,13 +110,13 @@ fun SoundVibrationScreen(
                     Spacer(modifier = Modifier.width(12.dp))
                     Column(modifier = Modifier.weight(1f)) {
                         Text(
-                            text = "Sound on Keypress",
+                            text = strings.soundOnKeypressTitle,
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Bold,
                             color = colors.textPrimary
                         )
                         Text(
-                            text = "Play click sound on key tap",
+                            text = strings.soundOnKeypressSubtitle,
                             fontSize = 12.sp,
                             color = colors.textSecondary
                         )
@@ -146,7 +148,7 @@ fun SoundVibrationScreen(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(
-                                text = "Sound Volume",
+                                text = strings.soundVolumeTitle,
                                 fontSize = 13.5.sp,
                                 fontWeight = FontWeight.Medium,
                                 color = colors.textPrimary
@@ -209,13 +211,13 @@ fun SoundVibrationScreen(
                     Spacer(modifier = Modifier.width(12.dp))
                     Column(modifier = Modifier.weight(1f)) {
                         Text(
-                            text = "Vibration on Keypress",
+                            text = strings.vibrationOnKeypressTitle,
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Bold,
                             color = colors.textPrimary
                         )
                         Text(
-                            text = "Tactile touch feedback when tapping keys",
+                            text = strings.vibrationOnKeypressSubtitle,
                             fontSize = 12.sp,
                             color = colors.textSecondary
                         )
@@ -242,7 +244,7 @@ fun SoundVibrationScreen(
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
                         Text(
-                            text = "Feedback Mode",
+                            text = if (isBn) "ফিডব্যাক মোড" else "Feedback Mode",
                             fontSize = 13.5.sp,
                             fontWeight = FontWeight.SemiBold,
                             color = colors.textPrimary
@@ -303,13 +305,13 @@ fun SoundVibrationScreen(
                                         }
                                     }
                                     Text(
-                                        text = "Haptic Click",
+                                        text = if (isBn) "হ্যাপটিক ক্লিক" else "Haptic Click",
                                         fontSize = 13.5.sp,
                                         fontWeight = FontWeight.Bold,
                                         color = if (isHaptic) colors.accent else colors.textPrimary
                                     )
                                     Text(
-                                        text = "Crisp system tap",
+                                        text = if (isBn) "সিস্টেম হ্যাপটিক ভাইব" else "Crisp system tap",
                                         fontSize = 11.sp,
                                         color = colors.textSecondary
                                     )
@@ -364,13 +366,13 @@ fun SoundVibrationScreen(
                                         }
                                     }
                                     Text(
-                                        text = "Custom Vibe",
+                                        text = if (isBn) "কাস্টম ভাইব" else "Custom Vibe",
                                         fontSize = 13.5.sp,
                                         fontWeight = FontWeight.Bold,
                                         color = if (!isHaptic) colors.accent else colors.textPrimary
                                     )
                                     Text(
-                                        text = "Duration & strength",
+                                        text = if (isBn) "সময় ও তীব্রতা নির্ধারণ" else "Duration & strength",
                                         fontSize = 11.sp,
                                         color = colors.textSecondary
                                     )
@@ -388,7 +390,7 @@ fun SoundVibrationScreen(
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Text(
-                                    text = "Vibration Strength",
+                                    text = strings.vibrationIntensityTitle,
                                     fontSize = 13.sp,
                                     fontWeight = FontWeight.Medium,
                                     color = colors.textPrimary
@@ -417,7 +419,7 @@ fun SoundVibrationScreen(
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Text(
-                                    text = "Vibration Duration",
+                                    text = if (isBn) "কম্পনের স্থায়িত্ব" else "Vibration Duration",
                                     fontSize = 13.sp,
                                     fontWeight = FontWeight.Medium,
                                     color = colors.textPrimary

@@ -89,6 +89,8 @@ fun AboutScreen(
     val scrollState = rememberScrollState()
     val context = LocalContext.current
     val colors = LocalSettingsColors.current
+    val strings = LocalLipikaStrings.current
+    val isBn = strings === LipikaStringsBn
     val versionName = androidx.compose.runtime.remember {
         try {
             context.packageManager.getPackageInfo(context.packageName, 0).versionName ?: "0.2.6"
@@ -128,7 +130,7 @@ fun AboutScreen(
                 Spacer(modifier = Modifier.height(14.dp))
 
                 Text(
-                    text = "Lipika Keyboard",
+                    text = strings.appNameHeader,
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold,
                     color = colors.textPrimary
@@ -142,7 +144,7 @@ fun AboutScreen(
                         .padding(horizontal = 12.dp, vertical = 4.dp)
                 ) {
                     Text(
-                        text = "Version $versionName",
+                        text = if (isBn) "ভার্সন $versionName" else "Version $versionName",
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Bold,
                         color = colors.accent
@@ -152,7 +154,7 @@ fun AboutScreen(
                 Spacer(modifier = Modifier.height(12.dp))
 
                 Text(
-                    text = "A next-generation, high-performance multilingual keyboard engineered with a hybrid Rust-Kotlin engine for ultra-fast Bengali, English, and Arabic typing.",
+                    text = if (isBn) "লিপিকা কীবোর্ড একটি উচ্চ ক্ষমতাসম্পন্ন বহুভাষিক বাংলা কীবোর্ড, যা বাংলা, ইংরেজি ও আরবি ভাষার দ্রুততম টাইপিং নিশ্চিত করে।" else "A next-generation, high-performance multilingual keyboard engineered with a hybrid Rust-Kotlin engine for ultra-fast Bengali, English, and Arabic typing.",
                     fontSize = 13.5.sp,
                     color = colors.textSecondary,
                     textAlign = TextAlign.Center,
@@ -164,48 +166,48 @@ fun AboutScreen(
         Spacer(modifier = Modifier.height(20.dp))
 
         // 2. Architectural Highlights & Features
-        SettingsCategoryHeader(title = "CORE ARCHITECTURE & FEATURES")
+        SettingsCategoryHeader(title = if (isBn) "মূল বৈশিষ্ট্যসমূহ" else "CORE ARCHITECTURE & FEATURES")
 
         SettingsGroup {
             AboutFeatureItem(
                 icon = Icons.Outlined.Speed,
-                title = "Hybrid Rust Phonetic Engine",
-                description = "Zero-allocation native Rust core delivering microsecond-latency candidate prediction and transliteration for Avro & Provat.",
+                title = if (isBn) "হাইব্রিড ফোনেটিক ইঞ্জিন" else "Hybrid Rust Phonetic Engine",
+                description = if (isBn) "অভ্র ও প্রভাত লেআউটের জন্য অত্যন্ত দ্রুত ক্যান্ডিডেট প্রেডিকশন ও ট্রান্সলিটারেশন।" else "Zero-allocation native Rust core delivering microsecond-latency candidate prediction and transliteration for Avro & Provat.",
                 position = GroupPosition.TOP
             )
 
             AboutFeatureItem(
                 icon = Icons.Outlined.Lock,
-                title = "100% Offline & Private",
-                description = "Zero internet permissions requested. Keystrokes, clipboard items, and learned vocabulary never leave your device storage.",
+                title = if (isBn) "সম্পূর্ণ অফলাইন ও নিরাপদ" else "100% Offline & Private",
+                description = if (isBn) "কোনো ইন্টারনেট অনুমতির প্রয়োজন নেই। আপনার টাইপিং ও ডেটা সম্পূর্ণ ডিভাইসেই সুরক্ষিত থাকে।" else "Zero internet permissions requested. Keystrokes, clipboard items, and learned vocabulary never leave your device storage.",
                 position = GroupPosition.MIDDLE
             )
 
             AboutFeatureItem(
                 icon = Icons.Outlined.Translate,
-                title = "Comprehensive Multilingual Layouts",
-                description = "Built-in English (QWERTY), Bengali Provat (প্রভাত), Bengali Avro (অভ্র), Bengali National (জাতীয় BSTI), and Arabic (العربية).",
+                title = if (isBn) "সমৃদ্ধ বহুভাষিক লেআউট" else "Comprehensive Multilingual Layouts",
+                description = if (isBn) "ইংরেজি, বাংলা প্রভাত, অভ্র ফোনেটিক, জাতীয় (BSTI) এবং আরবি লেআউট সমর্থিত।" else "Built-in English (QWERTY), Bengali Provat (প্রভাত), Bengali Avro (অভ্র), Bengali National (জাতীয় BSTI), and Arabic (العربية).",
                 position = GroupPosition.MIDDLE
             )
 
             AboutFeatureItem(
                 icon = Icons.Outlined.FontDownload,
-                title = "Universal Font Studio",
-                description = "Custom typography renderer supporting built-in and external TTF/OTF fonts with full preview across all Bengali and Latin scripts.",
+                title = if (isBn) "কাস্টম ফন্ট স্টুডিও" else "Universal Font Studio",
+                description = if (isBn) "যেকোনো বাংলা ও ইংরেজি কাস্টম ফন্ট নির্বাচন ও ব্যবহারের সুবিধা।" else "Custom typography renderer supporting built-in and external TTF/OTF fonts with full preview across all Bengali and Latin scripts.",
                 position = GroupPosition.MIDDLE
             )
 
             AboutFeatureItem(
                 icon = Icons.Outlined.TouchApp,
-                title = "Spacebar Cursor Trackpad & Gestures",
-                description = "Fluid horizontal thumb navigation on spacebar and selective word/character swipe delete from backspace.",
+                title = if (isBn) "কার্সর ট্র্যাকপ্যাড ও জেসচার" else "Spacebar Cursor Trackpad & Gestures",
+                description = if (isBn) "স্পেসবারে সোয়াইপ করে কার্সর পরিচালনা এবং ব্যাকস্পেস থেকে বামে সোয়াইপে টেক্সট মোছা।" else "Fluid horizontal thumb navigation on spacebar and selective word/character swipe delete from backspace.",
                 position = GroupPosition.MIDDLE
             )
 
             AboutFeatureItem(
                 icon = Icons.Outlined.Memory,
-                title = "Permanent Sandboxed Clipboard",
-                description = "Persistent clipboard storage supporting text clips and rich image thumbnails safely preserved across reboots.",
+                title = if (isBn) "সুরক্ষিত স্যান্ডবক্সড ক্লিপবোর্ড" else "Permanent Sandboxed Clipboard",
+                description = if (isBn) "টেক্সট ও ছবি নিরাপদে সংরক্ষণ ও পিন করে রাখার শক্তিশালী ক্লিপবোর্ড।" else "Persistent clipboard storage supporting text clips and rich image thumbnails safely preserved across reboots.",
                 position = GroupPosition.BOTTOM
             )
         }
@@ -213,7 +215,7 @@ fun AboutScreen(
         Spacer(modifier = Modifier.height(20.dp))
 
         // 3. Developer Profile Card
-        SettingsCategoryHeader(title = "LEAD DEVELOPER & CREATOR")
+        SettingsCategoryHeader(title = if (isBn) "ডেভেলপার পরিচিতি" else "LEAD DEVELOPER & CREATOR")
 
         Card(
             modifier = Modifier.fillMaxWidth(),
@@ -249,14 +251,14 @@ fun AboutScreen(
 
                     Column(modifier = Modifier.weight(1f)) {
                         Text(
-                            text = "Salim Hosen Shohan",
+                            text = strings.developerName,
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Bold,
                             color = colors.textPrimary
                         )
                         Spacer(modifier = Modifier.height(2.dp))
                         Text(
-                            text = "Creator & Sole Maintainer",
+                            text = if (isBn) "নির্মাতা ও একমাত্র মেইনটেইনার" else "Creator & Sole Maintainer",
                             fontSize = 12.5.sp,
                             fontWeight = FontWeight.Medium,
                             color = colors.accent
@@ -280,13 +282,13 @@ fun AboutScreen(
                     Spacer(modifier = Modifier.width(12.dp))
                     Column {
                         Text(
-                            text = "University of Rajshahi",
+                            text = if (isBn) "রাজশাহী বিশ্ববিদ্যালয়" else "University of Rajshahi",
                             fontSize = 14.sp,
                             fontWeight = FontWeight.SemiBold,
                             color = colors.textPrimary
                         )
                         Text(
-                            text = "Dept. of Information Science & Library Management",
+                            text = if (isBn) "তথ্যবিজ্ঞান ও গ্রন্থাগার ব্যবস্থাপনা বিভাগ" else "Dept. of Information Science & Library Management",
                             fontSize = 12.sp,
                             color = colors.textSecondary
                         )

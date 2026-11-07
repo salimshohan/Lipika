@@ -55,6 +55,8 @@ fun PreferencesScreen(
 ) {
     val scrollState = rememberScrollState()
     val colors = LocalSettingsColors.current
+    val strings = LocalLipikaStrings.current
+    val isBn = preferences.appLanguage == LipikaPreferences.APP_LANG_BN
 
     Column(
         modifier = Modifier
@@ -63,28 +65,28 @@ fun PreferencesScreen(
             .padding(bottom = 32.dp)
     ) {
         Spacer(modifier = Modifier.height(8.dp))
-        SettingsCategoryHeader(title = "Key Display & Popups")
+        SettingsCategoryHeader(title = if (isBn) "কী প্রদর্শন ও পপআপ" else "Key Display & Popups")
 
         SettingsGroup(modifier = Modifier.padding(horizontal = 16.dp)) {
             SettingsToggleItem(
-                title = "Dedicated Number Row",
-                subtitle = "Display persistent 5th row of digits above letter keys",
+                title = strings.numberRowTitle,
+                subtitle = strings.numberRowSubtitle,
                 checked = preferences.showNumberRow,
                 position = GroupPosition.TOP,
                 onCheckedChange = onUpdateShowNumberRow
             )
 
             SettingsToggleItem(
-                title = "Secondary Key Hints",
-                subtitle = "Show secondary symbol hints on the corner of keycaps",
+                title = if (isBn) "সেকেন্ডারি প্রতীক হিন্টস" else "Secondary Key Hints",
+                subtitle = if (isBn) "কী-ক্যাপের কোণায় সেকেন্ডারি প্রতীকের ইঙ্গিত প্রদর্শন করুন" else "Show secondary symbol hints on the corner of keycaps",
                 checked = preferences.showSecondaryKeys,
                 position = GroupPosition.MIDDLE,
                 onCheckedChange = onUpdateShowSecondaryKeys
             )
 
             SettingsToggleItem(
-                title = "Popup on Keypress",
-                subtitle = "Show circular character preview popup when touching keys",
+                title = strings.keyPopupsTitle,
+                subtitle = strings.keyPopupsSubtitle,
                 checked = preferences.showKeyPopups,
                 position = GroupPosition.BOTTOM,
                 onCheckedChange = onUpdateShowKeyPopups
@@ -92,15 +94,15 @@ fun PreferencesScreen(
         }
 
         Spacer(modifier = Modifier.height(8.dp))
-        SettingsCategoryHeader(title = "Key Touch & Timing")
+        SettingsCategoryHeader(title = if (isBn) "স্পর্শ ও টাইমিং" else "Key Touch & Timing")
 
         SettingsGroup(modifier = Modifier.padding(horizontal = 16.dp)) {
             val delayMs = preferences.longPressDelayMs
-            val delayLabel = "$delayMs ms"
+            val delayLabel = if (isBn) "$delayMs মি.সে." else "$delayMs ms"
 
             SettingsSliderItem(
-                title = "Long-Press Delay",
-                subtitle = "Hold duration required to trigger more-keys and symbols (100–500 ms)",
+                title = strings.longPressDelayTitle,
+                subtitle = strings.longPressDelaySubtitle,
                 value = delayMs.toFloat().coerceIn(100f, 500f),
                 valueRange = 100f..500f,
                 steps = 0,
@@ -145,28 +147,28 @@ fun PreferencesScreen(
         }
 
         Spacer(modifier = Modifier.height(8.dp))
-        SettingsCategoryHeader(title = "Smart Gestures")
+        SettingsCategoryHeader(title = if (isBn) "স্মার্ট জেসচার" else "Smart Gestures")
 
         SettingsGroup(modifier = Modifier.padding(horizontal = 16.dp)) {
             SettingsRadioOption(
-                title = "Swipe Delete (Selective): By Word",
-                subtitle = "Swiping left from backspace selects and deletes text word-by-word",
+                title = if (isBn) "সোয়াইপ ডিলিট: শব্দ ধরে ধরে" else "Swipe Delete (Selective): By Word",
+                subtitle = if (isBn) "ব্যাকস্পেস থেকে বামে টানলে শব্দ অনুসারে টেক্সট সিলেক্ট ও ডিলিট হবে" else "Swiping left from backspace selects and deletes text word-by-word",
                 selected = preferences.selectiveDeleteMode == LipikaPreferences.DELETE_MODE_WORD,
                 position = GroupPosition.TOP,
                 onSelect = { onUpdateSelectiveDeleteMode(LipikaPreferences.DELETE_MODE_WORD) }
             )
 
             SettingsRadioOption(
-                title = "Swipe Delete (Selective): By Character",
-                subtitle = "Swiping left from backspace selects and deletes text character-by-character",
+                title = if (isBn) "সোয়াইপ ডিলিট: অক্ষর ধরে ধরে" else "Swipe Delete (Selective): By Character",
+                subtitle = if (isBn) "ব্যাকস্পেস থেকে বামে টানলে অক্ষর অনুসারে টেক্সট সিলেক্ট ও ডিলিট হবে" else "Swiping left from backspace selects and deletes text character-by-character",
                 selected = preferences.selectiveDeleteMode == LipikaPreferences.DELETE_MODE_CHARACTER,
                 position = GroupPosition.MIDDLE,
                 onSelect = { onUpdateSelectiveDeleteMode(LipikaPreferences.DELETE_MODE_CHARACTER) }
             )
 
             SettingsToggleItem(
-                title = "Spacebar Cursor Trackpad",
-                subtitle = "Slide thumb horizontally across spacebar to position cursor",
+                title = strings.cursorTrackpadTitle,
+                subtitle = strings.cursorTrackpadSubtitle,
                 checked = preferences.cursorTrackpadEnabled,
                 position = GroupPosition.BOTTOM,
                 onCheckedChange = onUpdateCursorTrackpad

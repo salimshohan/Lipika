@@ -67,6 +67,8 @@ fun TypingStatisticsScreen(
     onBack: () -> Unit = {}
 ) {
     val colors = LocalSettingsColors.current
+    val strings = LocalLipikaStrings.current
+    val isBn = preferences.appLanguage == LipikaPreferences.APP_LANG_BN
     val scrollState = rememberScrollState()
     var showResetDialog by remember { mutableStateOf(false) }
 
@@ -76,13 +78,13 @@ fun TypingStatisticsScreen(
     val banglaPercent = if (totalLetters > 0) ((preferences.statsBanglaLetters.toDouble() / totalLetters) * 100).toInt() else 50
     val englishPercent = if (totalLetters > 0) (100 - banglaPercent) else 50
 
-    val (badgeTitle, badgeColor, nextGoal, currentLevelFloor) = remember(preferences.statsKeystrokes) {
+    val (badgeTitle, badgeColor, nextGoal, currentLevelFloor) = remember(preferences.statsKeystrokes, isBn) {
         when {
-            preferences.statsKeystrokes >= 50_000L -> Quad("Grandmaster Typist", Color(0xFFF59E0B), 100_000L, 50_000L)
-            preferences.statsKeystrokes >= 15_000L -> Quad("Keyboard Artisan", Color(0xFF8B5CF6), 50_000L, 15_000L)
-            preferences.statsKeystrokes >= 5_000L -> Quad("Fluent Scribe", Color(0xFF06B6D4), 15_000L, 5_000L)
-            preferences.statsKeystrokes >= 1_000L -> Quad("Rising Wordsmith", Color(0xFF10B981), 5_000L, 1_000L)
-            else -> Quad("Novice Typist", Color(0xFF64748B), 1_000L, 0L)
+            preferences.statsKeystrokes >= 50_000L -> Quad(if (isBn) "গ্র্যান্ডমাস্টার টাইপিস্ট" else "Grandmaster Typist", Color(0xFFF59E0B), 100_000L, 50_000L)
+            preferences.statsKeystrokes >= 15_000L -> Quad(if (isBn) "কীবোর্ড কারিগর" else "Keyboard Artisan", Color(0xFF8B5CF6), 50_000L, 15_000L)
+            preferences.statsKeystrokes >= 5_000L -> Quad(if (isBn) "সাবলীল লেখক" else "Fluent Scribe", Color(0xFF06B6D4), 15_000L, 5_000L)
+            preferences.statsKeystrokes >= 1_000L -> Quad(if (isBn) "উদীয়মান টাইপিস্ট" else "Rising Wordsmith", Color(0xFF10B981), 5_000L, 1_000L)
+            else -> Quad(if (isBn) "শিক্ষানবিস টাইপিস্ট" else "Novice Typist", Color(0xFF64748B), 1_000L, 0L)
         }
     }
 
@@ -168,7 +170,7 @@ fun TypingStatisticsScreen(
                         Spacer(modifier = Modifier.width(12.dp))
                         Column {
                             Text(
-                                text = "Total Keystrokes",
+                                text = strings.totalKeystrokes,
                                 fontSize = 12.sp,
                                 fontWeight = FontWeight.SemiBold,
                                 color = colors.textSecondary
@@ -216,7 +218,7 @@ fun TypingStatisticsScreen(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(
-                            text = "Next Tier: ${formatter.format(nextGoal)} keystrokes",
+                            text = if (isBn) "পরবর্তী স্তর: ${formatter.format(nextGoal)} কি-স্ট্রোক" else "Next Tier: ${formatter.format(nextGoal)} keystrokes",
                             fontSize = 11.5.sp,
                             fontWeight = FontWeight.Medium,
                             color = colors.textSecondary
@@ -339,13 +341,13 @@ fun TypingStatisticsScreen(
                     }
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
-                        text = "Accuracy Rate",
+                        text = strings.accuracyRate,
                         fontSize = 13.sp,
                         fontWeight = FontWeight.Bold,
                         color = colors.textPrimary
                     )
                     Text(
-                        text = "Clean keystroke precision",
+                        text = if (isBn) "নির্ভুল কি-স্ট্রোকের হার" else "Clean keystroke precision",
                         fontSize = 10.5.sp,
                         color = colors.textSecondary
                     )
@@ -391,13 +393,13 @@ fun TypingStatisticsScreen(
                     }
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
-                        text = "Est. Time Saved",
+                        text = strings.timeSaved,
                         fontSize = 13.sp,
                         fontWeight = FontWeight.Bold,
                         color = colors.textPrimary
                     )
                     Text(
-                        text = "Via smart predictions",
+                        text = if (isBn) "স্মার্ট প্রেডিকশনে সাশ্রয়" else "Via smart predictions",
                         fontSize = 10.5.sp,
                         color = colors.textSecondary
                     )
@@ -451,13 +453,13 @@ fun TypingStatisticsScreen(
                     }
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
-                        text = "Typing Pace",
+                        text = strings.typingPace,
                         fontSize = 13.sp,
                         fontWeight = FontWeight.Bold,
                         color = colors.textPrimary
                     )
                     Text(
-                        text = "Estimated speed index",
+                        text = if (isBn) "গতি ও গতিবিধি সূচক" else "Estimated speed index",
                         fontSize = 10.5.sp,
                         color = colors.textSecondary
                     )
@@ -503,13 +505,13 @@ fun TypingStatisticsScreen(
                     }
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
-                        text = "Chars Per Word",
+                        text = if (isBn) "প্রতি শব্দে বর্ণ" else "Chars Per Word",
                         fontSize = 13.sp,
                         fontWeight = FontWeight.Bold,
                         color = colors.textPrimary
                     )
                     Text(
-                        text = "Average word density",
+                        text = if (isBn) "গড় শব্দ ঘনত্ব" else "Average word density",
                         fontSize = 10.5.sp,
                         color = colors.textSecondary
                     )
@@ -554,7 +556,7 @@ fun TypingStatisticsScreen(
                         }
                         Spacer(modifier = Modifier.width(10.dp))
                         Text(
-                            text = "Typing Activity Streak",
+                            text = if (isBn) "টাইপিং সক্রিয়তা স্ট্রিক" else "Typing Activity Streak",
                             fontSize = 14.sp,
                             fontWeight = FontWeight.Bold,
                             color = colors.textPrimary
@@ -562,7 +564,7 @@ fun TypingStatisticsScreen(
                     }
 
                     Text(
-                        text = "Active",
+                        text = strings.activeBadge,
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Bold,
                         color = colors.accent
@@ -574,7 +576,8 @@ fun TypingStatisticsScreen(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    listOf("M", "T", "W", "T", "F", "S", "Today").forEachIndexed { idx, day ->
+                    val days = if (isBn) listOf("সোম", "মঙ্গল", "বুধ", "বৃহঃ", "শুক্র", "শনি", "আজ") else listOf("M", "T", "W", "T", "F", "S", "Today")
+                    days.forEachIndexed { idx, day ->
                         val isToday = idx == 6
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
@@ -617,7 +620,7 @@ fun TypingStatisticsScreen(
         // ==========================================
         // 5. TYPING BREAKDOWN (2x2 Grid Cards)
         // ==========================================
-        SettingsCategoryHeader(title = "Keystroke & Word Breakdown")
+        SettingsCategoryHeader(title = if (isBn) "কি-স্ট্রোক ও শব্দের বিস্তারিত বিশ্লেষণ" else "Keystroke & Word Breakdown")
 
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -625,17 +628,17 @@ fun TypingStatisticsScreen(
         ) {
             StatMetricCard(
                 modifier = Modifier.weight(1f),
-                title = "Bangla Letters",
+                title = strings.banglaLettersMetric,
                 value = formatter.format(preferences.statsBanglaLetters),
-                subtitle = "বাংলা বর্ণ ও চিহ্ন",
+                subtitle = if (isBn) "বাংলা বর্ণ ও চিহ্ন" else "Bengali letters & signs",
                 icon = Icons.Outlined.Language,
                 colors = colors
             )
             StatMetricCard(
                 modifier = Modifier.weight(1f),
-                title = "English Letters",
+                title = strings.englishLettersMetric,
                 value = formatter.format(preferences.statsEnglishLetters),
-                subtitle = "Latin alphabetic chars",
+                subtitle = if (isBn) "ইংরেজি বর্ণমালা" else "Latin alphabetic chars",
                 icon = Icons.Outlined.TextFields,
                 colors = colors
             )
@@ -647,17 +650,17 @@ fun TypingStatisticsScreen(
         ) {
             StatMetricCard(
                 modifier = Modifier.weight(1f),
-                title = "Avro Words",
+                title = strings.avroPhoneticMetric,
                 value = formatter.format(preferences.statsAvroWords),
-                subtitle = "Phonetic transliterations",
+                subtitle = if (isBn) "ফোনেটিক শব্দ রূপান্তর" else "Phonetic transliterations",
                 icon = Icons.Outlined.Translate,
                 colors = colors
             )
             StatMetricCard(
                 modifier = Modifier.weight(1f),
-                title = "Total Words",
+                title = if (isBn) "মোট শব্দ" else "Total Words",
                 value = formatter.format(preferences.statsWordsTyped),
-                subtitle = "Completed words entered",
+                subtitle = if (isBn) "টাইপকৃত মোট শব্দ" else "Completed words entered",
                 icon = Icons.Outlined.FontDownload,
                 colors = colors
             )
@@ -669,17 +672,17 @@ fun TypingStatisticsScreen(
         ) {
             StatMetricCard(
                 modifier = Modifier.weight(1f),
-                title = "Numbers Typed",
+                title = if (isBn) "টাইপকৃত সংখ্যা" else "Numbers Typed",
                 value = formatter.format(preferences.statsNumbersTyped),
-                subtitle = "Digits 0–9 & ০–৯",
+                subtitle = if (isBn) "সংখ্যা ০–৯ ও 0–9" else "Digits 0–9 & ০–৯",
                 icon = Icons.Outlined.Numbers,
                 colors = colors
             )
             StatMetricCard(
                 modifier = Modifier.weight(1f),
-                title = "Emojis Inserted",
+                title = if (isBn) "ব্যবহৃত ইমোজি" else "Emojis Inserted",
                 value = formatter.format(preferences.statsEmojis),
-                subtitle = "Emoticons & smileys",
+                subtitle = if (isBn) "ইমোটিকন ও স্মাইলি" else "Emoticons & smileys",
                 icon = Icons.Outlined.Mood,
                 colors = colors
             )
@@ -691,17 +694,17 @@ fun TypingStatisticsScreen(
         ) {
             StatMetricCard(
                 modifier = Modifier.weight(1f),
-                title = "Backspaces / Edits",
+                title = strings.backspacesMetric,
                 value = formatter.format(preferences.statsBackspaces),
-                subtitle = "Corrections & deletes",
+                subtitle = if (isBn) "সংশোধন ও মুছে ফেলা" else "Corrections & deletes",
                 icon = Icons.Outlined.Backspace,
                 colors = colors
             )
             StatMetricCard(
                 modifier = Modifier.weight(1f),
-                title = "Sound Clicks",
+                title = strings.soundClicksMetric,
                 value = formatter.format(preferences.statsAudioClicks),
-                subtitle = "Audible key feedbacks",
+                subtitle = if (isBn) "শব্দ ফিডব্যাক" else "Audible key feedbacks",
                 icon = Icons.Outlined.VolumeUp,
                 colors = colors
             )
@@ -757,20 +760,20 @@ fun TypingStatisticsScreen(
                         }
                         Column {
                             Text(
-                                text = "Smart Typing Savings",
+                                text = strings.smartTypingSavings,
                                 fontSize = 14.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = colors.textPrimary
                             )
                             Text(
-                                text = "Keys saved via Avro & auto-complete",
+                                text = strings.smartSavingsDesc,
                                 fontSize = 11.sp,
                                 color = colors.textSecondary
                             )
                         }
                     }
                     Text(
-                        text = "+${formatter.format(savedKeystrokes)} Keys",
+                        text = if (isBn) "+${formatter.format(savedKeystrokes)} কি" else "+${formatter.format(savedKeystrokes)} Keys",
                         fontSize = 15.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFF10B981)
@@ -789,8 +792,8 @@ fun TypingStatisticsScreen(
                             .padding(horizontal = 10.dp, vertical = 8.dp)
                     ) {
                         Column {
-                            Text(text = "Typing Boost", fontSize = 10.5.sp, color = colors.textSecondary)
-                            Text(text = "${efficiencyMultiplier}x Faster", fontSize = 14.sp, fontWeight = FontWeight.Bold, color = colors.accent)
+                            Text(text = strings.typingBoost, fontSize = 10.5.sp, color = colors.textSecondary)
+                            Text(text = if (isBn) "${efficiencyMultiplier}x দ্রুত" else "${efficiencyMultiplier}x Faster", fontSize = 14.sp, fontWeight = FontWeight.Bold, color = colors.accent)
                         }
                     }
                     Box(
@@ -801,8 +804,8 @@ fun TypingStatisticsScreen(
                             .padding(horizontal = 10.dp, vertical = 8.dp)
                     ) {
                         Column {
-                            Text(text = "Completion Rate", fontSize = 10.5.sp, color = colors.textSecondary)
-                            Text(text = "${(accuracyPercent * 0.95).toInt()}% Clean", fontSize = 14.sp, fontWeight = FontWeight.Bold, color = Color(0xFF06B6D4))
+                            Text(text = strings.completionRate, fontSize = 10.5.sp, color = colors.textSecondary)
+                            Text(text = if (isBn) "${(accuracyPercent * 0.95).toInt()}% নিখুঁত" else "${(accuracyPercent * 0.95).toInt()}% Clean", fontSize = 14.sp, fontWeight = FontWeight.Bold, color = Color(0xFF06B6D4))
                         }
                     }
                 }
@@ -831,13 +834,13 @@ fun TypingStatisticsScreen(
                 ) {
                     Column {
                         Text(
-                            text = "Top Used Characters",
+                            text = strings.topUsedChars,
                             fontSize = 14.sp,
                             fontWeight = FontWeight.Bold,
                             color = colors.textPrimary
                         )
                         Text(
-                            text = "Most frequent letters in your typing",
+                            text = strings.topCharsDesc,
                             fontSize = 11.sp,
                             color = colors.textSecondary
                         )
@@ -853,7 +856,7 @@ fun TypingStatisticsScreen(
                 // Bangla Top 5
                 Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
                     Text(
-                        text = "বাংলা বর্ণমালা (Top Letters)",
+                        text = strings.banglaTopLetters,
                         fontSize = 12.sp,
                         fontWeight = FontWeight.SemiBold,
                         color = colors.accent
@@ -884,7 +887,7 @@ fun TypingStatisticsScreen(
                 // English Top 5
                 Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
                     Text(
-                        text = "English Letters (Top Letters)",
+                        text = strings.englishTopLetters,
                         fontSize = 12.sp,
                         fontWeight = FontWeight.SemiBold,
                         color = colors.textSecondary
@@ -934,13 +937,13 @@ fun TypingStatisticsScreen(
             ) {
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        text = "Reset Statistics",
+                        text = strings.resetStatsTitle,
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Bold,
                         color = colors.textPrimary
                     )
                     Text(
-                        text = "Clear keystroke counters and start fresh",
+                        text = strings.resetStatsDesc,
                         fontSize = 11.5.sp,
                         color = colors.textSecondary
                     )
@@ -969,7 +972,7 @@ fun TypingStatisticsScreen(
             onDismissRequest = { showResetDialog = false },
             title = {
                 Text(
-                    text = "Reset Typing Statistics?",
+                    text = strings.resetStatsConfirmTitle,
                     fontSize = 17.sp,
                     fontWeight = FontWeight.Bold,
                     color = colors.textPrimary
@@ -977,7 +980,7 @@ fun TypingStatisticsScreen(
             },
             text = {
                 Text(
-                    text = "All typed letter, word, number, emoji, and sound counters will be reset to zero.",
+                    text = strings.resetStatsConfirmMsg,
                     fontSize = 13.sp,
                     color = colors.textSecondary
                 )
@@ -990,12 +993,12 @@ fun TypingStatisticsScreen(
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFEF4444))
                 ) {
-                    Text("Reset", color = Color.White)
+                    Text(strings.btnReset, color = Color.White)
                 }
             },
             dismissButton = {
                 OutlinedButton(onClick = { showResetDialog = false }) {
-                    Text("Cancel", color = colors.textPrimary)
+                    Text(strings.btnCancel, color = colors.textPrimary)
                 }
             }
         )

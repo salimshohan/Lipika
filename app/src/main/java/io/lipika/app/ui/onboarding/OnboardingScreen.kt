@@ -77,6 +77,7 @@ enum class OnboardingStep {
     WELCOME,
     ENABLE,
     SELECT,
+    THEME,
     LAYOUT,
     PREFERENCES
 }
@@ -102,7 +103,7 @@ fun OnboardingScreen(
         mutableStateOf(
             if (!isImeEnabled) OnboardingStep.WELCOME
             else if (!isImeSelected) OnboardingStep.SELECT
-            else OnboardingStep.LAYOUT
+            else OnboardingStep.THEME
         )
     }
 
@@ -134,7 +135,7 @@ fun OnboardingScreen(
             navigateToStep(OnboardingStep.SELECT)
         } else if (currentStep == OnboardingStep.SELECT && isImeSelected) {
             delay(650L) // Delight delay showing morph checkmark
-            navigateToStep(OnboardingStep.LAYOUT)
+            navigateToStep(OnboardingStep.THEME)
         }
     }
 
@@ -184,12 +185,13 @@ fun OnboardingScreen(
                 val stepIdx = when (currentStep) {
                     OnboardingStep.ENABLE -> 0
                     OnboardingStep.SELECT -> 1
-                    OnboardingStep.LAYOUT -> 2
-                    OnboardingStep.PREFERENCES -> 3
+                    OnboardingStep.THEME -> 2
+                    OnboardingStep.LAYOUT -> 3
+                    OnboardingStep.PREFERENCES -> 4
                     else -> 0
                 }
                 Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                    for (i in 0..3) {
+                    for (i in 0..4) {
                         Box(
                             modifier = Modifier
                                 .height(6.dp)
@@ -224,7 +226,7 @@ fun OnboardingScreen(
                                 } else if (!isImeSelected) {
                                     navigateToStep(OnboardingStep.SELECT)
                                 } else {
-                                    navigateToStep(OnboardingStep.LAYOUT)
+                                    navigateToStep(OnboardingStep.THEME)
                                 }
                             }
                         )
@@ -241,6 +243,18 @@ fun OnboardingScreen(
                         SelectStep(
                             isImeSelected = isImeSelected,
                             onSwitchIme = onSwitchIme
+                        )
+                    }
+
+                    OnboardingStep.THEME -> {
+                        OnboardingThemeStep(
+                            initialTheme = preferences.theme,
+                            onContinue = { selectedTheme ->
+                                scope.launch {
+                                    preferencesRepo.updateTheme(selectedTheme)
+                                }
+                                navigateToStep(OnboardingStep.LAYOUT)
+                            }
                         )
                     }
 

@@ -117,6 +117,7 @@ fun KeyboardLayoutsScreen(
 
     val scrollState = rememberScrollState()
     val colors = LocalSettingsColors.current
+    val strings = LocalLipikaStrings.current
 
     val englishCard = remember {
         LayoutCardData(
@@ -264,7 +265,7 @@ fun KeyboardLayoutsScreen(
             containerColor = colors.dialogBackground,
             title = {
                 Text(
-                    text = "App Language",
+                    text = strings.chooseAppLanguage,
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
                     color = colors.textPrimary
@@ -273,8 +274,8 @@ fun KeyboardLayoutsScreen(
             text = {
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     val languages = listOf(
-                        LipikaPreferences.APP_LANG_EN to "English (Default)",
-                        LipikaPreferences.APP_LANG_BN to "বাংলা (Bengali)"
+                        LipikaPreferences.APP_LANG_EN to strings.englishOption,
+                        LipikaPreferences.APP_LANG_BN to strings.banglaOption
                     )
                     for ((code, label) in languages) {
                         val isSelected = preferences.appLanguage == code
@@ -380,7 +381,7 @@ fun KeyboardLayoutsScreen(
             .padding(bottom = 32.dp)
     ) {
         // App Language Setting
-        SettingsCategoryHeader(title = "App Language")
+        SettingsCategoryHeader(title = strings.appLanguageHeader)
         SettingsGroup(modifier = Modifier.padding(horizontal = 16.dp)) {
             SettingsItemCard(
                 position = GroupPosition.ALONE,
@@ -416,13 +417,13 @@ fun KeyboardLayoutsScreen(
                         }
                         Column {
                             Text(
-                                text = "App Language",
+                                text = strings.appLanguageTitle,
                                 fontSize = 15.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = colors.textPrimary
                             )
                             Text(
-                                text = if (preferences.appLanguage == LipikaPreferences.APP_LANG_BN) "বাংলা (Bengali)" else "English (Default)",
+                                text = if (preferences.appLanguage == LipikaPreferences.APP_LANG_BN) strings.banglaOption else strings.englishOption,
                                 fontSize = 12.sp,
                                 color = colors.textSecondary
                             )
@@ -447,7 +448,7 @@ fun KeyboardLayoutsScreen(
 
         Spacer(modifier = Modifier.height(14.dp))
 
-        SettingsCategoryHeader(title = "Active Layouts (${activeCards.size})")
+        SettingsCategoryHeader(title = "${strings.activeLayoutsHeader} (${activeCards.size})")
 
         SettingsGroup(modifier = Modifier.padding(horizontal = 16.dp)) {
             for ((index, card) in activeCards.withIndex()) {
@@ -591,7 +592,7 @@ fun KeyboardLayoutsScreen(
                                                 .padding(horizontal = 8.dp, vertical = 2.dp)
                                         ) {
                                             Text(
-                                                text = "Default",
+                                                text = strings.defaultLayoutBadge,
                                                 fontSize = 10.sp,
                                                 fontWeight = FontWeight.SemiBold,
                                                 color = colors.accent

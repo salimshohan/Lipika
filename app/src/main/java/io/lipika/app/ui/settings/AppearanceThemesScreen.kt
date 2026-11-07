@@ -957,7 +957,7 @@ private fun AbstractThemeCard(
 ) {
     val colors = LocalSettingsColors.current
     val scheme = themeOption.scheme
-    val cardShape = RoundedCornerShape(20.dp)
+    val cardShape = RoundedCornerShape(22.dp)
 
     Card(
         shape = cardShape,
@@ -974,10 +974,10 @@ private fun AbstractThemeCard(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(12.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .padding(14.dp),
+            horizontalAlignment = Alignment.Start
         ) {
-            val previewShape = RoundedCornerShape(14.dp)
+            val previewShape = RoundedCornerShape(16.dp)
             val gradientBrush = remember(scheme) {
                 scheme.themeSpec?.background?.gradient?.toBrush(androidx.compose.ui.geometry.Size(260f, 160f))
             }
@@ -985,7 +985,7 @@ private fun AbstractThemeCard(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(100.dp)
+                    .height(96.dp)
                     .clip(previewShape)
                     .then(
                         if (gradientBrush != null) {
@@ -1008,9 +1008,9 @@ private fun AbstractThemeCard(
                     modifier = Modifier
                         .fillMaxWidth()
                         .align(Alignment.BottomCenter)
-                        .height(42.dp)
+                        .height(38.dp)
                         .background(if (colors.isDark) Color(0xFF1E293B) else Color.White.copy(alpha = 0.95f))
-                        .padding(horizontal = 8.dp, vertical = 6.dp)
+                        .padding(horizontal = 8.dp, vertical = 5.dp)
                 ) {
                     val keyShape = RoundedCornerShape(5.dp)
                     val spaceHex = scheme.themeSpec?.spaceKey?.background ?: scheme.themeSpec?.characterKey?.background
@@ -1029,7 +1029,7 @@ private fun AbstractThemeCard(
                         Box(
                             modifier = Modifier
                                 .weight(0.2f)
-                                .height(22.dp)
+                                .height(20.dp)
                                 .clip(keyShape)
                                 .background(if (colors.isDark) Color(0xFF475569) else Color(0xFFE2E8F0))
                         )
@@ -1037,7 +1037,7 @@ private fun AbstractThemeCard(
                         Box(
                             modifier = Modifier
                                 .weight(0.55f)
-                                .height(22.dp)
+                                .height(20.dp)
                                 .clip(keyShape)
                                 .background(spaceColor)
                                 .border(0.5.dp, colors.cardBorder, keyShape)
@@ -1046,7 +1046,7 @@ private fun AbstractThemeCard(
                         Box(
                             modifier = Modifier
                                 .weight(0.25f)
-                                .height(22.dp)
+                                .height(20.dp)
                                 .clip(keyShape)
                                 .background(enterColor)
                         )
@@ -1082,7 +1082,7 @@ private fun AbstractThemeCard(
                 fontSize = 15.sp,
                 fontWeight = FontWeight.Bold,
                 color = colors.textPrimary,
-                textAlign = TextAlign.Center,
+                textAlign = TextAlign.Start,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
@@ -1110,7 +1110,7 @@ private fun AbstractThemeCard(
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Normal,
                 color = colors.textSecondary,
-                textAlign = TextAlign.Center,
+                textAlign = TextAlign.Start,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )

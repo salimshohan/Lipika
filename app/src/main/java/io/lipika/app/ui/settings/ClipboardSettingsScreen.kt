@@ -143,6 +143,8 @@ fun ClipboardSettingsScreen(
     onBack: () -> Unit = {}
 ) {
     val context = LocalContext.current
+    val strings = LocalLipikaStrings.current
+    val isBn = strings === LipikaStringsBn
     val p = clipPalette()
 
     LaunchedEffect(Unit) {
@@ -202,7 +204,7 @@ fun ClipboardSettingsScreen(
                         .height(48.dp),
                     placeholder = {
                         Text(
-                            text = "Search clips...",
+                            text = if (isBn) "ক্লিপ খুঁজুন..." else "Search clips...",
                             color = p.textSecondary.copy(alpha = 0.7f),
                             fontSize = 13.sp
                         )
@@ -294,16 +296,16 @@ fun ClipboardSettingsScreen(
             var showExpiryDialog by remember { mutableStateOf(false) }
 
             val expiryLabel = when (selectedExpiry) {
-                1 -> "1 Hour"
-                2 -> "2 Hours"
-                5 -> "5 Hours (Default)"
-                6 -> "6 Hours"
-                12 -> "12 Hours"
-                24 -> "1 Day"
-                360 -> "15 Days"
-                720 -> "30 Days"
-                -1 -> "Never"
-                else -> "$selectedExpiry Hours"
+                1 -> if (isBn) "১ ঘণ্টা" else "1 Hour"
+                2 -> if (isBn) "২ ঘণ্টা" else "2 Hours"
+                5 -> if (isBn) "৫ ঘণ্টা (ডিফল্ট)" else "5 Hours (Default)"
+                6 -> if (isBn) "৬ ঘণ্টা" else "6 Hours"
+                12 -> if (isBn) "১২ ঘণ্টা" else "12 Hours"
+                24 -> if (isBn) "১ দিন" else "1 Day"
+                360 -> if (isBn) "১৫ দিন" else "15 Days"
+                720 -> if (isBn) "৩০ দিন" else "30 Days"
+                -1 -> if (isBn) "কখনই না" else "Never"
+                else -> if (isBn) "$selectedExpiry ঘণ্টা" else "$selectedExpiry Hours"
             }
 
             Row(
@@ -329,7 +331,7 @@ fun ClipboardSettingsScreen(
                         modifier = Modifier.size(16.dp)
                     )
                     Text(
-                        text = "Auto-delete unpinned clips after:",
+                        text = if (isBn) "অটো-ডিলিট সময়সীমা:" else "Auto-delete unpinned clips after:",
                         fontSize = 11.5.sp,
                         fontWeight = FontWeight.SemiBold,
                         color = p.textSecondary
@@ -345,21 +347,21 @@ fun ClipboardSettingsScreen(
 
             if (showExpiryDialog) {
                 val options = listOf(
-                    1 to "1 Hour",
-                    2 to "2 Hours",
-                    5 to "5 Hours (Default)",
-                    6 to "6 Hours",
-                    12 to "12 Hours",
-                    24 to "1 Day",
-                    360 to "15 Days",
-                    720 to "30 Days",
-                    -1 to "Never"
+                    1 to (if (isBn) "১ ঘণ্টা" else "1 Hour"),
+                    2 to (if (isBn) "২ ঘণ্টা" else "2 Hours"),
+                    5 to (if (isBn) "৫ ঘণ্টা (ডিফল্ট)" else "5 Hours (Default)"),
+                    6 to (if (isBn) "৬ ঘণ্টা" else "6 Hours"),
+                    12 to (if (isBn) "১২ ঘণ্টা" else "12 Hours"),
+                    24 to (if (isBn) "১ দিন" else "1 Day"),
+                    360 to (if (isBn) "১৫ দিন" else "15 Days"),
+                    720 to (if (isBn) "৩০ দিন" else "30 Days"),
+                    -1 to (if (isBn) "কখনই না" else "Never")
                 )
                 AlertDialog(
                     onDismissRequest = { showExpiryDialog = false },
                     title = {
                         Text(
-                            text = "Auto-Delete Retention Time",
+                            text = if (isBn) "অটো-ডিলিটের সময় নির্ধারণ" else "Auto-Delete Retention Time",
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Bold,
                             color = p.textPrimary
@@ -368,7 +370,7 @@ fun ClipboardSettingsScreen(
                     text = {
                         Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
                             Text(
-                                text = "Unpinned items older than this time will be deleted automatically. Pinned items are never deleted.",
+                                text = if (isBn) "নির্ধারিত সময়ের পুরনো অপিনকৃত ক্লিপ স্বয়ংক্রিয়ভাবে মুছে যাবে। পিন করা ক্লিপ কখনই মুছবে না।" else "Unpinned items older than this time will be deleted automatically. Pinned items are never deleted.",
                                 fontSize = 12.sp,
                                 color = p.textSecondary,
                                 modifier = Modifier.padding(bottom = 6.dp)

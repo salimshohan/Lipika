@@ -88,6 +88,7 @@ fun SettingsMainScreen(
 ) {
     val scrollState = rememberScrollState()
     val colors = LocalSettingsColors.current
+    val strings = LocalLipikaStrings.current
     var testInputText by remember { mutableStateOf("") }
 
     val context = androidx.compose.ui.platform.LocalContext.current
@@ -167,7 +168,7 @@ fun SettingsMainScreen(
                                     .clip(RoundedCornerShape(8.dp))
                             )
                             Text(
-                                text = "Lipika Keyboard",
+                                text = strings.appNameHeader,
                                 fontSize = 20.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = colors.textPrimary
@@ -197,7 +198,7 @@ fun SettingsMainScreen(
                                     .background(if (isActive) Color(0xFF10B981) else Color(0xFFF59E0B))
                             )
                             Text(
-                                text = if (isActive) "Active" else "Enable",
+                                text = if (isActive) strings.activeBadge else strings.btnEnable,
                                 fontSize = 13.sp,
                                 fontWeight = FontWeight.SemiBold,
                                 color = if (isActive) Color(0xFF10B981) else Color(0xFFF59E0B)
@@ -246,7 +247,7 @@ fun SettingsMainScreen(
                                 }
                                 Column(modifier = Modifier.weight(1f)) {
                                     Text(
-                                        text = "Theme",
+                                        text = strings.themeCardTitle,
                                         fontSize = 14.sp,
                                         fontWeight = FontWeight.Bold,
                                         color = colors.textPrimary
@@ -294,7 +295,7 @@ fun SettingsMainScreen(
                                 }
                                 Column(modifier = Modifier.weight(1f)) {
                                     Text(
-                                        text = "Layout",
+                                        text = strings.layoutCardTitle,
                                         fontSize = 14.sp,
                                         fontWeight = FontWeight.Bold,
                                         color = colors.textPrimary
@@ -329,13 +330,13 @@ fun SettingsMainScreen(
                     ) {
                         Column(modifier = Modifier.weight(1f)) {
                             Text(
-                                text = if (!isImeEnabled) "Lipika is not enabled" else "Lipika is not selected",
+                                text = if (!isImeEnabled) strings.imeNotEnabledTitle else strings.imeNotSelectedTitle,
                                 fontSize = 14.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = colors.warningCardText
                             )
                             Text(
-                                text = if (!isImeEnabled) "Enable in System Settings" else "Tap to choose default keyboard",
+                                text = if (!isImeEnabled) strings.enableInSettings else strings.chooseDefaultKeyboard,
                                 fontSize = 12.sp,
                                 color = colors.warningCardText.copy(alpha = 0.8f)
                             )
@@ -346,7 +347,7 @@ fun SettingsMainScreen(
                             shape = RoundedCornerShape(12.dp)
                         ) {
                             Text(
-                                text = if (!isImeEnabled) "Enable" else "Select",
+                                text = if (!isImeEnabled) strings.btnEnable else strings.btnSelect,
                                 fontSize = 13.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = Color.White
@@ -381,7 +382,7 @@ fun SettingsMainScreen(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(
-                            text = "Live Keyboard Testing",
+                            text = strings.liveTestingTitle,
                             fontSize = 15.sp,
                             fontWeight = FontWeight.Bold,
                             color = colors.textPrimary
@@ -405,7 +406,7 @@ fun SettingsMainScreen(
                         ),
                         placeholder = {
                             Text(
-                                text = "Tap here to test typing",
+                                text = strings.testInputPlaceholder,
                                 fontSize = 14.sp,
                                 fontFamily = activeFontFamily,
                                 color = colors.textSecondary
@@ -449,16 +450,16 @@ fun SettingsMainScreen(
                 ) {
                     DashboardOptionCard(
                         modifier = Modifier.weight(1f),
-                        title = "Smart Typing",
-                        subtitle = "Corrections & suggestions",
+                        title = strings.smartTypingCardTitle,
+                        subtitle = strings.smartTypingCardSubtitle,
                         icon = Icons.Outlined.AutoAwesome,
                         colors = colors,
                         onClick = { onNavigate(SettingsScreen.SmartTyping) }
                     )
                     DashboardOptionCard(
                         modifier = Modifier.weight(1f),
-                        title = "Fonts",
-                        subtitle = "Styles & typography",
+                        title = strings.fontsCardTitle,
+                        subtitle = strings.fontsCardSubtitle,
                         icon = Icons.Outlined.FontDownload,
                         colors = colors,
                         onClick = { onNavigate(SettingsScreen.Fonts) }
@@ -472,7 +473,7 @@ fun SettingsMainScreen(
                 ) {
                     DashboardOptionCard(
                         modifier = Modifier.weight(1f),
-                        title = "Theme",
+                        title = strings.themesCardTitle,
                         subtitle = activeThemeName,
                         icon = Icons.Outlined.Palette,
                         colors = colors,
@@ -480,8 +481,8 @@ fun SettingsMainScreen(
                     )
                     DashboardOptionCard(
                         modifier = Modifier.weight(1f),
-                        title = "Language",
-                        subtitle = "Layouts & input",
+                        title = strings.languageCardTitle,
+                        subtitle = strings.languageCardSubtitle,
                         icon = Icons.Outlined.Language,
                         colors = colors,
                         onClick = { onNavigate(SettingsScreen.KeyboardLayouts) }
@@ -495,16 +496,16 @@ fun SettingsMainScreen(
                 ) {
                     DashboardOptionCard(
                         modifier = Modifier.weight(1f),
-                        title = "Preferences",
-                        subtitle = "Keys, popup & delay",
+                        title = strings.preferencesCardTitle,
+                        subtitle = strings.preferencesCardSubtitle,
                         icon = Icons.Outlined.Tune,
                         colors = colors,
                         onClick = { onNavigate(SettingsScreen.Preferences) }
                     )
                     DashboardOptionCard(
                         modifier = Modifier.weight(1f),
-                        title = "Sound & Vibration",
-                        subtitle = "Volume, haptics & pulse",
+                        title = strings.soundVibrationCardTitle,
+                        subtitle = strings.soundVibrationCardSubtitle,
                         icon = Icons.Outlined.VolumeUp,
                         colors = colors,
                         onClick = { onNavigate(SettingsScreen.SoundVibration) }
@@ -518,16 +519,16 @@ fun SettingsMainScreen(
                 ) {
                     DashboardOptionCard(
                         modifier = Modifier.weight(1f),
-                        title = "Clipboard",
-                        subtitle = "History & pins",
+                        title = strings.clipboardCardTitle,
+                        subtitle = strings.clipboardCardSubtitle,
                         icon = Icons.Outlined.ContentPaste,
                         colors = colors,
                         onClick = { onNavigate(SettingsScreen.Clipboard) }
                     )
                     DashboardOptionCard(
                         modifier = Modifier.weight(1f),
-                        title = "Appearance",
-                        subtitle = "Display, themes & dark style",
+                        title = strings.appearanceCardTitle,
+                        subtitle = strings.appearanceCardSubtitle,
                         icon = Icons.Outlined.BrightnessMedium,
                         colors = colors,
                         onClick = { onNavigate(SettingsScreen.Appearance) }
@@ -541,16 +542,16 @@ fun SettingsMainScreen(
                 ) {
                     DashboardOptionCard(
                         modifier = Modifier.weight(1f),
-                        title = "Voice Typing",
-                        subtitle = "Speech to text input",
+                        title = strings.voiceTypingTitle,
+                        subtitle = strings.voiceTypingCardSubtitle,
                         icon = Icons.Outlined.Mic,
                         colors = colors,
                         onClick = { onNavigate(SettingsScreen.VoiceTyping) }
                     )
                     DashboardOptionCard(
                         modifier = Modifier.weight(1f),
-                        title = "Typing Insights",
-                        subtitle = "Keystrokes & metrics",
+                        title = strings.typingInsightsCardTitle,
+                        subtitle = strings.typingInsightsCardSubtitle,
                         icon = Icons.Outlined.Analytics,
                         colors = colors,
                         onClick = { onNavigate(SettingsScreen.TypingStatistics) }
@@ -564,16 +565,16 @@ fun SettingsMainScreen(
                 ) {
                     DashboardOptionCard(
                         modifier = Modifier.weight(1f),
-                        title = "Backup & Restore",
-                        subtitle = "Cloud & file backup",
+                        title = strings.backupRestoreCardTitle,
+                        subtitle = strings.backupRestoreCardSubtitle,
                         icon = Icons.Outlined.CloudUpload,
                         colors = colors,
                         onClick = { onNavigate(SettingsScreen.BackupRestore) }
                     )
                     DashboardOptionCard(
                         modifier = Modifier.weight(1f),
-                        title = "About",
-                        subtitle = "Version & creator",
+                        title = strings.aboutCardTitle,
+                        subtitle = strings.aboutCardSubtitle,
                         icon = Icons.Outlined.Info,
                         colors = colors,
                         onClick = { onNavigate(SettingsScreen.About) }
