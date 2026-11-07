@@ -81,6 +81,7 @@ import io.lipika.app.R
 import io.lipika.data.prefs.LipikaPreferences
 import io.lipika.theme.resolveKeyboardFontFamily
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun SettingsMainScreen(

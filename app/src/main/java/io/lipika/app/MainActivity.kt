@@ -442,7 +442,8 @@ fun LipikaSettingsApp(
     val isMainScreen = currentScreen == SettingsScreen.Main
 
     val view = androidx.compose.ui.platform.LocalView.current
-    val isDark = isSystemInDarkTheme()
+    val systemInDark = isSystemInDarkTheme()
+    val isDark = preferences.resolveEffectiveIsDark(systemInDark)
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as? android.app.Activity)?.window
@@ -617,7 +618,7 @@ fun LipikaSettingsApp(
                                 } else {
                                     if (isBn) "ডার্ক মোড সক্রিয় করা হয়েছে" else "Dark mode enabled"
                                 }
-                                android.widget.Toast.makeText(this@MainActivity, msg, android.widget.Toast.LENGTH_SHORT).show()
+                                android.widget.Toast.makeText(context, msg, android.widget.Toast.LENGTH_SHORT).show()
                             },
                             onToggleAppLanguage = {
                                 val nextLang = if (preferences.appLanguage == LipikaPreferences.APP_LANG_BN) {
@@ -633,7 +634,7 @@ fun LipikaSettingsApp(
                                 } else {
                                     "App Language: English"
                                 }
-                                android.widget.Toast.makeText(this@MainActivity, msg, android.widget.Toast.LENGTH_SHORT).show()
+                                android.widget.Toast.makeText(context, msg, android.widget.Toast.LENGTH_SHORT).show()
                             }
                         )
                     }
