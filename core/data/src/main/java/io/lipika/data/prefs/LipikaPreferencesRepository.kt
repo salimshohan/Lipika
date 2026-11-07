@@ -9,6 +9,7 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
@@ -126,6 +127,17 @@ class LipikaPreferencesRepository private constructor(private val context: Conte
         val THEME_SCHEDULE = stringPreferencesKey("pref_theme_schedule")
         val CUSTOM_SCHEDULE_START_HOUR = intPreferencesKey("pref_custom_schedule_start_hour")
         val CUSTOM_SCHEDULE_END_HOUR = intPreferencesKey("pref_custom_schedule_end_hour")
+
+        val CLIPBOARD_EXPIRY_HOURS = intPreferencesKey("pref_clipboard_expiry_hours")
+
+        // Typing Statistics
+        val STATS_BANGLA_LETTERS = longPreferencesKey("pref_stats_bangla_letters")
+        val STATS_ENGLISH_LETTERS = longPreferencesKey("pref_stats_english_letters")
+        val STATS_AVRO_WORDS = longPreferencesKey("pref_stats_avro_words")
+        val STATS_WORDS_TYPED = longPreferencesKey("pref_stats_words_typed")
+        val STATS_NUMBERS_TYPED = longPreferencesKey("pref_stats_numbers_typed")
+        val STATS_KEYSTROKES = longPreferencesKey("pref_stats_keystrokes")
+        val STATS_AUDIO_CLICKS = longPreferencesKey("pref_stats_audio_clicks")
     }
 
     val preferencesFlow: Flow<LipikaPreferences> = context.lipikaDataStore.data
@@ -254,6 +266,15 @@ class LipikaPreferencesRepository private constructor(private val context: Conte
                     }
                     overrides
                 },
+                clipboardExpiryHours = prefs[PreferencesKeys.CLIPBOARD_EXPIRY_HOURS] ?: 5,
+                statsBanglaLetters = prefs[PreferencesKeys.STATS_BANGLA_LETTERS] ?: 0L,
+                statsEnglishLetters = prefs[PreferencesKeys.STATS_ENGLISH_LETTERS] ?: 0L,
+                statsAvroWords = prefs[PreferencesKeys.STATS_AVRO_WORDS] ?: 0L,
+                statsWordsTyped = prefs[PreferencesKeys.STATS_WORDS_TYPED] ?: 0L,
+                statsNumbersTyped = prefs[PreferencesKeys.STATS_NUMBERS_TYPED] ?: 0L,
+                statsKeystrokes = prefs[PreferencesKeys.STATS_KEYSTROKES] ?: 0L,
+                statsAudioClicks = prefs[PreferencesKeys.STATS_AUDIO_CLICKS] ?: 0L,
+
                 setupCompleted = (prefs[PreferencesKeys.SETUP_COMPLETED] ?: false).also { isCompleted ->
                     if (isCompleted && !fastCache.getBoolean("setup_completed", false)) {
                         fastCache.edit().putBoolean("setup_completed", true).apply()
@@ -609,6 +630,68 @@ class LipikaPreferencesRepository private constructor(private val context: Conte
     suspend fun setLayoutExtraRowEnabled(layoutId: String, rowId: String, enabled: Boolean) {
         val key = booleanPreferencesKey("pref_extra_row_${layoutId}_${rowId}")
         context.lipikaDataStore.edit { it[key] = enabled }
+    }
+
+    suspend fun updateClipboardExpiryHours(hours: Int) {
+        fastCache.edit().putInt("pref_clipboard_expiry_hours", hours).apply()
+        context.lipikaDataStore.edit { it[PreferencesKeys.CLIPBOARD_EXPIRY_HOURS] = hours }
+    }
+
+    fun getClipboardExpiryHoursSync(): Int {
+        return fastCache.getInt("pref_clipboard_expiry_hours", 5)
+    }
+
+    suspend fun recordStatsBatch(
+        bangla: Long = 0L,
+        english: Long = 0L,
+        avro: Long = 0L,
+        words: Long = 0L,
+        numbers: Long = 0L,
+        keystrokes: Long = 0L,
+        audio: Long = 0L
+    ) {
+        context.lipikaDataStore.edit { prefs ->
+            if (bangla > 0L) {
+                val current = prefs[PreferencesKeys.STATS_BANGLA_LETTERS] ?: 0L
+                prefs[PreferencesKeys.STATS_BANGLA_LETTERS] = current + bangla
+            }
+            if (english > 0L) {
+                val current = prefs[PreferencesKeys.STATS_ENGLISH_LETTERS] ?: 0L
+                prefs[PreferencesKeys.STATS_ENGLISH_LETTERS] = current + english
+            }
+            if (avro > 0L) {
+                val current = prefs[PreferencesKeys.STATS_AVRO_WORDS] ?: 0L
+                prefs[PreferencesKeys.STATS_AVRO_WORDS] = current + avro
+            }
+            if (words > 0L) {
+                val current = prefs[PreferencesKeys.STATS_WORDS_TYPED] ?: 0L
+                prefs[PreferencesKeys.STATS_WORDS_TYPED] = current + words
+            }
+            if (numbers > 0L) {
+                val current = prefs[PreferencesKeys.STATS_NUMBERS_TYPED] ?: 0L
+                prefs[PreferencesKeys.STATS_NUMBERS_TYPED] = current + numbers
+            }
+            if (keystrokes > 0L) {
+                val current = prefs[PreferencesKeys.STATS_KEYSTROKES] ?: 0L
+                prefs[PreferencesKeys.STATS_KEYSTROKES] = current + keystrokes
+            }
+            if (audio > 0L) {
+                val current = prefs[PreferencesKeys.STATS_AUDIO_CLICKS] ?: 0L
+                prefs[PreferencesKeys.STATS_AUDIO_CLICKS] = current + audio
+            }
+        }
+    }
+
+    suspend fun resetStatistics() {
+        context.lipikaDataStore.edit { prefs ->
+            prefs[PreferencesKeys.STATS_BANGLA_LETTERS] = 0L
+            prefs[PreferencesKeys.STATS_ENGLISH_LETTERS] = 0L
+            prefs[PreferencesKeys.STATS_AVRO_WORDS] = 0L
+            prefs[PreferencesKeys.STATS_WORDS_TYPED] = 0L
+            prefs[PreferencesKeys.STATS_NUMBERS_TYPED] = 0L
+            prefs[PreferencesKeys.STATS_KEYSTROKES] = 0L
+            prefs[PreferencesKeys.STATS_AUDIO_CLICKS] = 0L
+        }
     }
 
     // Reset

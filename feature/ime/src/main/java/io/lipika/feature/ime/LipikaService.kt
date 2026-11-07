@@ -647,6 +647,11 @@ class LipikaService : InputMethodService() {
 
     override fun onDestroy() {
         super.onDestroy()
+        flushStatsBatch()
+        try {
+            soundPool?.release()
+            soundPool = null
+        } catch (_: Throwable) {}
         if (::voiceInputManager.isInitialized) {
             voiceInputManager.destroy()
         }
@@ -782,15 +787,120 @@ class LipikaService : InputMethodService() {
     private var cachedOneShotStrength: Int = -1
     private var cachedOneShotEffect: VibrationEffect? = null
 
+    private var soundPool: android.media.SoundPool? = null
+    private var soundPoolClickId: Int = 0
+    private var soundPoolLoaded: Boolean = false
+
+    private var pendingKeystrokes: Long = 0L
+    private var pendingBangla: Long = 0L
+    private var pendingEnglish: Long = 0L
+    private var pendingAvro: Long = 0L
+    private var pendingWords: Long = 0L
+    private var pendingNumbers: Long = 0L
+    private var pendingAudio: Long = 0L
+    private var lastStatsFlushTime: Long = System.currentTimeMillis()
+
+    private fun initSoundPool() {
+        if (soundPool != null) return
+        try {
+            val audioAttrs = android.media.AudioAttributes.Builder()
+                .setContentType(android.media.AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                .setUsage(android.media.AudioAttributes.USAGE_ASSISTANCE_SONIFICATION)
+                .build()
+            soundPool = android.media.SoundPool.Builder()
+                .setMaxStreams(4)
+                .setAudioAttributes(audioAttrs)
+                .build().apply {
+                    setOnLoadCompleteListener { _, _, status ->
+                        if (status == 0) soundPoolLoaded = true
+                    }
+                }
+            val possiblePaths = listOf(
+                "/system/media/audio/ui/KeypressStandard.ogg",
+                "/system/media/audio/ui/Effect_Tick.ogg",
+                "/system/media/audio/ui/KeypressSpacebar.ogg"
+            )
+            for (path in possiblePaths) {
+                val file = java.io.File(path)
+                if (file.exists() && file.canRead()) {
+                    soundPoolClickId = soundPool?.load(path, 1) ?: 0
+                    if (soundPoolClickId > 0) break
+                }
+            }
+        } catch (_: Throwable) {}
+    }
+
+    private fun recordTypingForStats(text: String, isAvroCandidate: Boolean = false) {
+        for (ch in text) {
+            when {
+                ch in '\u0980'..'\u09FF' -> pendingBangla++
+                (ch in 'a'..'z') || (ch in 'A'..'Z') -> pendingEnglish++
+                ch.isDigit() || ch in '০'..'৯' -> pendingNumbers++
+            }
+        }
+        if (isAvroCandidate || activeLayout.id == "bn_avro") {
+            pendingAvro++
+        }
+        if (text == " " || text == "\n") {
+            pendingWords++
+        }
+        if (pendingKeystrokes >= 20 || System.currentTimeMillis() - lastStatsFlushTime > 10000L) {
+            flushStatsBatch()
+        }
+    }
+
+    private fun flushStatsBatch() {
+        if (pendingKeystrokes == 0L && pendingWords == 0L && pendingAudio == 0L) return
+        val k = pendingKeystrokes
+        val b = pendingBangla
+        val e = pendingEnglish
+        val a = pendingAvro
+        val w = pendingWords
+        val n = pendingNumbers
+        val au = pendingAudio
+        pendingKeystrokes = 0L
+        pendingBangla = 0L
+        pendingEnglish = 0L
+        pendingAvro = 0L
+        pendingWords = 0L
+        pendingNumbers = 0L
+        pendingAudio = 0L
+        lastStatsFlushTime = System.currentTimeMillis()
+
+        serviceScope.launch {
+            preferencesRepo.recordStatsBatch(
+                bangla = b,
+                english = e,
+                avro = a,
+                words = w,
+                numbers = n,
+                keystrokes = k,
+                audio = au
+            )
+        }
+    }
+
     private fun performKeyFeedback() {
+        pendingKeystrokes++
         if (preferencesState.soundOnKeypress) {
-            try {
-                val volume = (preferencesState.soundVolume / 100f).coerceIn(0.01f, 1.0f)
-                audioManager?.playSoundEffect(android.media.AudioManager.FX_KEYPRESS_STANDARD, volume)
-            } catch (_: Throwable) {
+            pendingAudio++
+            initSoundPool()
+            val volume = (preferencesState.soundVolume / 100f).coerceIn(0.01f, 1.0f)
+            var played = false
+            if (soundPoolLoaded && soundPoolClickId > 0) {
                 try {
-                    audioManager?.playSoundEffect(android.media.AudioManager.FX_KEYPRESS_STANDARD)
+                    val streamId = soundPool?.play(soundPoolClickId, volume, volume, 1, 0, 1.0f) ?: 0
+                    if (streamId > 0) played = true
                 } catch (_: Throwable) {}
+            }
+            if (!played) {
+                try {
+                    audioManager?.playSoundEffect(android.media.AudioManager.FX_KEYPRESS_STANDARD, volume)
+                } catch (_: Throwable) {
+                    try {
+                        audioManager?.playSoundEffect(android.media.AudioManager.FX_KEYPRESS_STANDARD)
+                    } catch (_: Throwable) {}
+                }
             }
         }
         if (!preferencesState.vibrateOnKeypress) return
@@ -879,6 +989,7 @@ class LipikaService : InputMethodService() {
             KeyType.CHARACTER -> {
                 val initialShiftState = shiftState
                 val text = key.textToCommit(shiftState)
+                recordTypingForStats(text)
 
                 when {
                     isTransliterationLayout() -> {
@@ -1090,6 +1201,7 @@ class LipikaService : InputMethodService() {
                 updateSuggestions()
             }
             KeyType.SPACE -> {
+                recordTypingForStats(" ")
                 if (PredefinedLayouts.isBornoEasy(activeLayout.id)) {
                     isBornoEasyKarMode = false
                     bornoEasyTypedCluster = ""
@@ -2232,6 +2344,7 @@ class LipikaService : InputMethodService() {
         }
         val ic = currentInputConnection ?: return
         val candidateText = candidate.text.trim()
+        recordTypingForStats(candidateText, isAvroCandidate = (activeLayout.id == "bn_avro"))
         val shouldAutoSpace = preferencesState.autoSpaceAfterSuggestion
         val textToCommit = if (shouldAutoSpace) "$candidateText " else candidateText
 

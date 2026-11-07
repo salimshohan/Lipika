@@ -25,6 +25,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.BugReport
+import androidx.compose.material.icons.outlined.Chat
 import androidx.compose.material.icons.outlined.Code
 import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.FontDownload
@@ -32,6 +33,7 @@ import androidx.compose.material.icons.outlined.Keyboard
 import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material.icons.outlined.Memory
 import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.outlined.Public
 import androidx.compose.material.icons.outlined.School
 import androidx.compose.material.icons.outlined.Speed
 import androidx.compose.material.icons.outlined.TouchApp
@@ -328,6 +330,86 @@ fun AboutScreen(
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Bold,
                         color = colors.accent
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                // WhatsApp info
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(colors.inputBackground)
+                        .clickable { openUrl(context, "https://wa.me/8801522106283") }
+                        .padding(12.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.Chat,
+                        contentDescription = "WhatsApp",
+                        tint = Color(0xFF25D366),
+                        modifier = Modifier.size(20.dp)
+                    )
+                    Spacer(modifier = Modifier.width(12.dp))
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = "WhatsApp",
+                            fontSize = 11.sp,
+                            color = colors.textSecondary
+                        )
+                        Text(
+                            text = "01522106283",
+                            fontSize = 13.5.sp,
+                            fontWeight = FontWeight.Medium,
+                            color = colors.textPrimary
+                        )
+                    }
+                    Text(
+                        text = "Chat",
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF25D366)
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                // Facebook info
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(colors.inputBackground)
+                        .clickable { openUrl(context, "https://facebook.com/salimhosenshohan") }
+                        .padding(12.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.Public,
+                        contentDescription = "Facebook",
+                        tint = Color(0xFF1877F2),
+                        modifier = Modifier.size(20.dp)
+                    )
+                    Spacer(modifier = Modifier.width(12.dp))
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = "Facebook Profile",
+                            fontSize = 11.sp,
+                            color = colors.textSecondary
+                        )
+                        Text(
+                            text = "@salimhosenshohan",
+                            fontSize = 13.5.sp,
+                            fontWeight = FontWeight.Medium,
+                            color = colors.textPrimary
+                        )
+                    }
+                    Text(
+                        text = "Open",
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF1877F2)
                     )
                 }
             }

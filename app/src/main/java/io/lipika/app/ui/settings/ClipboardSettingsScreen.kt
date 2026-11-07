@@ -44,6 +44,8 @@ import androidx.compose.material.icons.filled.DragHandle
 import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.PushPin
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.outlined.Schedule
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -60,6 +62,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -275,6 +278,139 @@ fun ClipboardSettingsScreen(
                         )
                     }
                 }
+            }
+
+            // Auto-Delete History Duration Bar
+            var selectedExpiry by remember {
+                mutableIntStateOf(
+                    try {
+                        io.lipika.data.prefs.LipikaPreferencesRepository.getInstance(context).getClipboardExpiryHoursSync()
+                    } catch (_: Throwable) { 5 }
+                )
+            }
+            var showExpiryDialog by remember { mutableStateOf(false) }
+
+            val expiryLabel = when (selectedExpiry) {
+                1 -> "1 Hour"
+                2 -> "2 Hours"
+                5 -> "5 Hours (Default)"
+                6 -> "6 Hours"
+                12 -> "12 Hours"
+                24 -> "1 Day"
+                360 -> "15 Days"
+                720 -> "30 Days"
+                -1 -> "Never"
+                else -> "$selectedExpiry Hours"
+            }
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 14.dp, vertical = 2.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(p.cardBg)
+                    .border(BorderStroke(1.dp, p.border), RoundedCornerShape(12.dp))
+                    .clickable { showExpiryDialog = true }
+                    .padding(horizontal = 12.dp, vertical = 9.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.Schedule,
+                        contentDescription = null,
+                        tint = p.accent,
+                        modifier = Modifier.size(16.dp)
+                    )
+                    Text(
+                        text = "Auto-delete unpinned clips after:",
+                        fontSize = 11.5.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = p.textSecondary
+                    )
+                }
+                Text(
+                    text = expiryLabel,
+                    fontSize = 11.5.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = p.accent
+                )
+            }
+
+            if (showExpiryDialog) {
+                val options = listOf(
+                    1 to "1 Hour",
+                    2 to "2 Hours",
+                    5 to "5 Hours (Default)",
+                    6 to "6 Hours",
+                    12 to "12 Hours",
+                    24 to "1 Day",
+                    360 to "15 Days",
+                    720 to "30 Days",
+                    -1 to "Never"
+                )
+                AlertDialog(
+                    onDismissRequest = { showExpiryDialog = false },
+                    title = {
+                        Text(
+                            text = "Auto-Delete Retention Time",
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = p.textPrimary
+                        )
+                    },
+                    text = {
+                        Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                            Text(
+                                text = "Unpinned items older than this time will be deleted automatically. Pinned items are never deleted.",
+                                fontSize = 12.sp,
+                                color = p.textSecondary,
+                                modifier = Modifier.padding(bottom = 6.dp)
+                            )
+                            for ((hours, label) in options) {
+                                val isSelected = selectedExpiry == hours
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clip(RoundedCornerShape(8.dp))
+                                        .background(if (isSelected) p.accent.copy(alpha = 0.12f) else Color.Transparent)
+                                        .clickable {
+                                            selectedExpiry = hours
+                                            showExpiryDialog = false
+                                            kotlinx.coroutines.CoroutineScope(kotlinx.coroutines.Dispatchers.IO).launch {
+                                                io.lipika.data.prefs.LipikaPreferencesRepository.getInstance(context).updateClipboardExpiryHours(hours)
+                                                clipboardManager.purgeExpiredClips()
+                                            }
+                                        }
+                                        .padding(horizontal = 10.dp, vertical = 8.dp),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.SpaceBetween
+                                ) {
+                                    Text(
+                                        text = label,
+                                        fontSize = 13.sp,
+                                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
+                                        color = if (isSelected) p.accent else p.textPrimary
+                                    )
+                                    if (isSelected) {
+                                        Text("✓", color = p.accent, fontWeight = FontWeight.Bold)
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    confirmButton = {
+                        Button(
+                            onClick = { showExpiryDialog = false },
+                            colors = ButtonDefaults.buttonColors(containerColor = p.accent)
+                        ) {
+                            Text("Done", color = Color.White)
+                        }
+                    }
+                )
             }
 
             // Clips List

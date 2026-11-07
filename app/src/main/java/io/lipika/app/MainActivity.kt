@@ -916,6 +916,16 @@ fun LipikaSettingsApp(
                         )
                     }
 
+                    is SettingsScreen.TypingStatistics -> {
+                        TypingStatisticsScreen(
+                            preferences = preferences,
+                            onResetStats = {
+                                scope.launch { preferencesRepo.resetStatistics() }
+                            },
+                            onBack = navigateBack
+                        )
+                    }
+
                     is SettingsScreen.BackupRestore -> {
                         BackupRestoreScreen(
                             clipboardManager = SandboxedClipboardManager.getInstance(context),

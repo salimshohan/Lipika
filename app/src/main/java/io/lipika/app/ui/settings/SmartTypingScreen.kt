@@ -89,12 +89,11 @@ fun SmartTypingScreen(
     onBack: () -> Unit = {}
 ) {
     val scrollState = rememberScrollState()
-    var showPersonalDictionaryDialog by remember { mutableStateOf(false) }
     var showDeleteAllDialog by remember { mutableStateOf(false) }
     val context = LocalContext.current
     val colors = LocalSettingsColors.current
 
-    // 1. Personal Dictionary Management Dialog
+    val showPersonalDictionaryDialog = false
     if (showPersonalDictionaryDialog) {
         val wordList = remember { mutableStateListOf<String>().apply { addAll(getLearnedWords()) } }
         var newWordInput by remember { mutableStateOf("") }
@@ -450,39 +449,7 @@ fun SmartTypingScreen(
         Spacer(modifier = Modifier.height(12.dp))
 
         // ==========================================
-        // CATEGORY C: Typing Intelligence
-        // ==========================================
-        SettingsCategoryHeader(title = "Typing Intelligence")
-
-        SettingsGroup(modifier = Modifier.padding(horizontal = 16.dp)) {
-            SettingsToggleItem(
-                title = "Smart Spell Checker",
-                subtitle = "Detect spelling mistakes and suggest correct alternatives.",
-                checked = preferences.smartSpellChecker,
-                position = GroupPosition.TOP,
-                onCheckedChange = onUpdateSmartSpellChecker
-            )
-
-            SettingsNavigationItem(
-                title = "Personal Dictionary",
-                subtitle = "Manage your custom words and personal vocabulary.",
-                position = GroupPosition.MIDDLE,
-                onClick = { showPersonalDictionaryDialog = true }
-            )
-
-            SettingsToggleItem(
-                title = "Custom Word Learning",
-                subtitle = "Learn frequently used words to improve future suggestions.",
-                checked = preferences.customWordLearning,
-                position = GroupPosition.BOTTOM,
-                onCheckedChange = onUpdateCustomWordLearning
-            )
-        }
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        // ==========================================
-        // CATEGORY D: Glide & Gesture Typing
+        // CATEGORY C: Glide & Gesture Typing
         // ==========================================
         SettingsCategoryHeader(title = "Glide & Gesture Typing")
 

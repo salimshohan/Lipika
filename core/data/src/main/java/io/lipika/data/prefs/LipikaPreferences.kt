@@ -87,6 +87,18 @@ data class LipikaPreferences(
     // Layout-specific dynamic extra row overrides ("${layoutId}_${rowId}" -> Boolean)
     val extraRowOverrides: Map<String, Boolean> = emptyMap(),
 
+    // Clipboard & Retention
+    val clipboardExpiryHours: Int = 5, // -1 = Never, 1, 2, 5, 6, 12, 24, 360, 720
+
+    // Typing Statistics
+    val statsBanglaLetters: Long = 0L,
+    val statsEnglishLetters: Long = 0L,
+    val statsAvroWords: Long = 0L,
+    val statsWordsTyped: Long = 0L,
+    val statsNumbersTyped: Long = 0L,
+    val statsKeystrokes: Long = 0L,
+    val statsAudioClicks: Long = 0L,
+
     // Onboarding / Setup status
     val setupCompleted: Boolean = false
 ) {
@@ -191,13 +203,22 @@ data class LipikaPreferences(
         const val FONT_CALIBRI = "calibri"
         const val FONT_CORBEL = "corbel"
 
-        // 10 New Bengali and English Fonts
+        // 15 Bengali Fonts
         const val FONT_SOLAIMAN_LIPI = "solaiman_lipi"
         const val FONT_SIYAM_RUPALI = "siyam_rupali"
         const val FONT_NOTO_BENGALI = "noto_sans_bengali"
         const val FONT_NOTO_SANS_BENGALI = "noto_sans_bengali"
         const val FONT_HIND_SILIGURI = "hind_siliguri"
         const val FONT_APONA_LOHIT = "apona_lohit"
+        const val FONT_BENSEN = "bensen"
+        const val FONT_GALADA = "galada"
+        const val FONT_ATMA = "atma"
+        const val FONT_MINA = "mina"
+        const val FONT_SHONAR_BANGLA = "shonar_bangla"
+        const val FONT_SUTONNY = "sutonny"
+        const val FONT_CHARU_CHANDAN = "charu_chandan"
+        const val FONT_SAGAR = "sagar"
+        const val FONT_ADOR = "ador"
 
         const val FONT_ROBOTO = "roboto"
         const val FONT_INTER = "inter"

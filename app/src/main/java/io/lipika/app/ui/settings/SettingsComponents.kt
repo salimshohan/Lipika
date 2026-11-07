@@ -51,6 +51,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -184,6 +185,7 @@ fun SettingsUnifiedTopBar(
         is SettingsScreen.CorrectionsSuggestions -> "Smart Typing"
         is SettingsScreen.Clipboard -> "Clipboard"
         is SettingsScreen.VoiceTyping -> "Voice Typing"
+        is SettingsScreen.TypingStatistics -> "Typing Insights"
         is SettingsScreen.BackupRestore -> "Backup & Restore"
         is SettingsScreen.About -> "About Lipika"
         is SettingsScreen.Onboarding -> "Setup Wizard"
@@ -202,6 +204,7 @@ fun SettingsUnifiedTopBar(
         is SettingsScreen.CorrectionsSuggestions -> "Smart Typing"
         is SettingsScreen.Clipboard -> "Manage copied items & pins"
         is SettingsScreen.VoiceTyping -> "Speech recognition & providers"
+        is SettingsScreen.TypingStatistics -> "Keystrokes & language metrics"
         is SettingsScreen.BackupRestore -> "Import, export & data migration"
         is SettingsScreen.About -> null
         is SettingsScreen.Onboarding -> "Welcome to Lipika"
@@ -212,7 +215,7 @@ fun SettingsUnifiedTopBar(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 20.dp, end = 20.dp, top = 26.dp, bottom = 12.dp),
+            .padding(start = 20.dp, end = 20.dp, top = 10.dp, bottom = 10.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         AnimatedContent(
@@ -517,9 +520,11 @@ fun SettingsNavigationItem(
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(
                             text = title,
-                            fontSize = 15.sp,
+                            fontSize = 14.5.sp,
                             fontWeight = titleFontWeight,
-                            color = colors.textPrimary
+                            color = colors.textPrimary,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
                         )
                         if (badge != null) {
                             Spacer(modifier = Modifier.width(8.dp))
@@ -541,9 +546,11 @@ fun SettingsNavigationItem(
                     if (subtitle != null) {
                         Text(
                             text = subtitle,
-                            fontSize = 13.sp,
-                            lineHeight = 18.sp,
+                            fontSize = 10.5.sp,
+                            fontWeight = FontWeight.SemiBold,
                             color = colors.textSecondary,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
                             modifier = Modifier.padding(top = 2.dp)
                         )
                     }
@@ -584,9 +591,11 @@ fun SettingsNavigationItem(
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(
                             text = title,
-                            fontSize = 15.sp,
+                            fontSize = 14.5.sp,
                             fontWeight = titleFontWeight,
-                            color = colors.textPrimary
+                            color = colors.textPrimary,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
                         )
                         if (badge != null) {
                             Spacer(modifier = Modifier.width(8.dp))
@@ -608,9 +617,11 @@ fun SettingsNavigationItem(
                     if (subtitle != null) {
                         Text(
                             text = subtitle,
-                            fontSize = 13.sp,
-                            lineHeight = 18.sp,
+                            fontSize = 10.5.sp,
+                            fontWeight = FontWeight.SemiBold,
                             color = colors.textSecondary,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
                             modifier = Modifier.padding(top = 2.dp)
                         )
                     }
@@ -707,9 +718,11 @@ fun SettingsToggleItem(
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(
                             text = title,
-                            fontSize = 15.sp,
+                            fontSize = 14.5.sp,
                             fontWeight = FontWeight.SemiBold,
-                            color = colors.textPrimary
+                            color = colors.textPrimary,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
                         )
                         if (badge != null) {
                             Spacer(modifier = Modifier.width(8.dp))
@@ -731,9 +744,11 @@ fun SettingsToggleItem(
                     if (subtitle != null) {
                         Text(
                             text = subtitle,
-                            fontSize = 13.sp,
-                            lineHeight = 18.sp,
+                            fontSize = 10.5.sp,
+                            fontWeight = FontWeight.SemiBold,
                             color = colors.textSecondary,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
                             modifier = Modifier.padding(top = 2.dp)
                         )
                     }
@@ -1042,16 +1057,20 @@ fun SettingsRadioOption(
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = title,
-                        fontSize = 15.sp,
+                        fontSize = 14.5.sp,
                         fontWeight = FontWeight.SemiBold,
-                        color = colors.textPrimary
+                        color = colors.textPrimary,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
                     )
                     if (!subtitle.isNullOrBlank()) {
                         Text(
                             text = subtitle,
-                            fontSize = 13.sp,
-                            lineHeight = 18.sp,
+                            fontSize = 10.5.sp,
+                            fontWeight = FontWeight.SemiBold,
                             color = colors.textSecondary,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
                             modifier = Modifier.padding(top = 2.dp)
                         )
                     }

@@ -46,7 +46,7 @@ class SandboxedClipboardManager(context: Context) {
 
     fun syncFromSystemClipboard(callingContext: Context? = null, forceNotify: Boolean = false) {
         try {
-            purgeExpiredOtps()
+            purgeExpiredClips()
             val cm = (callingContext?.getSystemService(Context.CLIPBOARD_SERVICE) as? ClipboardManager)
                 ?: (appContext.getSystemService(Context.CLIPBOARD_SERVICE) as? ClipboardManager)
                 ?: systemClipboard
@@ -365,10 +365,18 @@ class SandboxedClipboardManager(context: Context) {
         saveClipsToDisk()
     }
 
-    private fun purgeExpiredOtps() {
+    fun purgeExpiredClips() {
+        val expiryHours = try {
+            io.lipika.data.prefs.LipikaPreferencesRepository.getInstance(appContext).getClipboardExpiryHoursSync()
+        } catch (_: Throwable) { 5 }
         val now = System.currentTimeMillis()
         val fiveMinutes = 5 * 60 * 1000L
-        val removed = clips.removeAll { it.isOtp && !it.isPinned && (now - it.timestamp > fiveMinutes) }
+        var removed = clips.removeAll { it.isOtp && !it.isPinned && (now - it.timestamp > fiveMinutes) }
+        if (expiryHours > 0) {
+            val expiryMs = expiryHours.toLong() * 3600000L
+            val expired = clips.removeAll { !it.isPinned && (now - it.timestamp > expiryMs) }
+            if (expired) removed = true
+        }
         if (removed) {
             saveClipsToDisk()
         }
@@ -448,6 +456,7 @@ class SandboxedClipboardManager(context: Context) {
             }
             clips.clear()
             clips.addAll(loaded)
+            purgeExpiredClips()
         } catch (_: Exception) {}
     }
 

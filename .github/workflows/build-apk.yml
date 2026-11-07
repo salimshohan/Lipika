@@ -49,8 +49,8 @@ jobs:
           echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --install "ndk;26.2.11394342"
           echo "ANDROID_NDK_HOME=$ANDROID_HOME/ndk/26.2.11394342" >> $GITHUB_ENV
 
-      - name: Build Debug APK & AAB Bundle
-        run: ./gradlew assembleDebug bundleDebug --stacktrace --no-daemon -Dorg.gradle.jvmargs="-Xmx4096m -XX:MaxMetaspaceSize=1024m"
+      - name: Build Debug APK
+        run: ./gradlew assembleDebug --stacktrace --no-daemon -Dorg.gradle.jvmargs="-Xmx4096m -XX:MaxMetaspaceSize=1024m"
 
       - name: Prepare Dynamic Artifacts
         run: |
@@ -59,18 +59,15 @@ jobs:
           mkdir -p dist
           cp app/build/outputs/apk/debug/app-debug.apk "dist/Lipika v${VERSION_NAME}.apk"
           cp app/build/outputs/apk/debug/app-debug.apk "dist/Lipika.apk"
-          if [ -f app/build/outputs/bundle/debug/app-debug.aab ]; then
-            cp app/build/outputs/bundle/debug/app-debug.aab "dist/Lipika v${VERSION_NAME}.aab"
-          fi
           ls -la dist/
 
-      - name: Upload Debug APK & Bundle Artifacts
+      - name: Upload Debug APK Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: Lipika-Release-Packages
           path: dist/*
 
-      - name: Release Lipika APK & AAB
+      - name: Release Lipika APK
         if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
         with:
@@ -79,30 +76,31 @@ jobs:
           body: |
             ### 🌟 Lipika Keyboard ${{ github.ref_name }} Release
 
-            - **🖼️ Official App Icon Artwork**:
-              - Restored the high-resolution light background canvas artwork with diagonal gradient, soft shadows, and centered vibrant blue-cyan squircle "L" badge across all screen densities.
-            - **⌨️ Keyboard Layout & Symbol Hints (Exact Reference Match)**:
-              - Dedicated English Number Row with Bengali numeral hints (`১`–`০`), and dedicated Bengali Number Row with English numeral hints (`1`–`0`).
-              - Standard QWERTY layout symbol hints (`q`→`৳`, `w`→`%`, `e`→`_`, `r`→`;`, `t`→`<`, `y`→`>`, `u`→`+`, `i`→`=`, `o`→`[`, `p`→`]`).
-              - Bottom row arranged as: `?123 / ?১২৩`, `Emoji`, `/`, `Spacebar`, `. / ।`, `Go / Enter`.
-              - Symbols layout 1 and 2 updated with exact glyphs (`☞ ◐ ⊕ ✖ ✔ ✪ ∞ ⇒ ➤ ✆`, etc.).
-            - **✨ Bengali Unicode & Provat Engine Refinement**:
-              - Eliminated HarfBuzz dotted circle (`◌`) artifacts at the Unicode level with smart vowel kar merging, independent vowel resolution, and duplicate hasanta prevention.
-            - **🔊 Dedicated Sound & Vibration Settings**:
-              - Added dedicated Sound & Vibration settings section with volume slider, vibration mode (Haptic vs Vibration), intensity, and duration controls.
-              - Configured `VibrationAttributes.USAGE_TOUCH` and `AudioAttributes.USAGE_ASSISTANCE_SONIFICATION` for guaranteed keypress sound and vibration feedback on all OEM Android devices.
-            - **🔤 Dual Font System & 10 New Fonts**:
-              - Choose English and Bengali typography simultaneously with dedicated preview sentences.
-              - Added 5 new Bengali fonts: **SolaimanLipi**, **Siyam Rupali**, **Noto Sans Bengali**, **Hind Siliguri**, **AponaLohit**.
-              - Added 5 new English fonts: **Roboto**, **Inter**, **Poppins**, **Outfit**, **Montserrat**.
-              - Added dedicated **Fonts** shortcut directly on the keyboard toolbar.
-            - **⚡ Performance & Latency Optimization**:
-              - Ultra-responsive touch handling preventing missed keypresses during rapid multi-touch typing.
-              - Spacebar swipe threshold reduced to 28dp for instant language switching.
-            - **🎨 Appearance & Theme Polish**:
-              - Streamlined Appearance screen without unnecessary live previews.
-              - Added "System Default" to automated theme schedule.
-              - Removed description line limits to eliminate truncated text.
+            - **🖼️ Official App Icon & Branding**:
+              - Restored the exact high-resolution light background canvas artwork with diagonal gradient, soft shadows, and centered vibrant blue-cyan squircle "L" badge across all screen densities.
+            - **📊 Real-time Typing Insights & Statistics**:
+              - Added dedicated **Typing Insights** dashboard tracking total keystrokes, Bengali letters, English letters, Avro phonetic transliterations, total words, numeric digits, and audio clicks.
+              - Includes one-tap reset with confirmation dialog.
+            - **🔤 Expanded Typography — 15 Bengali & 15 English Fonts**:
+              - Expanded Bengali font collection to 15 fonts (**Kalpurush**, **SolaimanLipi**, **Siyam Rupali**, **Noto Sans Bengali**, **Hind Siliguri**, **AponaLohit**, **Bensen**, **Galada**, **Atma**, **Mina**, **Shonar Bangla**, **Sutonny**, **Charu Chandan**, **Sagar**, **Ador**).
+              - Simultaneous selection and independent rendering of English and Bengali fonts with instant live preview.
+            - **🔊 Reliable Keypress Audio Click Fix (SoundPool)**:
+              - Built a dedicated direct `SoundPool` audio pipeline for system keypress sound effects, guaranteeing audible click feedback on all Android devices regardless of OEM system touch sound toggles.
+              - Sound & Vibration controls moved exclusively to the dedicated Sound & Vibration settings screen.
+            - **⏱️ Configurable Clipboard Auto-Expiration**:
+              - Automatic retention system for clipboard items (1h, 2h, 5h default, 6h, 12h, 1 day, 15 days, 30 days, or Never).
+              - Pinned clips are permanently protected from expiration.
+            - **⏱️ Key Touch & Timing Full Slider Control (100ms–500ms)**:
+              - Added fine-grained slider control for long-press delay from 100ms to 500ms with real-time feedback.
+            - **🎨 Appearance Settings Streamline**:
+              - Redesigned Appearance screen matching Preferences card design with 10 curated single accents.
+              - Removed unnecessary live preview boxes and clutter.
+            - **📱 Smart Header & Status Bar Polish**:
+              - Eliminated duplicate headers and status bar overlapping across all settings sub-screens.
+              - Streamlined card subtitles with single-line truncation and bold 10.5sp typography.
+              - Removed Typing Intelligence section from Smart Typing screen.
+            - **👤 Direct Developer Contact**:
+              - Added clickable developer cards for WhatsApp (`01522106283`) and Facebook (`@salimhosenshohan`) in the About screen.
           files: dist/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -52,8 +52,9 @@ val LocalBengaliFontFamily = staticCompositionLocalOf {
 
 fun resolveBengaliFontFamily(selectedBengaliFont: String): FontFamily {
     return when (selectedBengaliFont) {
-        "noto_sans_bengali" -> FontFamily.SansSerif
-        "solaiman_lipi", "siyam_rupali", "hind_siliguri", "apona_lohit", "kalpurush" ->
+        "noto_sans_bengali", "galada", "mina" -> FontFamily.SansSerif
+        "solaiman_lipi", "siyam_rupali", "hind_siliguri", "apona_lohit", "kalpurush",
+        "bensen", "atma", "shonar_bangla", "sutonny", "charu_chandan", "sagar", "ador" ->
             FontFamily(Font(R.font.kalpurush, FontWeight.Normal))
         else -> FontFamily(Font(R.font.kalpurush, FontWeight.Normal))
     }

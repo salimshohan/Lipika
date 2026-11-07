@@ -11,11 +11,11 @@
 ---
 
 <p align="center">
-  <a href="https://github.com/salimshohan/Lipika/releases/tag/v0.2.9">
-    <img src="https://img.shields.io/badge/Release-v0.2.9-06B6D4?style=for-the-badge&logo=android&logoColor=white" alt="Version 0.2.9" />
+  <a href="https://github.com/salimshohan/Lipika/releases/tag/v0.3.0">
+    <img src="https://img.shields.io/badge/Release-v0.3.0-06B6D4?style=for-the-badge&logo=android&logoColor=white" alt="Version 0.3.0" />
   </a>
-  <a href="https://github.com/salimshohan/Lipika/releases/download/v0.2.9/Lipika%20v0.2.9.apk">
-    <img src="https://img.shields.io/badge/Download-Lipika%20v0.2.9%20APK-10B981?style=for-the-badge&logo=android&logoColor=white" alt="Download APK" />
+  <a href="https://github.com/salimshohan/Lipika/releases/download/v0.3.0/Lipika%20v0.3.0.apk">
+    <img src="https://img.shields.io/badge/Download-Lipika%20v0.3.0%20APK-10B981?style=for-the-badge&logo=android&logoColor=white" alt="Download APK" />
   </a>
   <a href="https://github.com/salimshohan/Lipika">
     <img src="https://img.shields.io/badge/GitHub-salimshohan%2FLipika-8B5CF6?style=for-the-badge&logo=github&logoColor=white" alt="GitHub" />
@@ -33,31 +33,31 @@
 
 ---
 
-## ✨ Key Highlights
+## ✨ Key Highlights in v0.3.0
 
-- **⌨️ Perfected Keyboard Layouts & Hints**:
-  - Dedicated English Number Row (`1`–`0`) displaying Bengali numerals (`১`–`০`) as secondary hints on top-right corners; normal tap types English digit, long-press inserts corresponding Bengali numeral.
-  - Dedicated Bengali Number Row (`১`–`০`) with English digit secondary hints (`1`–`0`).
-  - Refined symbol hints on QWERTY alphabet keys (`q`→`৳`, `w`→`%`, `e`→`_`, `r`→`;`, `t`→`<`, `y`→`>`, `u`→`+`, `i`→`=`, `o`→`[`, `p`→`]`, `a`→`@`, `s`→`#`, `d`→`&`, `f`→`*`, `g`→`-`, `h`→`!`, `j`→`?`, `k`→`(`, `l`→`)`, `z`→`"`, `b`→`'`, `n`→`:`, `m`→`/`).
-  - Streamlined bottom row order: `?123 / ?১২৩` ➔ `Emoji` ➔ `Slash (/)` ➔ `Spacebar` ➔ `Full Stop (.) / Dari (।)` ➔ `Go / Enter`.
-- **🔊 Dedicated Sound & Vibration Settings**:
-  - Independent sound and vibration management section in Settings.
-  - Fixes sound and vibration feedback using `VibrationAttributes.USAGE_TOUCH` and `AudioAttributes.USAGE_ASSISTANCE_SONIFICATION` for 100% reliable feedback across all Android OEMs.
-  - Custom sliders for sound volume (0–100%), vibration type (Haptic vs Vibration), intensity (0–100%), and duration (5–100ms).
-- **🔤 Dual Font System & 10 New Fonts**:
-  - Select English and Bengali fonts together with dedicated interactive previews.
-  - Added 5 new Bengali fonts: **SolaimanLipi**, **Siyam Rupali**, **Noto Sans Bengali**, **Hind Siliguri**, **AponaLohit** (alongside Kalpurush).
-  - Added 5 new English fonts: **Roboto**, **Inter**, **Poppins**, **Outfit**, **Montserrat** (alongside Tw Cent MT, Segoe UI, Georgia, Consolas, and others).
-  - Quick **Fonts** shortcut added directly to the keyboard toolbar and drawer.
-- **✨ Bengali Unicode & Provat Engine Refinement**:
-  - Permanently eliminated dotted circle (`◌`) artifacts at the Unicode level with smart vowel kar merging, independent vowel resolution, and duplicate hasanta prevention.
-- **⚡ Keyboard Performance & Responsiveness**:
-  - Fallback tap handling to eliminate dropped keypresses during rapid multi-touch typing.
-  - Spacebar swipe threshold reduced to 28dp for instant language switching.
-- **🎨 Appearance & Theme Polish**:
-  - Streamlined Appearance screen without unnecessary live preview boxes.
-  - Added "System Default" to automated theme schedule.
-  - Full multiline description wrapping across all settings screens.
+- **📊 Real-time Typing Insights & Statistics**:
+  - Live statistics tracking: Total Keystrokes, Bangla letters, English letters, Avro phonetic transliterations, Total words, Numbers typed, and Audio key clicks.
+  - Reset option with clear dialog confirmation.
+- **🔤 15 Bengali & 15 English Fonts**:
+  - Expanded Bengali font selection to 15 curated fonts: **Kalpurush**, **SolaimanLipi**, **Siyam Rupali**, **Noto Sans Bengali**, **Hind Siliguri**, **AponaLohit**, **Bensen**, **Galada**, **Atma**, **Mina**, **Shonar Bangla**, **Sutonny**, **Charu Chandan**, **Sagar**, **Ador**.
+  - 15 English fonts with simultaneous selection and real-time preview.
+- **🔊 SoundPool Keypress Audio Feedback Fix**:
+  - Direct low-latency `SoundPool` audio pipeline guaranteeing audible key click feedback on all Android devices, even when global system touch sounds are disabled.
+  - Dedicated Sound & Vibration settings section with volume, vibration mode, intensity, and duration controls.
+- **⏱️ Configurable Clipboard Auto-Expiration**:
+  - Automatically deletes unpinned clipboard history after a configurable duration (1 hour, 2 hours, 5 hours default, 6 hours, 12 hours, 1 day, 15 days, 30 days, or Never).
+  - Pinned clips are permanently protected from deletion.
+- **⏱️ Precision Key Touch & Timing Control (100ms–500ms)**:
+  - Full fine-grained slider control over long-press delay from 100ms to 500ms.
+- **🎨 Appearance Redesign & 10 Curated Single Accents**:
+  - Clean card layout matching Preferences design with 10 vibrant single accents, removing multiple-color complexity and unnecessary previews.
+- **🖼️ Official App Icon & Branding**:
+  - Restored high-resolution light background canvas artwork with diagonal gradient, soft shadows, and vibrant blue-cyan squircle "L" badge across all screen densities.
+- **📱 Polished Status Bar & Typography**:
+  - Fixed duplicate headers and status bar overlapping across all settings sub-screens.
+  - Subtitles formatted with single-line truncation and bold 10.5sp typography.
+- **👤 Direct Developer Contact**:
+  - Direct WhatsApp (`01522106283` -> `https://wa.me/8801522106283`) and Facebook (`@salimhosenshohan`) cards in About screen.
 
 ---
 

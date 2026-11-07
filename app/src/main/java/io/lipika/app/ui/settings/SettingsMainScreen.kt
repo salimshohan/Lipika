@@ -28,8 +28,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.outlined.Analytics
 import androidx.compose.material.icons.outlined.AutoAwesome
 import androidx.compose.material.icons.outlined.BrightnessMedium
+import androidx.compose.material.icons.outlined.CloudUpload
 import androidx.compose.material.icons.outlined.ContentPaste
 import androidx.compose.material.icons.outlined.FontDownload
 import androidx.compose.material.icons.outlined.Info
@@ -40,6 +42,7 @@ import androidx.compose.material.icons.outlined.Palette
 import androidx.compose.material.icons.outlined.Mic
 import androidx.compose.material.icons.outlined.Tune
 import androidx.compose.material.icons.outlined.VolumeUp
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -525,7 +528,7 @@ fun SettingsMainScreen(
                     )
                 }
 
-                // Row 5: Voice Typing & About
+                // Row 5: Voice Typing & Typing Insights
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -540,8 +543,31 @@ fun SettingsMainScreen(
                     )
                     DashboardOptionCard(
                         modifier = Modifier.weight(1f),
+                        title = "Typing Insights",
+                        subtitle = "Keystrokes & metrics",
+                        icon = Icons.Outlined.Analytics,
+                        colors = colors,
+                        onClick = { onNavigate(SettingsScreen.TypingStatistics) }
+                    )
+                }
+
+                // Row 6: Backup & Restore & About
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    DashboardOptionCard(
+                        modifier = Modifier.weight(1f),
+                        title = "Backup & Restore",
+                        subtitle = "Cloud & file backup",
+                        icon = Icons.Outlined.CloudUpload,
+                        colors = colors,
+                        onClick = { onNavigate(SettingsScreen.BackupRestore) }
+                    )
+                    DashboardOptionCard(
+                        modifier = Modifier.weight(1f),
                         title = "About",
-                        subtitle = "Version & info",
+                        subtitle = "Version & creator",
                         icon = Icons.Outlined.Info,
                         colors = colors,
                         onClick = { onNavigate(SettingsScreen.About) }
@@ -841,8 +867,8 @@ private fun DashboardOptionCard(
         ) {
             Box(
                 modifier = Modifier
-                    .size(42.dp)
-                    .clip(RoundedCornerShape(12.dp))
+                    .size(38.dp)
+                    .clip(RoundedCornerShape(11.dp))
                     .background(colors.accent.copy(alpha = 0.14f)),
                 contentAlignment = Alignment.Center
             ) {
@@ -850,11 +876,11 @@ private fun DashboardOptionCard(
                     imageVector = icon,
                     contentDescription = title,
                     tint = colors.accent,
-                    modifier = Modifier.size(22.dp)
+                    modifier = Modifier.size(20.dp)
                 )
             }
 
-            Spacer(modifier = Modifier.width(12.dp))
+            Spacer(modifier = Modifier.width(10.dp))
 
             Column(
                 modifier = Modifier.weight(1f),
@@ -862,16 +888,20 @@ private fun DashboardOptionCard(
             ) {
                 Text(
                     text = title,
-                    fontSize = 14.sp,
+                    fontSize = 13.5.sp,
                     fontWeight = FontWeight.Bold,
                     color = colors.textPrimary,
-                    maxLines = 1
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
                 Spacer(modifier = Modifier.height(2.dp))
                 Text(
                     text = subtitle,
-                    fontSize = 11.sp,
-                    color = colors.textSecondary
+                    fontSize = 10.5.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = colors.textSecondary,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
             }
         }

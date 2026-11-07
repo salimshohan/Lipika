@@ -38,10 +38,10 @@ import kotlin.math.roundToInt
 @Composable
 fun PreferencesScreen(
     preferences: LipikaPreferences,
-    onUpdateVibrate: (Boolean) -> Unit,
+    onUpdateVibrate: (Boolean) -> Unit = {},
     onUpdateVibrationType: (String) -> Unit = {},
-    onUpdateVibrationStrength: (Int) -> Unit,
-    onUpdateSound: (Boolean) -> Unit,
+    onUpdateVibrationStrength: (Int) -> Unit = {},
+    onUpdateSound: (Boolean) -> Unit = {},
     onUpdateLongPressDelay: (Int) -> Unit,
     onUpdateAccentColor: (String) -> Unit = {},
     onUpdateShowNumberRow: (Boolean) -> Unit,
@@ -62,131 +62,6 @@ fun PreferencesScreen(
             .verticalScroll(scrollState)
             .padding(bottom = 32.dp)
     ) {
-        Spacer(modifier = Modifier.height(8.dp))
-
-        // 1. Haptic & Acoustic Feedback
-        SettingsCategoryHeader(title = "Haptic & Acoustic Feedback")
-
-        SettingsGroup(modifier = Modifier.padding(horizontal = 16.dp)) {
-            SettingsToggleItem(
-                title = "Vibrate on Keypress",
-                subtitle = "Subtle tactile feedback on key taps",
-                checked = preferences.vibrateOnKeypress,
-                position = GroupPosition.TOP,
-                onCheckedChange = onUpdateVibrate
-            )
-
-            if (preferences.vibrateOnKeypress) {
-                // Feedback Type Selector: Haptic vs Vibration
-                SettingsItemCard(position = GroupPosition.MIDDLE) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp, vertical = 10.dp),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        val isHaptic = preferences.vibrationType == LipikaPreferences.VIBRATION_TYPE_HAPTIC
-                        val hapticBg = if (isHaptic) colors.accent.copy(alpha = 0.15f) else colors.inputBackground
-                        val hapticBorder = if (isHaptic) colors.accent else colors.inputBorder
-                        val hapticTint = if (isHaptic) colors.accent else colors.textSecondary
-                        val hapticText = if (isHaptic) colors.accent else colors.textPrimary
-
-                        Box(
-                            modifier = Modifier
-                                .weight(1f)
-                                .clip(RoundedCornerShape(10.dp))
-                                .background(hapticBg)
-                                .border(1.dp, hapticBorder, RoundedCornerShape(10.dp))
-                                .clickable { onUpdateVibrationType(LipikaPreferences.VIBRATION_TYPE_HAPTIC) }
-                                .padding(vertical = 10.dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(6.dp)
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Outlined.TouchApp,
-                                    contentDescription = null,
-                                    tint = hapticTint,
-                                    modifier = Modifier.size(16.dp)
-                                )
-                                Text(
-                                    text = "Haptic",
-                                    fontSize = 13.sp,
-                                    fontWeight = if (isHaptic) FontWeight.Bold else FontWeight.Medium,
-                                    color = hapticText
-                                )
-                            }
-                        }
-
-                        val isVibration = preferences.vibrationType == LipikaPreferences.VIBRATION_TYPE_VIBRATION
-                        val vibrationBg = if (isVibration) colors.accent.copy(alpha = 0.15f) else colors.inputBackground
-                        val vibrationBorder = if (isVibration) colors.accent else colors.inputBorder
-                        val vibrationTint = if (isVibration) colors.accent else colors.textSecondary
-                        val vibrationText = if (isVibration) colors.accent else colors.textPrimary
-
-                        Box(
-                            modifier = Modifier
-                                .weight(1f)
-                                .clip(RoundedCornerShape(10.dp))
-                                .background(vibrationBg)
-                                .border(1.dp, vibrationBorder, RoundedCornerShape(10.dp))
-                                .clickable { onUpdateVibrationType(LipikaPreferences.VIBRATION_TYPE_VIBRATION) }
-                                .padding(vertical = 10.dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(6.dp)
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Outlined.Vibration,
-                                    contentDescription = null,
-                                    tint = vibrationTint,
-                                    modifier = Modifier.size(16.dp)
-                                )
-                                Text(
-                                    text = "Vibration",
-                                    fontSize = 13.sp,
-                                    fontWeight = if (isVibration) FontWeight.Bold else FontWeight.Medium,
-                                    color = vibrationText
-                                )
-                            }
-                        }
-                    }
-                }
-
-                if (preferences.vibrationType == LipikaPreferences.VIBRATION_TYPE_VIBRATION) {
-                    val strength = preferences.vibrationStrength
-                    val strengthLabel = when {
-                        strength <= 25 -> "Light ($strength%)"
-                        strength <= 65 -> "Medium ($strength%)"
-                        else -> "Strong ($strength%)"
-                    }
-
-                    SettingsSliderItem(
-                        title = "Vibration Intensity",
-                        subtitle = "Motor vibration pulse strength",
-                        value = strength.toFloat(),
-                        valueRange = 10f..100f,
-                        steps = 8,
-                        valueLabel = strengthLabel,
-                        position = GroupPosition.MIDDLE,
-                        onValueChange = { onUpdateVibrationStrength(it.toInt()) }
-                    )
-                }
-            }
-
-            SettingsToggleItem(
-                title = "Sound on Keypress",
-                subtitle = "Audible click feedback when typing",
-                checked = preferences.soundOnKeypress,
-                position = GroupPosition.BOTTOM,
-                onCheckedChange = onUpdateSound
-            )
-        }
-
         Spacer(modifier = Modifier.height(8.dp))
         SettingsCategoryHeader(title = "Key Display & Popups")
 
@@ -225,10 +100,10 @@ fun PreferencesScreen(
 
             SettingsSliderItem(
                 title = "Long-Press Delay",
-                subtitle = "Hold duration required to trigger more-keys and symbols (100–600 ms)",
-                value = delayMs.toFloat().coerceIn(100f, 600f),
-                valueRange = 100f..600f,
-                steps = 0,
+                subtitle = "Hold duration required to trigger more-keys and symbols (100–500 ms)",
+                value = delayMs.toFloat().coerceIn(100f, 500f),
+                valueRange = 100f..500f,
+                steps = 40,
                 valueLabel = delayLabel,
                 position = GroupPosition.ALONE,
                 onValueChange = { onUpdateLongPressDelay(it.roundToInt()) }

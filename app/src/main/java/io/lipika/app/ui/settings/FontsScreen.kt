@@ -114,7 +114,16 @@ fun FontsScreen(
             FontItem(LipikaPreferences.FONT_SIYAM_RUPALI, "Siyam Rupali (সিয়াম রূপালী)", isBengali = true),
             FontItem(LipikaPreferences.FONT_NOTO_SANS_BENGALI, "Noto Sans Bengali (নোটো সান্স)", isBengali = true),
             FontItem(LipikaPreferences.FONT_HIND_SILIGURI, "Hind Siliguri (হিন্দ শিলিগুড়ি)", isBengali = true),
-            FontItem(LipikaPreferences.FONT_APONA_LOHIT, "AponaLohit (আপন লোহিত)", isBengali = true)
+            FontItem(LipikaPreferences.FONT_APONA_LOHIT, "AponaLohit (আপন লোহিত)", isBengali = true),
+            FontItem(LipikaPreferences.FONT_BENSEN, "BenSen (বেনসেন)", isBengali = true),
+            FontItem(LipikaPreferences.FONT_GALADA, "Galada (গলদা)", isBengali = true),
+            FontItem(LipikaPreferences.FONT_ATMA, "Atma (আত্মা)", isBengali = true),
+            FontItem(LipikaPreferences.FONT_MINA, "Mina (মীনা)", isBengali = true),
+            FontItem(LipikaPreferences.FONT_SHONAR_BANGLA, "Shonar Bangla (সোনার বাংলা)", isBengali = true),
+            FontItem(LipikaPreferences.FONT_SUTONNY, "SutonnyMJ (সুতন্বী)", isBengali = true),
+            FontItem(LipikaPreferences.FONT_CHARU_CHANDAN, "Charu Chandan (চারু চন্দন)", isBengali = true),
+            FontItem(LipikaPreferences.FONT_SAGAR, "Sagar (সাগর)", isBengali = true),
+            FontItem(LipikaPreferences.FONT_ADOR, "Ador (আদর)", isBengali = true)
         )
     }
 
@@ -130,49 +139,11 @@ fun FontsScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .statusBarsPadding()
             .verticalScroll(scrollState)
             .padding(horizontal = 16.dp, vertical = 8.dp)
             .padding(bottom = 36.dp),
         verticalArrangement = Arrangement.spacedBy(14.dp)
     ) {
-        // Top Bar
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 4.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Box(
-                modifier = Modifier
-                    .size(40.dp)
-                    .clip(CircleShape)
-                    .background(colors.cardBackground)
-                    .clickable(onClick = onBack),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = "Back",
-                    tint = colors.textPrimary,
-                    modifier = Modifier.size(20.dp)
-                )
-            }
-            Spacer(modifier = Modifier.width(12.dp))
-            Column {
-                Text(
-                    text = "Fonts & Typography",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = colors.textPrimary
-                )
-                Text(
-                    text = "Configure English & Bengali typography together",
-                    fontSize = 12.5.sp,
-                    color = colors.textSecondary
-                )
-            }
-        }
 
         // Active Dual-Selection Summary Card
         Card(
