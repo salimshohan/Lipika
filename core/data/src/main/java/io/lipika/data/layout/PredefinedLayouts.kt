@@ -1056,7 +1056,7 @@ object PredefinedLayouts {
     fun fromId(id: String): KeyboardLayoutDef {
         return when (id) {
             "bn_easy", "borno_easy" -> BengaliBornoEasy
-            "bn_borno" -> BengaliBorno
+            "bn_borno" -> BengaliAvro
             "bn_avro" -> BengaliAvro
             "bn_probhat" -> BengaliProbhat
             "bn_national" -> BengaliNational

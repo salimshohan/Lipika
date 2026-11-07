@@ -139,15 +139,15 @@ fun SmartTypingScreen(
 
                 SettingsToggleItem(
                     title = "Show English Input Candidate",
-                    subtitle = "Display raw typed English word as first candidate in Borno Phonetic layout",
+                    subtitle = "Display raw typed English word as first candidate in Phonetic layout",
                     checked = preferences.bengaliShowRawInputCandidate,
                     position = GroupPosition.MIDDLE,
                     onCheckedChange = onUpdateBengaliShowRawInputCandidate
                 )
 
                 SettingsToggleItem(
-                    title = "Borno Phonetic Proximity Suggestions",
-                    subtitle = "Suggest dictionary words and proximity corrections while typing in Borno Phonetic",
+                    title = "Phonetic Proximity Suggestions",
+                    subtitle = "Suggest dictionary words and proximity corrections while typing in Phonetic layout",
                     checked = preferences.bengaliSmartPhonetic,
                     position = GroupPosition.BOTTOM,
                     onCheckedChange = onUpdateBengaliSmartPhonetic

@@ -6,55 +6,53 @@
     android:viewportWidth="512"
     android:viewportHeight="512">
 
-    <!-- Solid Pure White Circular Base - Zero Border -->
+    <!-- Solid Pure White Background - No Border -->
     <path
-        android:pathData="M256,0 A256,256 0,1,1 255.9,0 Z"
+        android:pathData="M0,0h512v512h-512z"
         android:fillColor="#FFFFFF" />
 
-    <!-- Central Blue-to-Cyan Squircle Badge inside round container -->
+    <!-- Center Soft Glow -->
     <path
-        android:pathData="M170,84 L342,84 A86,86 0,0,1 428,170 L428,342 A86,86 0,0,1 342,428 L170,428 A86,86 0,0,1 84,342 L84,170 A86,86 0,0,1 170,84 Z">
+        android:pathData="M256,96 A160,160 0,1,1 255.9,96 Z"
+        android:fillAlpha="0.10"
+        android:fillColor="#38BDF8" />
+
+    <!-- Top Horizontal Bar ('Matra') -->
+    <path
+        android:pathData="M143,160 L369,160 A13,13 0,0,1 382,173 A13,13 0,0,1 369,186 L143,186 A13,13 0,0,1 130,173 A13,13 0,0,1 143,160 Z"
+        android:fillColor="#0F172A" />
+
+    <!-- Stylized Modern Bengali 'ল' Loops Shadow -->
+    <path
+        android:pathData="M157,316 C137,281 147,226 182,202 C212,182 244,194 254,224 C267,194 300,182 330,202 C362,226 372,281 352,316 C342,336 317,356 282,351 L282,324 C302,328 322,316 328,301 C340,276 332,236 308,221 C290,208 267,216 258,244 L244,244 C235,216 212,208 194,221 C170,236 162,276 174,301 C180,316 200,328 220,324 L220,351 C185,356 160,336 157,316 Z"
+        android:fillAlpha="0.18"
+        android:fillColor="#0369A1" />
+
+    <!-- Stylized Modern Bengali 'ল' Loops -->
+    <path
+        android:pathData="M155,310 C135,275 145,220 180,196 C210,176 242,188 252,218 C265,188 298,176 328,196 C360,220 370,275 350,310 C340,330 315,350 280,345 L280,318 C300,322 320,310 326,295 C338,270 330,230 306,215 C288,202 265,210 256,238 L242,238 C233,210 210,202 192,215 C168,230 160,270 172,295 C178,310 198,322 218,318 L218,345 C183,350 158,330 155,310 Z">
         <aapt:attr name="android:fillColor">
             <gradient
-                android:angle="45"
-                android:startColor="#3261BD"
-                android:centerColor="#38A3CC"
-                android:endColor="#43B6D1"
+                android:angle="90"
+                android:startColor="#06B6D4"
+                android:centerColor="#0EA5E9"
+                android:endColor="#0284C7"
                 android:type="linear" />
         </aapt:attr>
     </path>
 
-    <!-- Diagonal Facet Light Beam -->
+    <!-- Vertical Stem of 'ল' -->
     <path
-        android:pathData="M210,84 L428,84 L428,302 L302,428 L180,428 Z"
-        android:fillAlpha="0.28">
-        <aapt:attr name="android:fillColor">
-            <gradient
-                android:angle="45"
-                android:startColor="#FFFFFF"
-                android:centerColor="#E0F7FA"
-                android:endColor="#0043B6D1"
-                android:type="linear" />
-        </aapt:attr>
-    </path>
+        android:pathData="M369,160 L369,160 A13,13 0,0,1 382,173 L382,342 A13,13 0,0,1 369,355 A13,13 0,0,1 356,342 L356,173 A13,13 0,0,1 369,160 Z"
+        android:fillColor="#0F172A" />
 
-    <!-- 45-degree Diagonal Cast Shadow from L -->
+    <!-- Foot Accent -->
     <path
-        android:pathData="M248,186 L410,348 L348,410 L310,348 L310,304 C290,304 270,304 262,304 L248,290 Z"
-        android:fillAlpha="0.28">
-        <aapt:attr name="android:fillColor">
-            <gradient
-                android:angle="45"
-                android:startColor="#1E3A8A"
-                android:centerColor="#1E3A8A"
-                android:endColor="#001E3A8A"
-                android:type="linear" />
-        </aapt:attr>
-    </path>
+        android:pathData="M341,340 L371,340 A11,11 0,0,1 382,351 A11,11 0,0,1 371,362 L341,362 A11,11 0,0,1 330,351 A11,11 0,0,1 341,340 Z"
+        android:fillColor="#0F172A" />
 
-    <!-- The Bold, Friendly Rounded Lipika "L" Glyph -->
+    <!-- Electric Cyan Typing Cursor Spark -->
     <path
-        android:pathData="M204,186 A22,22 0,0,1 248,186 L248,290 C248,298 254,304 262,304 L310,304 A22,22 0,0,1 310,348 L248,348 A44,44 0,0,1 204,304 L204,186 Z"
-        android:fillColor="#FFFFFF" />
-
+        android:pathData="M403,170 L403,170 A7,7 0,0,1 410,177 L410,211 A7,7 0,0,1 403,218 A7,7 0,0,1 396,211 L396,177 A7,7 0,0,1 403,170 Z"
+        android:fillColor="#06B6D4" />
 </vector>

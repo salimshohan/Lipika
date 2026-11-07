@@ -246,13 +246,14 @@ fun EmojiPanelView(
             // In landscape (~700-1000dp), this yields 17-25 columns, keeping emojis at normal size!
             // iOS-style larger emoji cells (~7-8 columns in portrait, matching Apple iOS)
             val calculatedColumns = remember(totalWidthDp) {
-                (totalWidthDp / 48.dp).toInt().coerceIn(7, 18)
+                if (totalWidthDp < 500.dp) 7 else (totalWidthDp / 52.dp).toInt().coerceIn(7, 16)
             }
 
             AndroidView(
                 factory = {
                     EmojiPickerView(themedContext).apply {
                         emojiGridColumns = calculatedColumns
+                        emojiGridRows = 4.2f
                         setOnEmojiPickedListener { item ->
                             previewEmoji = item.emoji
                             onEmojiSelected(item.emoji)
@@ -274,6 +275,7 @@ fun EmojiPanelView(
                     if (picker.emojiGridColumns != calculatedColumns) {
                         picker.emojiGridColumns = calculatedColumns
                     }
+                    picker.emojiGridRows = 4.2f
                     attachHeaderControls(picker, onClose, onOpenSearch, colorScheme)
                 },
                 modifier = Modifier
@@ -287,20 +289,20 @@ fun EmojiPanelView(
                 Box(
                     modifier = Modifier
                         .align(Alignment.Center)
-                        .shadow(16.dp, RoundedCornerShape(26.dp), spotColor = Color.Black.copy(alpha = 0.35f))
-                        .clip(RoundedCornerShape(26.dp))
-                        .background(if (isDark) Color(0xFF1E293B) else Color.White)
+                        .shadow(24.dp, RoundedCornerShape(28.dp), spotColor = Color.Black.copy(alpha = 0.40f))
+                        .clip(RoundedCornerShape(28.dp))
+                        .background(if (isDark) Color(0xF01E293B) else Color(0xF5FFFFFF))
                         .border(
                             1.5.dp,
                             if (isDark) Color(0x33FFFFFF) else Color(0x1F000000),
-                            RoundedCornerShape(26.dp)
+                            RoundedCornerShape(28.dp)
                         )
-                        .padding(horizontal = 26.dp, vertical = 18.dp),
+                        .padding(horizontal = 32.dp, vertical = 22.dp),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
                         text = currentPreview,
-                        fontSize = 54.sp
+                        fontSize = 68.sp
                     )
                 }
             }

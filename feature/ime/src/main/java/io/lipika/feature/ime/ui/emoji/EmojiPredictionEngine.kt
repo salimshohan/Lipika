@@ -18,10 +18,10 @@ object EmojiPredictionEngine {
         EmojiRule(
             keywords = listOf(
                 "love", "heart", "crush", "romance", "kiss", "dear", "sweet", "darling", "miss", "hug",
-                "ভালোবাসা", "ভালোবাসি", "মন", "হৃদয়", "প্রেম", "চুমু", "মায়া", "জান", "প্রিয়", "কলিজা",
+                "ভালোবাসা", "ভালোবাসি", "প্রেম", "হৃদয়", "প্রিয়", "প্রিয়তম", "কলিজা", "মায়া", "চুমু",
                 "bhalobasha", "valobasha", "bhalobashi", "valobashi", "prem", "chumu", "ridoy", "kolija", "priyo"
             ),
-            emojis = listOf("❤️", "💖", "😍", "🥰", "😘")
+            emojis = listOf("❤️", "🥰", "😍", "😘", "💕")
         ),
 
         // Joy, Smile, Happiness, Laugh
@@ -31,47 +31,47 @@ object EmojiPredictionEngine {
                 "হাসি", "আনন্দ", "খুশি", "হাসাহাসি", "মজা", "ভালো", "সুন্দর", "সুখী", "উল্লাস",
                 "hasi", "anondo", "khushi", "moja", "valo", "valoi", "shundor", "ullas"
             ),
-            emojis = listOf("😊", "😄", "😁", "😂", "🤣")
+            emojis = listOf("😂", "😊", "😁", "😃", "✨")
         ),
 
         // Fire, Awesome, Lit, Super
         EmojiRule(
             keywords = listOf(
                 "fire", "hot", "lit", "burn", "awesome", "cool", "super", "flame", "legend", "swag",
-                "আগুন", "সেরা", "দারুণ", "জোশ", "অসাধারণ", "উত্তাপ",
+                "আগুন", "সেরা", "দারুণ", "জোশ", "অসাধারণ", "উত্তাপ", "চরম",
                 "agun", "seraa", "sera", "darun", "josh", "osadharon", "uttap"
             ),
-            emojis = listOf("🔥", "✨", "⚡", "💥", "😎")
+            emojis = listOf("🔥", "⚡", "💥", "💯", "😎")
         ),
 
         // Sadness, Tears, Crying, Hurt
         EmojiRule(
             keywords = listOf(
                 "sad", "cry", "sob", "tear", "unhappy", "depressed", "hurt", "pain", "broken", "sorrow",
-                "দুঃখ", "কান্না", "কষ্ট", "মন খারাপ", "ব্যথা", "অশ্রু", "বেদনা", "বিষাদ",
+                "দুঃখ", "কান্না", "কষ্ট", "মন খারাপ", "ব্যথা", "অশ্রু", "বেদনা", "হতাশ",
                 "dukho", "kanna", "kosto", "mon kharap", "byatha", "bedona"
             ),
-            emojis = listOf("😢", "😭", "🥺", "💔", "😞")
+            emojis = listOf("😭", "😢", "💔", "🥺", "😔")
         ),
 
         // Thumbs up, OK, Approval, Agreement
         EmojiRule(
             keywords = listOf(
                 "ok", "good", "yes", "nice", "great", "agree", "done", "perfect", "fine", "thumbs",
-                "ঠিক", "আচ্ছা", "ভালো", "হ্যাঁ", "উত্তম", "হয়েছে", "সহমত",
+                "ঠিক", "আচ্ছা", "ভালো", "হ্যাঁ", "সহমত", "হয়েছে", "সঠিক",
                 "thik", "accha", "valo", "haa", "shohomot", "hoyeche"
             ),
-            emojis = listOf("👍", "👌", "✅", "💯", "🙌")
+            emojis = listOf("👍", "👌", "✅", "🤝", "🙌")
         ),
 
-        // Disapproval, No, Bad
+        // Disapproval, No, Bad, Angry
         EmojiRule(
             keywords = listOf(
-                "no", "bad", "dislike", "wrong", "stop", "never", "hate",
-                "না", "খারাপ", "ভুল", "থামুন", "ঘৃণা",
-                "na", "kharap", "bhul", "thamun", "ghrina"
+                "no", "bad", "dislike", "wrong", "stop", "never", "hate", "angry", "mad",
+                "না", "খারাপ", "ভুল", "থামুন", "ঘৃণা", "রাগ", "ক্রোধ",
+                "na", "kharap", "bhul", "thamun", "ghrina", "rag"
             ),
-            emojis = listOf("👎", "❌", "🚫", "🛑")
+            emojis = listOf("👎", "❌", "😡", "😠", "🚫")
         ),
 
         // Celebration, Party, Congrats, Birthday
@@ -81,97 +81,57 @@ object EmojiPredictionEngine {
                 "অভিনন্দন", "জন্মদিন", "উৎসব", "শুভকামনা", "উপহার",
                 "obhinondon", "jonmodin", "shuvokamona", "utsob", "upohar"
             ),
-            emojis = listOf("🎉", "🥳", "🎊", "🎂", "🎁")
+            emojis = listOf("🎉", "🎂", "🥳", "🎁", "🥂")
         ),
 
         // Pray, Thanks, Respect, Gratitude
         EmojiRule(
             keywords = listOf(
                 "thanks", "thank", "please", "pray", "bless", "welcome", "salam", "namaste", "gratitude",
-                "ধন্যবাদ", "দোয়া", "দয়া", "সালাম", "নমস্কার", "প্রণাম", "শুকরিয়া",
-                "dhonnobad", "doya", "salam", "nomoskar", "shukriya"
+                "ধন্যবাদ", "দয়া", "দয়া করে", "সালাম", "নমস্কার", "কৃতজ্ঞতা", "দোয়া",
+                "dhonnobad", "doya", "salam", "nomoshkar", "dua"
             ),
-            emojis = listOf("🙏", "🤲", "✨")
+            emojis = listOf("🙏", "🤲", "✨", "💐", "💖")
         ),
 
-        // Anger, Fury, Frustration
+        // Thinking, Wonder, Curious, Confused
         EmojiRule(
             keywords = listOf(
-                "angry", "mad", "rage", "furious", "hate", "irritated", "annoyed",
-                "রাগ", "রাগান্বিত", "বিরক্ত", "ক্ষুব্ধ",
-                "rag", "raganwito", "birokto", "khubdho", "gussa"
+                "think", "thinking", "wonder", "why", "curious", "idea", "hmm", "confused",
+                "ভাবছি", "চিন্তা", "কেন", "কিভাবে", "ভাবনা", "উপায়",
+                "vabchi", "chinta", "keno", "kivabe"
             ),
-            emojis = listOf("😠", "😡", "🤬", "😤")
+            emojis = listOf("🤔", "🧐", "💡", "❓")
         ),
 
-        // Food, Hunger, Eating
+        // Food, Drink, Dining, Tea, Coffee
         EmojiRule(
             keywords = listOf(
-                "food", "eat", "hungry", "snack", "dinner", "lunch", "breakfast", "burger", "pizza", "biryani",
-                "খাবার", "খাবো", "খিদে", "ক্ষুধা", "বিরিয়ানি", "ভাত", "মাংস",
-                "khabar", "khabo", "khide", "khudha", "biryani", "bhat"
+                "food", "eat", "hungry", "tea", "coffee", "cake", "burger", "pizza", "biryani", "breakfast", "dinner",
+                "খাবার", "চা", "কফি", "খিদে", "মিষ্টি", "বিরিয়ানি", "ভাত", "পানি",
+                "khabar", "cha", "coffee", "khete", "bhat", "biriyani", "pani"
             ),
-            emojis = listOf("🍔", "🍕", "🍗", "🍲", "😋")
+            emojis = listOf("☕", "🍔", "🍕", "🍰", "🍎")
         ),
 
-        // Tea, Coffee
+        // Sleep, Tired, Night
         EmojiRule(
             keywords = listOf(
-                "tea", "coffee", "cup", "cafe", "drink",
-                "চা", "কফি", "পানীয়",
-                "cha", "coffee"
+                "sleep", "tired", "bed", "goodnight", "night", "dream", "yawn", "sleepy",
+                "ঘুম", "ঘুমাবো", "ক্লান্ত", "রাত", "শুভরাত্রি", "স্বপ্ন",
+                "ghum", "ghumabo", "klanto", "rat", "shuvo ratri", "goodnight"
             ),
-            emojis = listOf("☕", "🍵", "🧋")
+            emojis = listOf("😴", "🥱", "💤", "🌙", "🛌")
         ),
 
-        // Bangladesh, Country, Flag
+        // Money, Cash, Rich, Business
         EmojiRule(
             keywords = listOf(
-                "bangladesh", "bd", "bangla", "flag",
-                "বাংলাদেশ", "পতাকা", "বাংলা",
-                "bangladesh", "potaka"
+                "money", "cash", "rich", "wealth", "dollar", "taka", "paid",
+                "টাকা", "পয়সা", "ধনী", "দাম", "খরচ", "বেতন",
+                "taka", "poysa", "dhoni", "daam", "beton"
             ),
-            emojis = listOf("🇧🇩", "❤️")
-        ),
-
-        // Sleep, Night, Tired
-        EmojiRule(
-            keywords = listOf(
-                "sleep", "tired", "bed", "night", "goodnight", "yawn", "sleepy", "rest",
-                "ঘুম", "ক্লান্ত", "শুভরাত্রি", "রাত", "বিশ্রাম",
-                "ghum", "klanto", "shuvoratri", "shuvo ratri", "raat"
-            ),
-            emojis = listOf("😴", "🥱", "🌙", "💤")
-        ),
-
-        // Thinking, Ideas, Smart
-        EmojiRule(
-            keywords = listOf(
-                "think", "thinking", "idea", "hmm", "brain", "smart", "wonder",
-                "ভাবছি", "চিন্তা", "বুদ্ধি", "উপায়", "জ্ঞান",
-                "vabchi", "chinta", "buddhi", "upay"
-            ),
-            emojis = listOf("🤔", "💡", "🧠", "🧐")
-        ),
-
-        // Sun, Weather, Morning
-        EmojiRule(
-            keywords = listOf(
-                "morning", "sun", "sunny", "rain", "rainy", "weather", "cloud",
-                "সকাল", "সুপ্রভাত", "সূর্য", "বৃষ্টি", "মেঘ",
-                "sokal", "suprobhat", "surjo", "bristi", "megh"
-            ),
-            emojis = listOf("☀️", "🌧️", "🌤️", "🌈")
-        ),
-
-        // Money, Cash, Rich
-        EmojiRule(
-            keywords = listOf(
-                "money", "cash", "rich", "dollar", "taka", "price", "wealth",
-                "টাকা", "পয়সা", "ধনী", "দাম", "সম্পদ",
-                "taka", "poysa", "dhoni", "daam"
-            ),
-            emojis = listOf("💰", "💵", "🤑", "💸")
+            emojis = listOf("💰", "💵", "🤑", "💳")
         ),
 
         // Flowers, Garden, Nature
@@ -179,9 +139,9 @@ object EmojiPredictionEngine {
             keywords = listOf(
                 "flower", "rose", "garden", "nature", "blossom",
                 "ফুল", "গোলাপ", "বাগান", "প্রকৃতি",
-                "ful", "golap", "bagan"
+                "ful", "golap", "bagan", "prokriti"
             ),
-            emojis = listOf("🌹", "🌸", "💐", "🌺")
+            emojis = listOf("🌸", "🌹", "🌺", "🌻", "🌿")
         ),
 
         // Travel, Transport, Driving
@@ -191,7 +151,7 @@ object EmojiPredictionEngine {
                 "গাড়ি", "ভ্রমণ", "যাত্রা", "বিমান", "বাস",
                 "gari", "vromon", "jatra", "biman", "bus"
             ),
-            emojis = listOf("🚗", "✈️", "🏍️", "🚌")
+            emojis = listOf("🚗", "✈️", "🚲", "🚌", "🚂")
         ),
 
         // Sickness, Health, Medicine
@@ -208,17 +168,17 @@ object EmojiPredictionEngine {
         EmojiRule(
             keywords = listOf(
                 "win", "winner", "victory", "first", "champion", "game", "match",
-                "জয়", "বিজয়", "খেলা", "ম্যাচ", "চ্যাম্পিয়ন",
+                "জয়", "বিজয়", "খেলা", "ম্যাচ", "চ্যাম্পিয়ন",
                 "joy", "bijoy", "khela", "champion"
             ),
-            emojis = listOf("🏆", "🥇", "✌️", "🎯")
+            emojis = listOf("🏆", "🥇", "✌️", "👑")
         ),
 
         // Pets: Cat, Dog
         EmojiRule(
             keywords = listOf(
                 "cat", "kitty", "kitten", "dog", "puppy", "pet",
-                "বিড়াল", "কুকুর", "পোষা",
+                "বিড়াল", "কুকুর", "পোষা",
                 "biral", "kukur"
             ),
             emojis = listOf("🐱", "🐶", "🐾")
@@ -231,7 +191,7 @@ object EmojiPredictionEngine {
                 "গান", "সুর", "নাচ", "সঙ্গীত",
                 "gaan", "sur", "naach", "shongit"
             ),
-            emojis = listOf("🎵", "🎶", "🎧", "💃")
+            emojis = listOf("🎵", "🎶", "🎸", "🎤")
         ),
 
         // Surprised, Shock, Wow
@@ -241,7 +201,17 @@ object EmojiPredictionEngine {
                 "অবাক", "ভয়", "বিস্ময়",
                 "obak", "bhoy"
             ),
-            emojis = listOf("😱", "😲", "🤯", "😳")
+            emojis = listOf("😲", "😱", "🤯", "😮")
+        ),
+
+        // Weather
+        EmojiRule(
+            keywords = listOf(
+                "sun", "rain", "storm", "cloud", "weather",
+                "বৃষ্টি", "রোদ", "ঝড়", "মেঘ",
+                "brishti", "rod", "jhor", "megh"
+            ),
+            emojis = listOf("☀️", "🌧️", "⚡", "🌈")
         )
     )
 

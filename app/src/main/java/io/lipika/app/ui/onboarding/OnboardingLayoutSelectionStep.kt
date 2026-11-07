@@ -72,19 +72,14 @@ fun OnboardingLayoutSelectionStep(
                 subtitle = "Standard Latin layout with gesture typing"
             ),
             LayoutOption(
-                id = LipikaPreferences.LAYOUT_BN_BORNO,
-                title = "বর্ণ ফোনেটিক",
-                subtitle = "Smart transliteration: type 'ami' -> 'আমি'"
-            ),
-            LayoutOption(
                 id = LipikaPreferences.LAYOUT_BN_AVRO,
-                title = "অভ্র",
-                subtitle = "Popular phonetic parser by OmicronLab"
+                title = "অভ্র ফোনেটিক",
+                subtitle = "Popular phonetic transliteration: type 'ami' -> 'আমি'"
             ),
             LayoutOption(
-                id = LipikaPreferences.LAYOUT_BN_EASY,
-                title = "বর্ণ ইজি",
-                subtitle = "Easy alphabetical layout"
+                id = LipikaPreferences.LAYOUT_BN_PROBHAT,
+                title = "প্রভাত",
+                subtitle = "Popular fixed Bengali layout"
             ),
             LayoutOption(
                 id = LipikaPreferences.LAYOUT_BN_NATIONAL,
@@ -92,14 +87,14 @@ fun OnboardingLayoutSelectionStep(
                 subtitle = "Official national standard Bengali layout"
             ),
             LayoutOption(
-                id = LipikaPreferences.LAYOUT_BN_PROBHAT,
-                title = "প্রভাত",
-                subtitle = "Popular fixed Bengali layout"
+                id = LipikaPreferences.LAYOUT_BN_EASY,
+                title = "সহজ",
+                subtitle = "Easy alphabetical layout"
             )
         )
     }
 
-    val displayedLayouts = remember(layoutOptions) { layoutOptions.take(6) }
+    val displayedLayouts = remember(layoutOptions) { layoutOptions.take(5) }
 
     var enabledLayouts by remember(initialEnabledLayouts) { mutableStateOf(initialEnabledLayouts) }
     var primaryLayout by remember(initialPrimaryLayout) { mutableStateOf(initialPrimaryLayout) }

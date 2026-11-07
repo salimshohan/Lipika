@@ -114,10 +114,38 @@ class LipikaService : InputMethodService() {
 
     private fun shouldAutoCapitalize(): Boolean {
         if (!preferencesState.autoCapitalization) return false
-        if (isPhoneticLayout()) return false
-        if (activeLayout.id.startsWith("bn_") || primaryAlphaLayout.id.startsWith("bn_")) return false
+        if (activeLayout.id.startsWith("bn_")) return false
         if (isUrlOrCodeField()) return false
         return true
+    }
+
+    private fun updateAutoShift() {
+        if (!shouldAutoCapitalize()) return
+        if (shiftState == ShiftState.CAPS_LOCK) return
+        val ic = currentInputConnection ?: return
+        val reqModes = currentInputEditorInfo?.inputType ?: 0
+        val caps = ic.getCursorCapsMode(reqModes)
+        if (caps != 0) {
+            shiftState = ShiftState.ONE_SHOT
+        } else {
+            val textBefore = ic.getTextBeforeCursor(20, 0)?.toString() ?: ""
+            if (textBefore.isEmpty()) {
+                shiftState = ShiftState.ONE_SHOT
+            } else {
+                val trimmed = textBefore.trimEnd(' ', '\t')
+                val isTerminator = trimmed.isEmpty() ||
+                        trimmed.endsWith('.') ||
+                        trimmed.endsWith('?') ||
+                        trimmed.endsWith('!') ||
+                        trimmed.endsWith('।') ||
+                        trimmed.endsWith('\n')
+                if (isTerminator && (textBefore.isEmpty() || textBefore.endsWith(" ") || textBefore.endsWith("\n"))) {
+                    shiftState = ShiftState.ONE_SHOT
+                } else {
+                    shiftState = ShiftState.UNSHIFTED
+                }
+            }
+        }
     }
 
     private fun ensureLayoutProcessorInitialized(layout: KeyboardLayoutDef) {
@@ -550,6 +578,9 @@ class LipikaService : InputMethodService() {
             info.initialCapsMode
         } else 0
         shiftState = if (initialCaps != 0) ShiftState.ONE_SHOT else ShiftState.UNSHIFTED
+        if (shiftState == ShiftState.UNSHIFTED) {
+            updateAutoShift()
+        }
         getTransliterationManager().reset()
         composingBuffer.clear()
         lastGestureCommittedWord = ""
@@ -624,6 +655,7 @@ class LipikaService : InputMethodService() {
             }
         }
         if (!translitMgr.isComposing && composingBuffer.isEmpty()) {
+            updateAutoShift()
             updateSuggestions()
         }
     }
@@ -689,6 +721,8 @@ class LipikaService : InputMethodService() {
         }
         if (!shouldAutoCapitalize()) {
             shiftState = ShiftState.UNSHIFTED
+        } else {
+            updateAutoShift()
         }
         try {
             getSharedPreferences("lipika_runtime", Context.MODE_PRIVATE)
@@ -1207,6 +1241,7 @@ class LipikaService : InputMethodService() {
                     if (PredefinedLayouts.isBornoEasy(activeLayout.id)) {
                         updateBornoEasyStateFromText(composingBuffer.toString())
                     }
+                    updateAutoShift()
                     updateSuggestions()
                     return
                 }
@@ -1219,6 +1254,7 @@ class LipikaService : InputMethodService() {
                     val before = ic.getTextBeforeCursor(10, 0)?.toString() ?: ""
                     updateBornoEasyStateFromText(before)
                 }
+                updateAutoShift()
                 updateSuggestions()
             }
             KeyType.ACTION -> {
@@ -1240,10 +1276,8 @@ class LipikaService : InputMethodService() {
                     }
                 } else {
                     sendKeyChar('\n')
-                    if (shouldAutoCapitalize() && shiftState == ShiftState.UNSHIFTED) {
-                        shiftState = ShiftState.ONE_SHOT
-                    }
                 }
+                updateAutoShift()
                 updateSuggestions()
             }
             KeyType.SPACE -> {
@@ -1292,36 +1326,31 @@ class LipikaService : InputMethodService() {
 
                     val isDoubleSpace = preferencesState.doubleSpacePeriod &&
                             !isUrlOrCodeField() &&
-                            (now - lastSpaceTapTime <= 500L)
+                            (now - lastSpaceTapTime <= 800L)
 
                     if (isDoubleSpace) {
-                        val textBefore = ic.getTextBeforeCursor(2, 0)
-                        if (textBefore != null && textBefore.endsWith(" ") && textBefore.length >= 2 &&
-                            !textBefore[textBefore.length - 2].isWhitespace() &&
-                            !isPunctuationChar(textBefore[textBefore.length - 2])
-                        ) {
-                            ic.deleteSurroundingText(1, 0)
-                            val puncToInsert = if (activeLayout.id.startsWith("bn_")) "। " else ". "
-                            ic.commitText(puncToInsert, 1)
-                            if (shouldAutoCapitalize() && shiftState == ShiftState.UNSHIFTED) {
-                                shiftState = ShiftState.ONE_SHOT
+                        val textBefore = ic.getTextBeforeCursor(10, 0)?.toString() ?: ""
+                        if (textBefore.endsWith(" ")) {
+                            val trimmed = textBefore.dropLast(1)
+                            if (trimmed.isNotEmpty() && !trimmed.last().isWhitespace() &&
+                                trimmed.last() != '.' && trimmed.last() != '।' &&
+                                trimmed.last() != '?' && trimmed.last() != '!'
+                            ) {
+                                ic.deleteSurroundingText(1, 0)
+                                val puncToInsert = if (activeLayout.id.startsWith("bn_")) "। " else ". "
+                                ic.commitText(puncToInsert, 1)
+                                lastSpaceTapTime = 0L
+                                updateAutoShift()
+                                updateSuggestions()
+                                return
                             }
-                            lastSpaceTapTime = 0L
-                            updateSuggestions()
-                            return
                         }
                     }
 
-                    // Auto-capitalization if previous character was sentence-ending punctuation
-                    val textBefore = ic.getTextBeforeCursor(1, 0)
+                    // Auto-capitalization after space
                     ic.commitText(" ", 1)
                     lastSpaceTapTime = now
-                    if (shouldAutoCapitalize() && shiftState == ShiftState.UNSHIFTED && textBefore != null) {
-                        val lastChar = textBefore.lastOrNull()
-                        if (lastChar != null && isSentenceTerminatorChar(lastChar)) {
-                            shiftState = ShiftState.ONE_SHOT
-                        }
-                    }
+                    updateAutoShift()
                 }
                 updateSuggestions()
             }
@@ -2436,6 +2465,14 @@ class LipikaService : InputMethodService() {
                 ic.deleteSurroundingText(prefix.length, 0)
             }
             ic.commitText(textToCommit, 1)
+        } else if (isEnglishLayout()) {
+            val prefix = if (composingBuffer.isNotEmpty()) composingBuffer.toString() else getEnglishWordBeforeCursor()
+            if (composingBuffer.isNotEmpty()) {
+                composingBuffer.clear()
+            } else if (prefix.isNotEmpty()) {
+                ic.deleteSurroundingText(prefix.length, 0)
+            }
+            ic.commitText(textToCommit, 1)
         } else {
             ic.commitText(textToCommit, 1)
         }
@@ -2444,6 +2481,7 @@ class LipikaService : InputMethodService() {
         }
         if (shouldAutoSpace) {
             lastSpaceTapTime = SystemClock.uptimeMillis()
+            updateAutoShift()
         }
         updateSuggestions()
     }
@@ -2464,6 +2502,22 @@ class LipikaService : InputMethodService() {
         for (i in text.length - 1 downTo 0) {
             val c = text[i]
             if ((c in '\u0980'..'\u09FF') || c == '\u200C' || c == '\u200D') {
+                sb.append(c)
+            } else {
+                break
+            }
+        }
+        return sb.reverse().toString()
+    }
+
+    private fun getEnglishWordBeforeCursor(): String {
+        val ic = currentInputConnection ?: return ""
+        val text = ic.getTextBeforeCursor(50, 0)?.toString() ?: return ""
+        if (text.isEmpty()) return ""
+        val sb = StringBuilder()
+        for (i in text.length - 1 downTo 0) {
+            val c = text[i]
+            if ((c in 'a'..'z') || (c in 'A'..'Z') || c == '\'') {
                 sb.append(c)
             } else {
                 break
@@ -2816,7 +2870,7 @@ class LipikaService : InputMethodService() {
                     }
                 }
                 "en_qwerty" -> {
-                    val prefix = compBufStr
+                    val prefix = if (compBufStr.isNotEmpty()) compBufStr else getEnglishWordBeforeCursor()
                     if (prefix.isNotEmpty()) {
                         val learned = if (preferencesState.learnedWordsEnabled) {
                             userDictionaryRepo.getCompletions(prefix, 4) { !containsBengaliText(it) }

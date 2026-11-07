@@ -75,25 +75,30 @@ jobs:
           tag_name: ${{ github.ref_name }}
           name: "Lipika ${{ github.ref_name }}"
           body: |
-            ### 🌟 Lipika Keyboard ${{ github.ref_name }} Release
+            ### 🚀 Lipika Keyboard ${{ github.ref_name }} Release
 
-            - **🎨 Pixel-Perfect App Icon & Branding**:
-              - Restored elevated vibrant blue-to-cyan squircle badge with 45-degree diagonal cast shadow, sleek diagonal light sheen, and geometric rounded white Lipika "L" glyph on a pure white, zero-border canvas directly matching the approved master artwork.
-            - **🎨 "Customize your space" Theme Experience**:
-              - Added dedicated theme onboarding step matching the visual reference design with Ocean Teal, Sunset Coral, Minimal Grey, and Soft Lavender.
-              - Streamlined Theme Gallery cards with matching typography and visual identity.
-            - **📱 Restored v0.3.2 Transparent Status Bar**:
-              - Transparent, visible status bar design with dynamic light/dark contrast and automatic Window Insets padding.
-            - **🇧🇩 Full In-App Bengali Translation (বাংলা সেটিংস)**:
-              - When App Language is set to বাংলা, all text across the dashboard and all sub-screens dynamically translate to clean, natural Bengali.
-            - **⚡ Substantial Typing Boost & Zero-Latency Input**:
-              - Offloaded dictionary completion queries and candidate generation to a background dispatcher pipeline, eliminating main-thread bottlenecks.
-            - **✨ Snappy Spring Bounce Key Animations**:
-              - Micro-scale spring bounce animations on keycap touches for satisfying physical tactile feedback.
-            - **🛠️ Refined Keyboard Top Toolbar Icons**:
-              - Modern outline vector icons with frosted capsule pill tiles and smooth press animations.
-            - **😍 High Quality iOS-Style Floating Emoji Preview**:
-              - Enlarged high-resolution emoji grid with an iOS-style floating pop-up bubble preview.
+            - **🎨 Restored v0.3.3 Master Logo**:
+              - Restored the official v0.3.3 stylized Bengali 'ল' logo on pure white borderless background across all vector icons, mipmaps, and documentation.
+            - **✨ HD Emojis & iOS-Style Preview Bubble**:
+              - Enlarged high-definition emoji picker grid (7 columns in portrait, 4.2 visible rows) with crystal-clear rendering.
+              - Prominent iOS-style floating pop-up preview bubble (68sp) with smooth haptics and frosted card backdrop.
+            - **🔤 Fixed Auto-Capitalization**:
+              - Dynamically tracks cursor position and sentence boundaries using Android's native `InputConnection.getCursorCapsMode()`.
+              - Automatically shifts to uppercase at the start of fields, after newlines, sentence-terminating punctuation, and backspacing.
+            - **⚡ Fixed Double-Space Period**:
+              - Expanded double-tap window to 800ms with robust preceding space detection.
+              - Automatically inserts `". "` for English and `"। "` for Bengali layouts followed by immediate sentence auto-capitalization.
+            - **🧠 Advanced Word Suggestions, Next-Word Predictions & Personalized Learning**:
+              - Instant candidate suggestions prioritizing exact matches and learned words.
+              - Smooth next-word bigram and trigram predictions right in the suggestion strip.
+              - Personalized user dictionary learns new words and bi-grams dynamically upon candidate selection and typing completion.
+            - **🎯 Smart Emoji Prediction Engine**:
+              - Pristine Unicode emoji predictions mapping hundreds of English, Unicode Bengali, and Banglish keywords (e.g., "love" / "ভালোবাসা" -> ❤️, "happy" / "হাসি" -> 😂, "fire" / "আগুন" -> 🔥, "ok" / "ঠিক" -> 👍, "thanks" / "ধন্যবাদ" -> 🙏).
+            - **⚙️ Updated Default Preferences**:
+              - Auto-enabled out-of-the-box: Word Suggestions, Next Word Prediction, Emoji Prediction, Learned Words, Offensive Words Filter, Auto Capitalization, Double-Space Period.
+              - Auto-disabled by default: Show English Raw Input Candidate, Auto Correction, Phonetic Auto Correct.
+            - **🧹 Streamlined Layouts**:
+              - Borno Phonetic removed from layout selection and settings; clean Avro Phonetic, Probhat, National (BSTI), and Easy layouts fully maintained.
           files: dist/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
