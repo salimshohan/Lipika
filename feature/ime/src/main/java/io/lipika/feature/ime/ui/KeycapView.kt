@@ -542,7 +542,7 @@ fun KeycapView(
                 },
                 fontSize = (badgeFontSize * fontScaleFactor).coerceAtLeast(6.0f).sp,
                 fontWeight = FontWeight.Normal,
-                fontFamily = if (topEndHint.any { it in '\u0980'..'\u09FF' }) LipikaTheme.bengaliFontFamily else LipikaTheme.fontFamily,
+                fontFamily = if (activeFlickUp.any { it in '\u0980'..'\u09FF' }) LipikaTheme.bengaliFontFamily else LipikaTheme.fontFamily,
                 modifier = Modifier
                     .align(Alignment.TopEnd)
                     .padding(top = (2.2f * fontScaleFactor).dp, end = (3.8f * fontScaleFactor).dp)
