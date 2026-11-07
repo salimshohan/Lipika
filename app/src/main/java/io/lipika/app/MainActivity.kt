@@ -76,6 +76,7 @@ import io.lipika.app.ui.settings.PreferencesScreen
 import io.lipika.app.ui.settings.SettingsMainScreen
 import io.lipika.app.ui.settings.SettingsScreen
 import io.lipika.app.ui.settings.SettingsUnifiedTopBar
+import io.lipika.app.ui.settings.TypingStatisticsScreen
 import io.lipika.app.ui.settings.VoiceTypingScreen
 import io.lipika.feature.ime.clipboard.SandboxedClipboardManager
 import io.lipika.data.dictionary.UserDictionaryRepository
