@@ -14,8 +14,11 @@
   <a href="https://github.com/salimshohan/Lipika/releases/tag/v0.3.0">
     <img src="https://img.shields.io/badge/Release-v0.3.0-06B6D4?style=for-the-badge&logo=android&logoColor=white" alt="Version 0.3.0" />
   </a>
-  <a href="https://github.com/salimshohan/Lipika/releases/download/v0.3.0/Lipika%20v0.3.0.apk">
+  <a href="https://github.com/salimshohan/Lipika/releases/download/v0.3.0/Lipika.v0.3.0.apk">
     <img src="https://img.shields.io/badge/Download-Lipika%20v0.3.0%20APK-10B981?style=for-the-badge&logo=android&logoColor=white" alt="Download APK" />
+  </a>
+  <a href="https://github.com/salimshohan/Lipika/releases/download/v0.3.0/Lipika.apk">
+    <img src="https://img.shields.io/badge/Direct%20APK-Lipika.apk-0284C7?style=for-the-badge&logo=android&logoColor=white" alt="Download Direct APK" />
   </a>
   <a href="https://github.com/salimshohan/Lipika">
     <img src="https://img.shields.io/badge/GitHub-salimshohan%2FLipika-8B5CF6?style=for-the-badge&logo=github&logoColor=white" alt="GitHub" />
