@@ -68,6 +68,7 @@ import io.lipika.feature.ime.R
 import io.lipika.common.model.KeyDef
 import io.lipika.common.model.KeyType
 import io.lipika.common.model.ShiftState
+import io.lipika.common.util.BengaliMatraUtils
 import io.lipika.theme.KeyboardColorScheme
 import io.lipika.theme.LipikaTheme
 import io.lipika.theme.effectiveMoreKeysBackground
@@ -545,20 +546,34 @@ fun KeycapView(
         if (showSecondaryKeys && !activeFlickUp.isNullOrEmpty() && activeMoreKeys.isNotEmpty() && key.type == KeyType.CHARACTER && !isSlidingSymbolMode && !isSlidingShiftMode) {
             val isBanglaBadge = isBanglaText(activeFlickUp)
             val badgeFontSize = if (isBanglaBadge) 10f else 11.5f
-            Text(
-                text = activeFlickUp,
-                color = if (isPressed && colorScheme.keyPressedForeground != Color.Unspecified) {
-                    colorScheme.keyPressedForeground.copy(alpha = 0.7f)
-                } else {
-                    colorScheme.keyForeground.copy(alpha = 0.5f)
-                },
-                fontSize = (badgeFontSize * fontScaleFactor).coerceAtLeast(6.0f).sp,
-                fontWeight = FontWeight.Normal,
-                fontFamily = if (activeFlickUp.any { it in '\u0980'..'\u09FF' }) LipikaTheme.bengaliFontFamily else LipikaTheme.fontFamily,
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .padding(top = (2.2f * fontScaleFactor).dp, end = (3.8f * fontScaleFactor).dp)
-            )
+            val badgeColor = if (isPressed && colorScheme.keyPressedForeground != Color.Unspecified) {
+                colorScheme.keyPressedForeground.copy(alpha = 0.7f)
+            } else {
+                colorScheme.keyForeground.copy(alpha = 0.5f)
+            }
+            val badgeSizeSp = (badgeFontSize * fontScaleFactor).coerceAtLeast(6.0f).sp
+            val badgeModifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(top = (2.2f * fontScaleFactor).dp, end = (3.8f * fontScaleFactor).dp)
+
+            if (BengaliMatraUtils.isStandaloneBengaliCombiningMark(activeFlickUp)) {
+                val badgeBoxSize = with(LocalDensity.current) { badgeSizeSp.toDp() * 1.5f }
+                BengaliMatraCanvasLabel(
+                    text = activeFlickUp,
+                    color = badgeColor,
+                    fontSize = badgeSizeSp,
+                    modifier = badgeModifier.size(badgeBoxSize)
+                )
+            } else {
+                Text(
+                    text = activeFlickUp,
+                    color = badgeColor,
+                    fontSize = badgeSizeSp,
+                    fontWeight = FontWeight.Normal,
+                    fontFamily = if (activeFlickUp.any { it in '\u0980'..'\u09FF' }) LipikaTheme.bengaliFontFamily else LipikaTheme.fontFamily,
+                    modifier = badgeModifier
+                )
+            }
         }
 
         // Custom icon override lookup from theme
@@ -728,26 +743,36 @@ fun KeycapView(
                     val textSize = (rawSize * fontScaleFactor).coerceAtLeast(8.5f).sp
                     val isUppercase = displaySymbolLabel.length == 1 && displaySymbolLabel.first().isUpperCase()
                     val verticalShift = if (isUppercase) (1.2f * fontScaleFactor).dp else 0.dp
-                    Text(
-                        text = displaySymbolLabel,
-                        color = foregroundColor,
-                        fontSize = textSize,
-                        fontWeight = if (key.type == KeyType.SYMBOLS) FontWeight.Bold else FontWeight.Medium,
-                        fontFamily = resolvedKeyFont,
-                        maxLines = if (isMultiline) 2 else 1,
-                        softWrap = isMultiline,
-                        modifier = if (verticalShift > 0.dp) Modifier.offset(y = verticalShift) else Modifier,
-                        style = androidx.compose.ui.text.TextStyle(
-                            fontFamily = resolvedKeyFont,
-                            platformStyle = androidx.compose.ui.text.PlatformTextStyle(includeFontPadding = false),
-                            lineHeight = if (isMultiline) (12f * fontScaleFactor).sp else textSize,
-                            lineHeightStyle = androidx.compose.ui.text.style.LineHeightStyle(
-                                alignment = androidx.compose.ui.text.style.LineHeightStyle.Alignment.Center,
-                                trim = androidx.compose.ui.text.style.LineHeightStyle.Trim.Both
-                            ),
-                            textAlign = androidx.compose.ui.text.style.TextAlign.Center
+
+                    if (BengaliMatraUtils.isStandaloneBengaliCombiningMark(displaySymbolLabel)) {
+                        BengaliMatraCanvasLabel(
+                            text = displaySymbolLabel,
+                            color = foregroundColor,
+                            fontSize = textSize,
+                            modifier = Modifier.fillMaxSize()
                         )
-                    )
+                    } else {
+                        Text(
+                            text = displaySymbolLabel,
+                            color = foregroundColor,
+                            fontSize = textSize,
+                            fontWeight = if (key.type == KeyType.SYMBOLS) FontWeight.Bold else FontWeight.Medium,
+                            fontFamily = resolvedKeyFont,
+                            maxLines = if (isMultiline) 2 else 1,
+                            softWrap = isMultiline,
+                            modifier = if (verticalShift > 0.dp) Modifier.offset(y = verticalShift) else Modifier,
+                            style = androidx.compose.ui.text.TextStyle(
+                                fontFamily = resolvedKeyFont,
+                                platformStyle = androidx.compose.ui.text.PlatformTextStyle(includeFontPadding = false),
+                                lineHeight = if (isMultiline) (12f * fontScaleFactor).sp else textSize,
+                                lineHeightStyle = androidx.compose.ui.text.style.LineHeightStyle(
+                                    alignment = androidx.compose.ui.text.style.LineHeightStyle.Alignment.Center,
+                                    trim = androidx.compose.ui.text.style.LineHeightStyle.Trim.Both
+                                ),
+                                textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                            )
+                        )
+                    }
                 }
             }
         }
@@ -832,21 +857,31 @@ fun KeycapView(
             ) {
                 val isBanglaPreview = isBanglaText(displaySymbolLabel)
                 val popupFontSize = if (isBanglaPreview) 23.5f else 27f
-                Text(
-                    text = displaySymbolLabel,
-                    color = popupFg,
-                    fontSize = (popupFontSize * scaleFactor).coerceIn(18f, 34f).sp,
-                    fontWeight = FontWeight.SemiBold,
-                    fontFamily = LipikaTheme.fontFamily,
-                    textAlign = androidx.compose.ui.text.style.TextAlign.Center,
-                    style = androidx.compose.ui.text.TextStyle(
-                        platformStyle = androidx.compose.ui.text.PlatformTextStyle(includeFontPadding = false),
-                        lineHeightStyle = androidx.compose.ui.text.style.LineHeightStyle(
-                            alignment = androidx.compose.ui.text.style.LineHeightStyle.Alignment.Center,
-                            trim = androidx.compose.ui.text.style.LineHeightStyle.Trim.Both
+                val popupSizeSp = (popupFontSize * scaleFactor).coerceIn(18f, 34f).sp
+                if (BengaliMatraUtils.isStandaloneBengaliCombiningMark(displaySymbolLabel)) {
+                    BengaliMatraCanvasLabel(
+                        text = displaySymbolLabel,
+                        color = popupFg,
+                        fontSize = popupSizeSp,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                } else {
+                    Text(
+                        text = displaySymbolLabel,
+                        color = popupFg,
+                        fontSize = popupSizeSp,
+                        fontWeight = FontWeight.SemiBold,
+                        fontFamily = LipikaTheme.fontFamily,
+                        textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                        style = androidx.compose.ui.text.TextStyle(
+                            platformStyle = androidx.compose.ui.text.PlatformTextStyle(includeFontPadding = false),
+                            lineHeightStyle = androidx.compose.ui.text.style.LineHeightStyle(
+                                alignment = androidx.compose.ui.text.style.LineHeightStyle.Alignment.Center,
+                                trim = androidx.compose.ui.text.style.LineHeightStyle.Trim.Both
+                            )
                         )
                     )
-                )
+                }
             }
         }
     }

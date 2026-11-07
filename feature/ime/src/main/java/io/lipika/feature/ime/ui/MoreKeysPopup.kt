@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -33,6 +34,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
+import io.lipika.common.util.BengaliMatraUtils
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.withFrameNanos
@@ -418,12 +420,21 @@ private fun MoreKeyCell(
             else -> {
                 val isBangla = isBanglaText(item)
                 val finalFontSize = if (isBangla) fontSizeSp * 0.88f else fontSizeSp
-                Text(
-                    text = item,
-                    color = contentColor,
-                    fontSize = finalFontSize.sp,
-                    fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Medium
-                )
+                if (BengaliMatraUtils.isStandaloneBengaliCombiningMark(item)) {
+                    BengaliMatraCanvasLabel(
+                        text = item,
+                        color = contentColor,
+                        fontSize = finalFontSize.sp,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                } else {
+                    Text(
+                        text = item,
+                        color = contentColor,
+                        fontSize = finalFontSize.sp,
+                        fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Medium
+                    )
+                }
             }
         }
     }

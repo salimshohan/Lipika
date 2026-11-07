@@ -17,16 +17,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Assignment
-import androidx.compose.material.icons.outlined.ContentPaste
 import androidx.compose.material.icons.outlined.CropFree
 import androidx.compose.material.icons.outlined.Dialpad
-import androidx.compose.material.icons.outlined.FontDownload
 import androidx.compose.material.icons.outlined.Layers
 import androidx.compose.material.icons.outlined.Mood
-import androidx.compose.material.icons.outlined.Numbers
 import androidx.compose.material.icons.outlined.Palette
-import androidx.compose.material.icons.outlined.SentimentSatisfiedAlt
-import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material.icons.filled.Pin
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.SwapHoriz
@@ -152,20 +147,20 @@ fun ReorderableToolbar(
     val allActionMap = remember {
         mapOf(
             ToolbarAction.TEXT_EDIT to ToolbarItem(ToolbarAction.TEXT_EDIT, iconResId = R.drawable.ic_text_edit, description = "Text Edit"),
-            ToolbarAction.CLIPBOARD to ToolbarItem(ToolbarAction.CLIPBOARD, icon = Icons.Outlined.ContentPaste, description = "Clipboard"),
+            ToolbarAction.CLIPBOARD to ToolbarItem(ToolbarAction.CLIPBOARD, icon = Icons.AutoMirrored.Outlined.Assignment, description = "Clipboard"),
             ToolbarAction.THEME_TOGGLE to ToolbarItem(ToolbarAction.THEME_TOGGLE, icon = Icons.Outlined.Palette, description = "Themes"),
             ToolbarAction.RESIZER to ToolbarItem(ToolbarAction.RESIZER, iconResId = R.drawable.ic_resize, description = "Resize Keyboard"),
-            ToolbarAction.NUMBER_ROW_TOGGLE to ToolbarItem(ToolbarAction.NUMBER_ROW_TOGGLE, icon = Icons.Outlined.Numbers, description = "Number Row"),
+            ToolbarAction.NUMBER_ROW_TOGGLE to ToolbarItem(ToolbarAction.NUMBER_ROW_TOGGLE, icon = Icons.Filled.Pin, description = "Number Row"),
             ToolbarAction.SECONDARY_KEYS_TOGGLE to ToolbarItem(ToolbarAction.SECONDARY_KEYS_TOGGLE, iconResId = R.drawable.ic_key_hints, description = "Key Hints"),
             ToolbarAction.KEY_POPUP_TOGGLE to ToolbarItem(ToolbarAction.KEY_POPUP_TOGGLE, iconResId = R.drawable.ic_key_popup, description = "Key Popup"),
-            ToolbarAction.EMOJI to ToolbarItem(ToolbarAction.EMOJI, icon = Icons.Outlined.SentimentSatisfiedAlt, description = "Emojis"),
+            ToolbarAction.EMOJI to ToolbarItem(ToolbarAction.EMOJI, icon = Icons.Outlined.Mood, description = "Emojis"),
             ToolbarAction.ONE_HANDED to ToolbarItem(ToolbarAction.ONE_HANDED, iconResId = R.drawable.ic_one_handed, description = "One-Handed"),
-            ToolbarAction.SETTINGS to ToolbarItem(ToolbarAction.SETTINGS, icon = Icons.Outlined.Settings, description = "Settings"),
+            ToolbarAction.SETTINGS to ToolbarItem(ToolbarAction.SETTINGS, icon = Icons.Filled.Settings, description = "Settings"),
             ToolbarAction.TRADITIONAL_MODE to ToolbarItem(ToolbarAction.TRADITIONAL_MODE, iconResId = R.drawable.ic_traditional, description = "Traditional Mode"),
             ToolbarAction.UNDO to ToolbarItem(ToolbarAction.UNDO, iconResId = R.drawable.ic_undo, description = "Undo"),
             ToolbarAction.REDO to ToolbarItem(ToolbarAction.REDO, iconResId = R.drawable.ic_redo, description = "Redo"),
             ToolbarAction.NUMBER_PAD to ToolbarItem(ToolbarAction.NUMBER_PAD, icon = Icons.Outlined.Dialpad, description = "Number Pad"),
-            ToolbarAction.FONT to ToolbarItem(ToolbarAction.FONT, icon = Icons.Outlined.FontDownload, description = "Fonts")
+            ToolbarAction.FONT to ToolbarItem(ToolbarAction.FONT, icon = Icons.Outlined.TextFields, description = "Fonts")
         )
     }
 
@@ -252,10 +247,10 @@ fun ReorderableToolbar(
                 ) {
                     val slotWidthDp = with(density) { slotWidthPx.toDp() }
                     val maxSlotWidth = (slotWidthDp - (6 * scaleFactor).dp).coerceAtLeast(36.dp)
-                    val desiredWidth = (if (isCustomizeMode) 58.dp else 46.dp) * scaleFactor
+                    val desiredWidth = (if (isCustomizeMode) 58.dp else 52.dp) * scaleFactor
                     val tileWidth = minOf(maxSlotWidth, desiredWidth)
-                    val tileHeight = (33 * scaleFactor).dp
-                    val tileShape = RoundedCornerShape((12 * scaleFactor).coerceAtLeast(6f).dp)
+                    val tileHeight = (34 * scaleFactor).dp
+                    val tileShape = RoundedCornerShape((10 * scaleFactor).coerceAtLeast(4f).dp)
 
                     // The Tool Tile
                     Box(
@@ -281,18 +276,18 @@ fun ReorderableToolbar(
                                 when {
                                     isHoveredByDrawerItem -> colorScheme.accentColor.copy(alpha = 0.35f)
                                     isDraggingThisItem -> colorScheme.keyBackground
-                                    isActive -> colorScheme.effectiveActiveOptionHighlight.copy(alpha = 0.24f)
+                                    isActive -> colorScheme.effectiveActiveOptionHighlight.copy(alpha = 0.22f)
                                     isCustomizeMode -> colorScheme.keyBackground.copy(alpha = if (colorScheme.keyBackground.alpha < 0.4f) 0.65f else colorScheme.keyBackground.alpha)
-                                    else -> colorScheme.keyBackground.copy(alpha = 0.35f)
+                                    else -> Color.Transparent
                                 }
                             )
                             .border(
-                                width = if (isDraggingThisItem || isHoveredByDrawerItem || isActive || isCustomizeMode) (1.5f * scaleFactor).coerceAtLeast(1f).dp else 0.75.dp,
+                                width = if (isDraggingThisItem || isHoveredByDrawerItem || isActive || isCustomizeMode) (1.5f * scaleFactor).coerceAtLeast(1f).dp else 0.dp,
                                 color = when {
                                     isHoveredByDrawerItem || isDraggingThisItem -> colorScheme.accentColor
                                     isActive -> colorScheme.effectiveActiveOptionHighlight
                                     isCustomizeMode -> colorScheme.keyForeground.copy(alpha = 0.22f)
-                                    else -> colorScheme.keyForeground.copy(alpha = 0.08f)
+                                    else -> Color.Transparent
                                 },
                                 shape = tileShape
                             )

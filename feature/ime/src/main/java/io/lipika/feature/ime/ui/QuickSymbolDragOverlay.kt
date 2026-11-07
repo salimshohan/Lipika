@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.lipika.common.model.KeyDef
+import io.lipika.common.util.BengaliMatraUtils
 import io.lipika.theme.KeyboardColorScheme
 import io.lipika.theme.LipikaTheme
 import kotlin.math.roundToInt
@@ -155,14 +156,24 @@ fun QuickSymbolDragOverlay(
                     ),
                 contentAlignment = Alignment.Center
             ) {
-                Text(
-                    text = state.hoveredSymbol,
-                    color = popupFg,
-                    fontSize = (25 * scaleFactor).coerceIn(19f, 32f).sp,
-                    fontWeight = FontWeight.SemiBold,
-                    fontFamily = LipikaTheme.fontFamily,
-                    textAlign = androidx.compose.ui.text.style.TextAlign.Center
-                )
+                val symbolFontSize = (25 * scaleFactor).coerceIn(19f, 32f).sp
+                if (BengaliMatraUtils.isStandaloneBengaliCombiningMark(state.hoveredSymbol)) {
+                    BengaliMatraCanvasLabel(
+                        text = state.hoveredSymbol,
+                        color = popupFg,
+                        fontSize = symbolFontSize,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                } else {
+                    Text(
+                        text = state.hoveredSymbol,
+                        color = popupFg,
+                        fontSize = symbolFontSize,
+                        fontWeight = FontWeight.SemiBold,
+                        fontFamily = LipikaTheme.fontFamily,
+                        textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                    )
+                }
             }
         }
     }

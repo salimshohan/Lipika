@@ -68,6 +68,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import io.lipika.common.util.BengaliMatraUtils
 import androidx.compose.ui.graphics.drawscope.translate
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.nativeCanvas
@@ -1159,13 +1160,21 @@ private fun KeyboardMiniPreview(
                             val totalH = lineHeight * lines.size
                             val startY = rowY + (rowHeight - totalH) / 2f - fontMetrics.ascent
                             for ((lineIdx, line) in lines.withIndex()) {
-                                drawContext.canvas.nativeCanvas.drawText(line, centerX, startY + lineIdx * lineHeight, textPaint)
+                                if (BengaliMatraUtils.isStandaloneBengaliCombiningMark(line)) {
+                                    BengaliMatraUtils.drawCombiningMark(drawContext.canvas.nativeCanvas, line, centerX, startY + lineIdx * lineHeight, textPaint)
+                                } else {
+                                    drawContext.canvas.nativeCanvas.drawText(line, centerX, startY + lineIdx * lineHeight, textPaint)
+                                }
                             }
                         } else {
                             textPaint.textSize = (if (label.length > 2) 6.sp else 8.sp).toPx()
                             val fontMetrics = textPaint.fontMetrics
                             val baselineY = rowY + (rowHeight - fontMetrics.ascent - fontMetrics.descent) / 2f
-                            drawContext.canvas.nativeCanvas.drawText(label, centerX, baselineY, textPaint)
+                            if (BengaliMatraUtils.isStandaloneBengaliCombiningMark(label)) {
+                                BengaliMatraUtils.drawCombiningMark(drawContext.canvas.nativeCanvas, label, centerX, baselineY, textPaint)
+                            } else {
+                                drawContext.canvas.nativeCanvas.drawText(label, centerX, baselineY, textPaint)
+                            }
                         }
                     }
                 } else if (key.type == KeyType.SHIFT) {
