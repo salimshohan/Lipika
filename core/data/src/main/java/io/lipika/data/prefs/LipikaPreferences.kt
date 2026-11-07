@@ -7,6 +7,7 @@ data class LipikaPreferences(
     // Appearance & Theming
     val theme: String = THEME_LIPIKA_GRADIENT,
     val selectedFont: String = FONT_TW_CENT_MT,
+    val selectedBengaliFont: String = FONT_KALPURUSH,
     val customFontPath: String = "",
     val accentColor: String = ACCENT_CYAN,
     val accentMode: String = ACCENT_MODE_SINGLE,
@@ -36,7 +37,9 @@ data class LipikaPreferences(
     val vibrateOnKeypress: Boolean = false,
     val vibrationType: String = VIBRATION_TYPE_HAPTIC,
     val vibrationStrength: Int = 50, // 0 - 100%
+    val vibrationDurationMs: Int = 25, // 5 - 100 ms
     val soundOnKeypress: Boolean = false,
+    val soundVolume: Int = 80, // 0 - 100%
     val longPressDelayMs: Int = 220, // 100 - 600 ms
     val cursorTrackpadEnabled: Boolean = true,
     val oneHandedMode: String = ONE_HANDED_OFF,
@@ -93,6 +96,7 @@ data class LipikaPreferences(
 
     fun resolveEffectiveIsDark(systemInDark: Boolean): Boolean {
         return when (themeSchedule) {
+            SCHEDULE_SYSTEM_DEFAULT -> systemInDark
             SCHEDULE_ALWAYS_LIGHT -> false
             SCHEDULE_ALWAYS_DARK -> true
             SCHEDULE_SUNSET_TO_SUNRISE -> {
@@ -166,6 +170,7 @@ data class LipikaPreferences(
         const val DARK_STYLE_AMOLED = "amoled"
         const val DARK_STYLE_DARK_GRAY = "dark_gray"
 
+        const val SCHEDULE_SYSTEM_DEFAULT = "system_default"
         const val SCHEDULE_ALWAYS_LIGHT = "always_light"
         const val SCHEDULE_ALWAYS_DARK = "always_dark"
         const val SCHEDULE_SUNSET_TO_SUNRISE = "sunset_to_sunrise"
@@ -185,6 +190,20 @@ data class LipikaPreferences(
         const val FONT_VERDANA = "verdana"
         const val FONT_CALIBRI = "calibri"
         const val FONT_CORBEL = "corbel"
+
+        // 10 New Bengali and English Fonts
+        const val FONT_SOLAIMAN_LIPI = "solaiman_lipi"
+        const val FONT_SIYAM_RUPALI = "siyam_rupali"
+        const val FONT_NOTO_BENGALI = "noto_sans_bengali"
+        const val FONT_HIND_SILIGURI = "hind_siliguri"
+        const val FONT_APONA_LOHIT = "apona_lohit"
+
+        const val FONT_ROBOTO = "roboto"
+        const val FONT_INTER = "inter"
+        const val FONT_POPPINS = "poppins"
+        const val FONT_OUTFIT = "outfit"
+        const val FONT_MONTSERRAT = "montserrat"
+
         const val FONT_CUSTOM = "custom"
 
         const val ACCENT_CYAN = "CYAN"

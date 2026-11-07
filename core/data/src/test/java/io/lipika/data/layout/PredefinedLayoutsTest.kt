@@ -463,8 +463,8 @@ class PredefinedLayoutsTest {
         assertEquals(io.lipika.common.model.KeyType.SWITCH_LANGUAGE, bottomRow[1].type)
         assertEquals("emoji", bottomRow[1].icon)
 
-        // 3. Comma
-        assertEquals(",", bottomRow[2].label)
+        // 3. Slash
+        assertEquals("/", bottomRow[2].label)
 
         // 4. Spacebar
         assertEquals(io.lipika.common.model.KeyType.SPACE, bottomRow[3].type)
@@ -1208,7 +1208,7 @@ class PredefinedLayoutsTest {
         assertNotNull("moreSymbolsLayout must be present", moreSym)
         assertEquals("symbols_2", moreSym!!.id)
         assertEquals(5, moreSym.rows.size)
-        assertEquals(listOf("👉", "◐", "⊕", "✖", "✔", "★", "∞", "➡", "▶", "🔄"), moreSym.rows[0].keys.map { it.label })
+        assertEquals(listOf("☞", "◐", "⊕", "✖", "✔", "✪", "∞", "⇒", "➤", "✆"), moreSym.rows[0].keys.map { it.label })
 
         // Verify rules file exists in assets
         val rulesCandidates = listOf(
@@ -1228,7 +1228,7 @@ class PredefinedLayoutsTest {
         val bottomRow = probhat.rows.last().keys
         assertEquals("?১২৩", bottomRow[0].label)
         assertEquals(KeyType.SWITCH_LANGUAGE, bottomRow[1].type)
-        assertEquals(",", bottomRow[2].label)
+        assertEquals("/", bottomRow[2].label)
         assertEquals(KeyType.SPACE, bottomRow[3].type)
         assertEquals("।", bottomRow[4].label)
         assertEquals(KeyType.ACTION, bottomRow[5].type)

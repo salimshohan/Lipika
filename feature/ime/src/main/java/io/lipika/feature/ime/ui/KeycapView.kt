@@ -296,12 +296,23 @@ fun KeycapView(
                                 }
                             }
 
+                            var tapHandled = false
                             while (true) {
                                 val event = awaitPointerEvent()
-                                val change = event.changes.firstOrNull { it.id == down.id } ?: break
+                                val change = event.changes.firstOrNull { it.id == down.id }
+                                if (change == null) {
+                                    if (!tapHandled && !isLongPressTriggered && !isDeleteLongPressActive && !isGestureTyping && !isSpacebarTrackpadActive && !isSpacebarSwipingLayout && !isSlidingDrag && !isDeleteSwipeActive) {
+                                        spacebarDwellJob?.cancel()
+                                        longPressJob?.cancel()
+                                        currentOnTap.value(initialKey)
+                                        tapHandled = true
+                                    }
+                                    break
+                                }
 
                                 if (!change.pressed) {
                                     // Touch released!
+                                    tapHandled = true
                                     spacebarDwellJob?.cancel()
                                     longPressJob?.cancel()
                                     val wasMoreKeysActive = isMoreKeysActive
@@ -430,9 +441,9 @@ fun KeycapView(
                                 }
                             }
 
-                            // Gesture typing detector on character keys
+                            // Gesture typing detector on character keys (higher threshold to prevent rapid typing false positives)
                             if (currentGestureTypingEnabled.value && initialKey.type == KeyType.CHARACTER && !isMoreKeysActive && !isSlidingDrag) {
-                                val gestureThresholdPx = with(density) { 28.dp.toPx() }
+                                val gestureThresholdPx = with(density) { 44.dp.toPx() }
                                 if (!isGestureTyping && distance > gestureThresholdPx) {
                                     longPressJob?.cancel()
                                     isGestureTyping = true
@@ -531,7 +542,7 @@ fun KeycapView(
                 },
                 fontSize = (badgeFontSize * fontScaleFactor).coerceAtLeast(6.0f).sp,
                 fontWeight = FontWeight.Normal,
-                fontFamily = LipikaTheme.fontFamily,
+                fontFamily = if (topEndHint.any { it in '\u0980'..'\u09FF' }) LipikaTheme.bengaliFontFamily else LipikaTheme.fontFamily,
                 modifier = Modifier
                     .align(Alignment.TopEnd)
                     .padding(top = (2.2f * fontScaleFactor).dp, end = (3.8f * fontScaleFactor).dp)
@@ -657,8 +668,10 @@ fun KeycapView(
                 )
             }
             KeyType.SPACE -> {
+                val spaceText = key.displayLabel(shiftState).ifEmpty { "English" }
+                val isSpaceBangla = spaceText.any { it in '\u0980'..'\u09FF' }
                 Text(
-                    text = key.displayLabel(shiftState).ifEmpty { "English" },
+                    text = spaceText,
                     color = if (isPressed && colorScheme.keyPressedForeground != Color.Unspecified) {
                         colorScheme.keyPressedForeground
                     } else {
@@ -666,7 +679,7 @@ fun KeycapView(
                     },
                     fontSize = (15.5f * fontScaleFactor).coerceAtLeast(8f).sp,
                     fontWeight = FontWeight.Medium,
-                    fontFamily = LipikaTheme.fontFamily,
+                    fontFamily = if (isSpaceBangla) LipikaTheme.bengaliFontFamily else LipikaTheme.fontFamily,
                     maxLines = 1,
                     overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
                 )
@@ -688,6 +701,7 @@ fun KeycapView(
                     )
                 } else {
                     val isBangla = isBanglaText(displaySymbolLabel)
+                    val resolvedKeyFont = if (isBangla) LipikaTheme.bengaliFontFamily else LipikaTheme.fontFamily
                     val isMultiline = displaySymbolLabel.contains("\n")
                     val baseCharSize = if (isMultiline) {
                         11.5f
@@ -707,12 +721,12 @@ fun KeycapView(
                         color = foregroundColor,
                         fontSize = textSize,
                         fontWeight = if (key.type == KeyType.SYMBOLS) FontWeight.Bold else FontWeight.Medium,
-                        fontFamily = LipikaTheme.fontFamily,
+                        fontFamily = resolvedKeyFont,
                         maxLines = if (isMultiline) 2 else 1,
                         softWrap = isMultiline,
                         modifier = if (verticalShift > 0.dp) Modifier.offset(y = verticalShift) else Modifier,
                         style = androidx.compose.ui.text.TextStyle(
-                            fontFamily = LipikaTheme.fontFamily,
+                            fontFamily = resolvedKeyFont,
                             platformStyle = androidx.compose.ui.text.PlatformTextStyle(includeFontPadding = false),
                             lineHeight = if (isMultiline) (12f * fontScaleFactor).sp else textSize,
                             lineHeightStyle = androidx.compose.ui.text.style.LineHeightStyle(

@@ -124,7 +124,8 @@ fun ToolsDrawerView(
             ToolbarAction.TRADITIONAL_MODE to DrawerTool(ToolbarAction.TRADITIONAL_MODE, iconResId = R.drawable.ic_traditional, label = "Traditional"),
             ToolbarAction.UNDO to DrawerTool(ToolbarAction.UNDO, iconResId = R.drawable.ic_undo, label = "Undo"),
             ToolbarAction.REDO to DrawerTool(ToolbarAction.REDO, iconResId = R.drawable.ic_redo, label = "Redo"),
-            ToolbarAction.NUMBER_PAD to DrawerTool(ToolbarAction.NUMBER_PAD, icon = Icons.Outlined.Dialpad, label = "Number Pad")
+            ToolbarAction.NUMBER_PAD to DrawerTool(ToolbarAction.NUMBER_PAD, icon = Icons.Outlined.Dialpad, label = "Number Pad"),
+            ToolbarAction.FONT to DrawerTool(ToolbarAction.FONT, icon = Icons.Outlined.TextFields, label = "Fonts")
         )
     }
 

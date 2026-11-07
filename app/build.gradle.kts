@@ -13,8 +13,8 @@ android {
         applicationId = "com.salimshohan.lipika"
         minSdk = 24
         targetSdk = 36
-        versionCode = 21
-        versionName = "0.2.8"
+        versionCode = 22
+        versionName = "0.2.9"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

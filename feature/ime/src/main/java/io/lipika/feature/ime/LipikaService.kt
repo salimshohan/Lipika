@@ -348,6 +348,7 @@ class LipikaService : InputMethodService() {
             LipikaTheme(
                 colorScheme = colorScheme,
                 selectedFont = preferencesState.selectedFont,
+                selectedBengaliFont = preferencesState.selectedBengaliFont,
                 customFontPath = preferencesState.customFontPath
             ) {
                 KeyboardRootView(
@@ -784,47 +785,75 @@ class LipikaService : InputMethodService() {
     private fun performKeyFeedback() {
         if (preferencesState.soundOnKeypress) {
             try {
-                audioManager?.playSoundEffect(android.media.AudioManager.FX_KEYPRESS_STANDARD)
-            } catch (_: Exception) {}
+                val volume = (preferencesState.soundVolume / 100f).coerceIn(0.01f, 1.0f)
+                audioManager?.playSoundEffect(android.media.AudioManager.FX_KEYPRESS_STANDARD, volume)
+            } catch (_: Throwable) {
+                try {
+                    audioManager?.playSoundEffect(android.media.AudioManager.FX_KEYPRESS_STANDARD)
+                } catch (_: Throwable) {}
+            }
         }
         if (!preferencesState.vibrateOnKeypress) return
         try {
+            val vib = vibratorService ?: return
+            if (!vib.hasVibrator()) return
+
             if (preferencesState.vibrationType == LipikaPreferences.VIBRATION_TYPE_HAPTIC) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    clickVibrationEffect?.let { vibratorService?.vibrate(it) }
-                } else {
-                    window?.window?.decorView?.performHapticFeedback(
-                        HapticFeedbackConstants.KEYBOARD_TAP,
-                        HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING
-                    )
-                }
-            } else {
-                // Vibration mode: duration and amplitude scaled by vibrationStrength
-                val strength = preferencesState.vibrationStrength
-                val durationMs = (10L + (strength * 30L / 100L)).coerceIn(5L, 60L)
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    val effect = if (cachedOneShotStrength == strength && cachedOneShotEffect != null) {
-                        cachedOneShotEffect!!
+                    val effect = clickVibrationEffect ?: VibrationEffect.createPredefined(VibrationEffect.EFFECT_CLICK)
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        val attrs = android.os.VibrationAttributes.Builder()
+                            .setUsage(android.os.VibrationAttributes.USAGE_TOUCH)
+                            .build()
+                        vib.vibrate(effect, attrs)
                     } else {
-                        val amplitude = (strength * 255 / 100).coerceIn(1, 255)
-                        VibrationEffect.createOneShot(durationMs, amplitude).also {
-                            cachedOneShotStrength = strength
-                            cachedOneShotEffect = it
-                        }
+                        val audioAttrs = android.media.AudioAttributes.Builder()
+                            .setContentType(android.media.AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                            .setUsage(android.media.AudioAttributes.USAGE_ASSISTANCE_SONIFICATION)
+                            .build()
+                        vib.vibrate(effect, audioAttrs)
                     }
-                    vibratorService?.vibrate(effect)
+                } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    val audioAttrs = android.media.AudioAttributes.Builder()
+                        .setContentType(android.media.AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                        .setUsage(android.media.AudioAttributes.USAGE_ASSISTANCE_SONIFICATION)
+                        .build()
+                    val effect = VibrationEffect.createOneShot(20L, VibrationEffect.DEFAULT_AMPLITUDE)
+                    vib.vibrate(effect, audioAttrs)
                 } else {
                     @Suppress("DEPRECATION")
-                    vibratorService?.vibrate(durationMs)
+                    vib.vibrate(20L)
+                }
+            } else {
+                val durationMs = preferencesState.vibrationDurationMs.coerceIn(5, 100).toLong()
+                val strength = preferencesState.vibrationStrength
+                val amplitude = (strength * 255 / 100).coerceIn(1, 255)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    val effect = VibrationEffect.createOneShot(durationMs, amplitude)
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        val attrs = android.os.VibrationAttributes.Builder()
+                            .setUsage(android.os.VibrationAttributes.USAGE_TOUCH)
+                            .build()
+                        vib.vibrate(effect, attrs)
+                    } else {
+                        val audioAttrs = android.media.AudioAttributes.Builder()
+                            .setContentType(android.media.AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                            .setUsage(android.media.AudioAttributes.USAGE_ASSISTANCE_SONIFICATION)
+                            .build()
+                        vib.vibrate(effect, audioAttrs)
+                    }
+                } else {
+                    @Suppress("DEPRECATION")
+                    vib.vibrate(durationMs)
                 }
             }
-        } catch (_: Exception) {
+        } catch (_: Throwable) {
             try {
                 window?.window?.decorView?.performHapticFeedback(
                     HapticFeedbackConstants.KEYBOARD_TAP,
                     HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING
                 )
-            } catch (_: Exception) {}
+            } catch (_: Throwable) {}
         }
     }
 
@@ -887,7 +916,7 @@ class LipikaService : InputMethodService() {
                     // Bengali Probhat layout
                     activeLayout.id == "bn_probhat" -> {
                         finishComposing()
-                        commitCharacterWithPunctuationHandling(ic, text.replace("\u25CC", ""))
+                        commitBengaliProbhatChar(ic, text)
                     }
                     // Bengali Borno Easy layout
                     activeLayout.id == "bn_easy" -> {
@@ -1478,6 +1507,80 @@ class LipikaService : InputMethodService() {
         }
 
         return true
+    }
+
+    private fun commitBengaliProbhatChar(ic: InputConnection, text: String) {
+        val clean = text.replace("\u25CC", "")
+        if (clean.isEmpty()) return
+
+        val before = ic.getTextBeforeCursor(2, 0)?.toString() ?: ""
+        val lastChar = before.lastOrNull()
+
+        val karToVowel = mapOf(
+            'া' to "আ",
+            'ি' to "ই",
+            'ী' to "ঈ",
+            'ু' to "উ",
+            'ূ' to "ঊ",
+            'ৃ' to "ঋ",
+            'ে' to "এ",
+            'ৈ' to "ঐ",
+            'ো' to "ও",
+            'ৌ' to "ঔ"
+        )
+
+        val isConsonant: (Char) -> Boolean = { c ->
+            (c in 'ক'..'হ' && c != 'ৎ') || c in 'ড়'..'ঢ়' || c == 'য়'
+        }
+
+        val isBengaliKar: (Char) -> Boolean = { c ->
+            c in listOf('া', 'ি', 'ী', 'ু', 'ূ', 'ৃ', 'ে', 'ৈ', 'ো', 'ৌ')
+        }
+
+        val firstChar = clean[0]
+
+        // Rule 1: Special composite merge: ে + া -> ো, and ে + ৌ -> ঔ / কৌ
+        if (lastChar == 'ে') {
+            if (firstChar == 'া') {
+                ic.deleteSurroundingText(1, 0)
+                ic.commitText("ো", 1)
+                return
+            } else if (firstChar == 'ৌ' || firstChar == '\u09D7') {
+                ic.deleteSurroundingText(1, 0)
+                ic.commitText("ৌ", 1)
+                return
+            }
+        }
+
+        // Rule 2: If previous char is already a kar, replace it with the new kar
+        if (lastChar != null && isBengaliKar(lastChar) && isBengaliKar(firstChar)) {
+            ic.deleteSurroundingText(1, 0)
+            ic.commitText(clean, 1)
+            return
+        }
+
+        // Rule 3: If typed char is hasant ('্')
+        if (firstChar == '্') {
+            // Prevent double hasant
+            if (lastChar == '্') return
+            // Prevent leading hasant if no preceding consonant
+            if (lastChar == null || !isConsonant(lastChar)) return
+            ic.commitText("্", 1)
+            return
+        }
+
+        // Rule 4: If typed char is a kar, check whether preceding char is a consonant
+        if (isBengaliKar(firstChar)) {
+            if (lastChar == null || !isConsonant(lastChar)) {
+                // Standalone kar typed at start of input or after space/punct/vowel:
+                // Convert to independent vowel (e.g. া -> আ) to prevent dotted circle ◌
+                val independentVowel = karToVowel[firstChar] ?: clean
+                ic.commitText(independentVowel, 1)
+                return
+            }
+        }
+
+        commitCharacterWithPunctuationHandling(ic, clean)
     }
 
     private fun commitCharacterWithPunctuationHandling(ic: InputConnection, text: String) {

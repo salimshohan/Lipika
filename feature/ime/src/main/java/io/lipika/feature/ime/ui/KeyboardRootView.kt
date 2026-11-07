@@ -266,7 +266,7 @@ fun KeyboardRootView(
     val currentLayoutIndex = remember(effectiveLayoutList, layout.id) {
         effectiveLayoutList.indexOf(layout.id).coerceAtLeast(0)
     }
-    val commitThresholdPx = with(density) { 56.dp.toPx() }
+    val commitThresholdPx = with(density) { 28.dp.toPx() }
     val n = effectiveLayoutList.size
     val targetSwipeIndex = if (isSpacebarSwiping && n > 1) {
         if (spacebarSwipeDeltaX >= commitThresholdPx) {
@@ -305,7 +305,8 @@ fun KeyboardRootView(
         ToolbarAction.SETTINGS,
         ToolbarAction.TRADITIONAL_MODE,
         ToolbarAction.UNDO,
-        ToolbarAction.REDO
+        ToolbarAction.REDO,
+        ToolbarAction.FONT
     )
     var pinnedTools by remember(initialPinnedTools) {
         val pinned = (initialPinnedTools ?: defaultPinned).distinct()
@@ -847,6 +848,23 @@ fun KeyboardRootView(
                 try {
                     val intent = android.content.Intent(context, Class.forName("io.lipika.app.MainActivity")).apply {
                         flags = android.content.Intent.FLAG_ACTIVITY_NEW_TASK
+                    }
+                    context.startActivity(intent)
+                } catch (_: Exception) {}
+            }
+            ToolbarAction.FONT -> {
+                isToolsDrawerOpen = false
+                isToolbarOptionsVisible = false
+                isEmojiOpen = false
+                isTextEditOpen = false
+                isClipboardOpen = false
+                isResizerOpen = false
+                isSuggestionsExpanded = false
+                isLanguagePickerOpen = false
+                try {
+                    val intent = android.content.Intent(context, Class.forName("io.lipika.app.MainActivity")).apply {
+                        flags = android.content.Intent.FLAG_ACTIVITY_NEW_TASK
+                        putExtra("navigate_to", "fonts")
                     }
                     context.startActivity(intent)
                 } catch (_: Exception) {}

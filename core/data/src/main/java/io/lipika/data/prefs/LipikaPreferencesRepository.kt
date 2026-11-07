@@ -58,6 +58,7 @@ class LipikaPreferencesRepository private constructor(private val context: Conte
     private object PreferencesKeys {
         val THEME = stringPreferencesKey("pref_theme")
         val SELECTED_FONT = stringPreferencesKey("pref_selected_font")
+        val SELECTED_BENGALI_FONT = stringPreferencesKey("pref_selected_bengali_font")
         val ACCENT_COLOR = stringPreferencesKey("pref_accent_color")
         val ACCENT_MODE = stringPreferencesKey("pref_accent_mode")
         val MULTIPLE_ACCENTS = stringPreferencesKey("pref_multiple_accents")
@@ -77,7 +78,9 @@ class LipikaPreferencesRepository private constructor(private val context: Conte
         val VIBRATE_ON_KEYPRESS = booleanPreferencesKey("pref_vibrate_on_keypress")
         val VIBRATION_TYPE = stringPreferencesKey("pref_vibration_type")
         val VIBRATION_STRENGTH = intPreferencesKey("pref_vibration_strength")
+        val VIBRATION_DURATION_MS = intPreferencesKey("pref_vibration_duration_ms")
         val SOUND_ON_KEYPRESS = booleanPreferencesKey("pref_sound_on_keypress")
+        val SOUND_VOLUME = intPreferencesKey("pref_sound_volume")
         val LONG_PRESS_DELAY_MS = intPreferencesKey("pref_long_press_delay_ms")
         val CURSOR_TRACKPAD_ENABLED = booleanPreferencesKey("pref_cursor_trackpad_enabled")
         val ONE_HANDED_MODE = stringPreferencesKey("pref_one_handed_mode")
@@ -137,6 +140,7 @@ class LipikaPreferencesRepository private constructor(private val context: Conte
             LipikaPreferences(
                 theme = prefs[PreferencesKeys.THEME] ?: LipikaPreferences.THEME_LIPIKA_GRADIENT,
                 selectedFont = prefs[PreferencesKeys.SELECTED_FONT] ?: LipikaPreferences.FONT_TW_CENT_MT,
+                selectedBengaliFont = prefs[PreferencesKeys.SELECTED_BENGALI_FONT] ?: LipikaPreferences.FONT_KALPURUSH,
                 accentColor = prefs[PreferencesKeys.ACCENT_COLOR] ?: LipikaPreferences.ACCENT_CYAN,
                 accentMode = prefs[PreferencesKeys.ACCENT_MODE] ?: LipikaPreferences.ACCENT_MODE_SINGLE,
                 multipleAccentsRaw = prefs[PreferencesKeys.MULTIPLE_ACCENTS] ?: "",
@@ -165,7 +169,9 @@ class LipikaPreferencesRepository private constructor(private val context: Conte
                 vibrateOnKeypress = prefs[PreferencesKeys.VIBRATE_ON_KEYPRESS] ?: false,
                 vibrationType = prefs[PreferencesKeys.VIBRATION_TYPE] ?: LipikaPreferences.VIBRATION_TYPE_HAPTIC,
                 vibrationStrength = prefs[PreferencesKeys.VIBRATION_STRENGTH] ?: 50,
+                vibrationDurationMs = prefs[PreferencesKeys.VIBRATION_DURATION_MS] ?: 25,
                 soundOnKeypress = prefs[PreferencesKeys.SOUND_ON_KEYPRESS] ?: false,
+                soundVolume = prefs[PreferencesKeys.SOUND_VOLUME] ?: 80,
                 longPressDelayMs = prefs[PreferencesKeys.LONG_PRESS_DELAY_MS] ?: 300,
                 cursorTrackpadEnabled = prefs[PreferencesKeys.CURSOR_TRACKPAD_ENABLED] ?: true,
                 oneHandedMode = prefs[PreferencesKeys.ONE_HANDED_MODE] ?: LipikaPreferences.ONE_HANDED_OFF,
@@ -320,6 +326,10 @@ class LipikaPreferencesRepository private constructor(private val context: Conte
         context.lipikaDataStore.edit { it[PreferencesKeys.SELECTED_FONT] = font }
     }
 
+    suspend fun updateSelectedBengaliFont(font: String) {
+        context.lipikaDataStore.edit { it[PreferencesKeys.SELECTED_BENGALI_FONT] = font }
+    }
+
     suspend fun updateCustomFontPath(path: String) {
         context.lipikaDataStore.edit { it[PreferencesKeys.CUSTOM_FONT_PATH] = path }
     }
@@ -384,8 +394,16 @@ class LipikaPreferencesRepository private constructor(private val context: Conte
         context.lipikaDataStore.edit { it[PreferencesKeys.VIBRATION_STRENGTH] = strength.coerceIn(0, 100) }
     }
 
+    suspend fun updateVibrationDuration(durationMs: Int) {
+        context.lipikaDataStore.edit { it[PreferencesKeys.VIBRATION_DURATION_MS] = durationMs.coerceIn(5, 100) }
+    }
+
     suspend fun updateSoundOnKeypress(enabled: Boolean) {
         context.lipikaDataStore.edit { it[PreferencesKeys.SOUND_ON_KEYPRESS] = enabled }
+    }
+
+    suspend fun updateSoundVolume(volume: Int) {
+        context.lipikaDataStore.edit { it[PreferencesKeys.SOUND_VOLUME] = volume.coerceIn(0, 100) }
     }
 
     suspend fun updateLongPressDelayMs(delayMs: Int) {

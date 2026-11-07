@@ -237,19 +237,6 @@ fun AppearanceScreen(
                         customHexInput = ""
                     }
                 )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                // Live Interactive Component Preview
-                Text(
-                    text = "Live Preview",
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = colors.textPrimary
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                LiveSingleAccentPreviewCard(accentColor = colors.accent)
-
             } else {
                 // ==========================================
                 // MULTIPLE ACCENTS: PER-COMPONENT CONFIG
@@ -331,24 +318,6 @@ fun AppearanceScreen(
                     }
                 )
 
-                Spacer(modifier = Modifier.height(16.dp))
-
-                // Live Multi-Component Preview
-                Text(
-                    text = "Multi-Accent Live Harmony",
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = colors.textPrimary
-                )
-                Spacer(modifier = Modifier.height(8.dp))
-                LiveMultiAccentPreviewCard(
-                    cardAccent = colors.cardAccent,
-                    navAccent = colors.navAccent,
-                    iconAccent = colors.iconAccent,
-                    controlAccent = colors.controlAccent,
-                    buttonAccent = colors.buttonAccent
-                )
-
                 Spacer(modifier = Modifier.height(10.dp))
 
                 OutlinedButton(
@@ -382,6 +351,13 @@ fun AppearanceScreen(
             icon = Icons.Outlined.Schedule
         ) {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                AppearanceOptionCard(
+                    title = "System Default",
+                    subtitle = "Follow system-wide dark/light mode settings",
+                    icon = Icons.Outlined.AutoAwesome,
+                    selected = preferences.themeSchedule == LipikaPreferences.SCHEDULE_SYSTEM_DEFAULT,
+                    onClick = { onUpdateThemeSchedule(LipikaPreferences.SCHEDULE_SYSTEM_DEFAULT) }
+                )
                 AppearanceOptionCard(
                     title = "Always Light",
                     subtitle = "Always maintain the crisp light theme",
@@ -805,209 +781,6 @@ private fun CustomHexInputRow(
                 fontWeight = FontWeight.Bold,
                 color = Color.White
             )
-        }
-    }
-}
-
-@Composable
-private fun LiveSingleAccentPreviewCard(accentColor: Color) {
-    val colors = LocalSettingsColors.current
-    var switchState by remember { mutableStateOf(true) }
-    var sliderState by remember { mutableFloatStateOf(0.65f) }
-
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = colors.cardBackground),
-        border = BorderStroke(1.dp, colors.cardBorder)
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(10.dp)
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .size(36.dp)
-                            .clip(RoundedCornerShape(10.dp))
-                            .background(accentColor.copy(alpha = 0.16f)),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Icon(
-                            imageVector = Icons.Outlined.AutoAwesome,
-                            contentDescription = null,
-                            tint = accentColor,
-                            modifier = Modifier.size(18.dp)
-                        )
-                    }
-                    Text(
-                        text = "Interactive Controls",
-                        fontSize = 14.5.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        color = colors.textPrimary
-                    )
-                }
-
-                Switch(
-                    checked = switchState,
-                    onCheckedChange = { switchState = it },
-                    colors = SwitchDefaults.colors(
-                        checkedTrackColor = accentColor,
-                        checkedThumbColor = Color.White
-                    )
-                )
-            }
-
-            Slider(
-                value = sliderState,
-                onValueChange = { sliderState = it },
-                colors = SliderDefaults.colors(
-                    thumbColor = accentColor,
-                    activeTrackColor = accentColor
-                )
-            )
-
-            Button(
-                onClick = {},
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(42.dp),
-                shape = RoundedCornerShape(10.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = accentColor)
-            ) {
-                Text(
-                    text = "Accent Button Surface",
-                    fontSize = 13.5.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun LiveMultiAccentPreviewCard(
-    cardAccent: Color,
-    navAccent: Color,
-    iconAccent: Color,
-    controlAccent: Color,
-    buttonAccent: Color
-) {
-    val colors = LocalSettingsColors.current
-    var switchState by remember { mutableStateOf(true) }
-
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = colors.cardBackground),
-        border = BorderStroke(1.5.dp, cardAccent.copy(alpha = 0.5f))
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            // Simulated Navigation Bar
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(10.dp))
-                    .background(navAccent.copy(alpha = 0.12f))
-                    .padding(horizontal = 12.dp, vertical = 8.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    text = "Navigation Bar (Nav Accent)",
-                    fontSize = 12.5.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = navAccent
-                )
-                Box(
-                    modifier = Modifier
-                        .size(10.dp)
-                        .clip(CircleShape)
-                        .background(navAccent)
-                )
-            }
-
-            // Controls & Icons row
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(10.dp)
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .size(36.dp)
-                            .clip(RoundedCornerShape(10.dp))
-                            .background(iconAccent.copy(alpha = 0.16f)),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Icon(
-                            imageVector = Icons.Outlined.SmartButton,
-                            contentDescription = null,
-                            tint = iconAccent,
-                            modifier = Modifier.size(18.dp)
-                        )
-                    }
-                    Column {
-                        Text(
-                            text = "Icon & Control",
-                            fontSize = 13.5.sp,
-                            fontWeight = FontWeight.SemiBold,
-                            color = colors.textPrimary
-                        )
-                        Text(
-                            text = "Distinct component colors",
-                            fontSize = 11.5.sp,
-                            color = colors.textSecondary
-                        )
-                    }
-                }
-
-                Switch(
-                    checked = switchState,
-                    onCheckedChange = { switchState = it },
-                    colors = SwitchDefaults.colors(
-                        checkedTrackColor = controlAccent,
-                        checkedThumbColor = Color.White
-                    )
-                )
-            }
-
-            // Action Button
-            Button(
-                onClick = {},
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(42.dp),
-                shape = RoundedCornerShape(10.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = buttonAccent)
-            ) {
-                Text(
-                    text = "Action Button (Button Accent)",
-                    fontSize = 13.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White
-                )
-            }
         }
     }
 }

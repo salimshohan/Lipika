@@ -473,9 +473,7 @@ fun KeyboardLayoutsScreen(
                                     text = card.description,
                                     fontSize = 12.sp,
                                     color = colors.textSecondary,
-                                    modifier = Modifier.padding(top = 2.dp),
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis
+                                    modifier = Modifier.padding(top = 2.dp)
                                 )
                             }
                         }
@@ -907,9 +905,7 @@ private fun KeyboardLayoutPreviewItem(
             Text(
                 text = cardData.description,
                 fontSize = 11.sp,
-                color = colors.textSecondary,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+                color = colors.textSecondary
             )
         }
     }

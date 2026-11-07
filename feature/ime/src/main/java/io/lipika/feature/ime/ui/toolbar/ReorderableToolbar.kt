@@ -76,7 +76,8 @@ enum class ToolbarAction {
     TRADITIONAL_MODE,
     UNDO,
     REDO,
-    NUMBER_PAD
+    NUMBER_PAD,
+    FONT
 }
 
 data class ToolbarItem(
@@ -158,7 +159,8 @@ fun ReorderableToolbar(
             ToolbarAction.TRADITIONAL_MODE to ToolbarItem(ToolbarAction.TRADITIONAL_MODE, iconResId = R.drawable.ic_traditional, description = "Traditional Mode"),
             ToolbarAction.UNDO to ToolbarItem(ToolbarAction.UNDO, iconResId = R.drawable.ic_undo, description = "Undo"),
             ToolbarAction.REDO to ToolbarItem(ToolbarAction.REDO, iconResId = R.drawable.ic_redo, description = "Redo"),
-            ToolbarAction.NUMBER_PAD to ToolbarItem(ToolbarAction.NUMBER_PAD, icon = Icons.Outlined.Dialpad, description = "Number Pad")
+            ToolbarAction.NUMBER_PAD to ToolbarItem(ToolbarAction.NUMBER_PAD, icon = Icons.Outlined.Dialpad, description = "Number Pad"),
+            ToolbarAction.FONT to ToolbarItem(ToolbarAction.FONT, icon = Icons.Outlined.TextFields, description = "Fonts")
         )
     }
 

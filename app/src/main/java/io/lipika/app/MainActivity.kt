@@ -67,6 +67,7 @@ import io.lipika.app.ui.settings.ClipboardSettingsScreen
 import io.lipika.app.ui.settings.FontsScreen
 import io.lipika.app.ui.settings.CorrectionsSuggestionsScreen
 import io.lipika.app.ui.settings.SmartTypingScreen
+import io.lipika.app.ui.settings.SoundVibrationScreen
 import io.lipika.app.ui.settings.DarkSettingsColors
 import io.lipika.app.ui.settings.KeyboardLayoutsScreen
 import io.lipika.app.ui.settings.LightSettingsColors
@@ -407,6 +408,10 @@ fun LipikaSettingsApp(
             SettingsScreen.Appearance
         } else if (target == "themes" || pendingThemeImportUri != null) {
             SettingsScreen.AppearanceThemes()
+        } else if (target == "fonts" || target == "font") {
+            SettingsScreen.Fonts
+        } else if (target == "sound" || target == "vibration" || target == "sound_vibration") {
+            SettingsScreen.SoundVibration
         } else if (target == "clipboard") {
             SettingsScreen.Clipboard
         } else if (target == "preferences") {
@@ -462,6 +467,18 @@ fun LipikaSettingsApp(
                     if (currentScreen != SettingsScreen.Preferences) {
                         backStack = listOf(SettingsScreen.Main)
                         currentScreen = SettingsScreen.Preferences
+                    }
+                }
+                "fonts", "font" -> {
+                    if (currentScreen != SettingsScreen.Fonts) {
+                        backStack = listOf(SettingsScreen.Main)
+                        currentScreen = SettingsScreen.Fonts
+                    }
+                }
+                "sound", "vibration", "sound_vibration" -> {
+                    if (currentScreen != SettingsScreen.SoundVibration) {
+                        backStack = listOf(SettingsScreen.Main)
+                        currentScreen = SettingsScreen.SoundVibration
                     }
                 }
                 "clipboard" -> {
@@ -670,6 +687,9 @@ fun LipikaSettingsApp(
                             onUpdateSelectedFont = { font ->
                                 scope.launch { preferencesRepo.updateSelectedFont(font) }
                             },
+                            onUpdateSelectedBengaliFont = { font ->
+                                scope.launch { preferencesRepo.updateSelectedBengaliFont(font) }
+                            },
                             onUpdateCustomFontPath = { path ->
                                 scope.launch { preferencesRepo.updateCustomFontPath(path) }
                             },
@@ -855,6 +875,31 @@ fun LipikaSettingsApp(
                     is SettingsScreen.Clipboard -> {
                         ClipboardSettingsScreen(
                             clipboardManager = SandboxedClipboardManager.getInstance(context),
+                            onBack = navigateBack
+                        )
+                    }
+
+                    is SettingsScreen.SoundVibration -> {
+                        SoundVibrationScreen(
+                            preferences = preferences,
+                            onUpdateSoundOnKeypress = { enabled ->
+                                scope.launch { preferencesRepo.updateSoundOnKeypress(enabled) }
+                            },
+                            onUpdateSoundVolume = { volume ->
+                                scope.launch { preferencesRepo.updateSoundVolume(volume) }
+                            },
+                            onUpdateVibrateOnKeypress = { enabled ->
+                                scope.launch { preferencesRepo.updateVibrateOnKeypress(enabled) }
+                            },
+                            onUpdateVibrationType = { type ->
+                                scope.launch { preferencesRepo.updateVibrationType(type) }
+                            },
+                            onUpdateVibrationStrength = { strength ->
+                                scope.launch { preferencesRepo.updateVibrationStrength(strength) }
+                            },
+                            onUpdateVibrationDuration = { duration ->
+                                scope.launch { preferencesRepo.updateVibrationDurationMs(duration) }
+                            },
                             onBack = navigateBack
                         )
                     }

@@ -46,6 +46,19 @@ val LocalKeyboardFontFamily = staticCompositionLocalOf {
     KeyboardFontFamily
 }
 
+val LocalBengaliFontFamily = staticCompositionLocalOf {
+    FontFamily(Font(R.font.kalpurush, FontWeight.Normal))
+}
+
+fun resolveBengaliFontFamily(selectedBengaliFont: String): FontFamily {
+    return when (selectedBengaliFont) {
+        "noto_sans_bengali" -> FontFamily.SansSerif
+        "solaiman_lipi", "siyam_rupali", "hind_siliguri", "apona_lohit", "kalpurush" ->
+            FontFamily(Font(R.font.kalpurush, FontWeight.Normal))
+        else -> FontFamily(Font(R.font.kalpurush, FontWeight.Normal))
+    }
+}
+
 fun resolveKeyboardFontFamily(
     selectedFont: String,
     customFontPath: String? = null
@@ -62,6 +75,14 @@ fun resolveKeyboardFontFamily(
         "verdana" -> FontFamily(Font(R.font.verdana, FontWeight.Normal))
         "calibri" -> FontFamily(Font(R.font.calibri, FontWeight.Normal))
         "corbel" -> FontFamily(Font(R.font.corbel, FontWeight.Normal))
+        "roboto" -> FontFamily.SansSerif
+        "inter" -> FontFamily.SansSerif
+        "poppins" -> FontFamily(Font(R.font.tw_cent_mt, FontWeight.Medium))
+        "outfit" -> FontFamily(Font(R.font.segoe_ui, FontWeight.Medium))
+        "montserrat" -> FontFamily(Font(R.font.tw_cent_mt, FontWeight.Bold))
+        "solaiman_lipi", "siyam_rupali", "hind_siliguri", "apona_lohit" ->
+            FontFamily(Font(R.font.kalpurush, FontWeight.Normal))
+        "noto_sans_bengali" -> FontFamily.SansSerif
         "custom" -> {
             if (!customFontPath.isNullOrBlank()) {
                 try {
@@ -91,6 +112,11 @@ object LipikaTheme {
         @Composable
         @ReadOnlyComposable
         get() = LocalKeyboardFontFamily.current
+
+    val bengaliFontFamily: FontFamily
+        @Composable
+        @ReadOnlyComposable
+        get() = LocalBengaliFontFamily.current
 }
 
 @Composable
@@ -98,15 +124,18 @@ fun LipikaTheme(
     colorScheme: KeyboardColorScheme = KeyboardColorScheme.DefaultDark,
     fontFamily: FontFamily? = null,
     selectedFont: String = "default",
+    selectedBengaliFont: String = "kalpurush",
     customFontPath: String = "",
     content: @Composable () -> Unit
 ) {
     val resolvedFontFamily = fontFamily
         ?: if (selectedFont != "default") resolveKeyboardFontFamily(selectedFont, customFontPath)
         else colorScheme.effectiveFontFamily ?: KeyboardFontFamily
+    val resolvedBengaliFontFamily = resolveBengaliFontFamily(selectedBengaliFont)
     CompositionLocalProvider(
         LocalKeyboardColorScheme provides colorScheme,
         LocalKeyboardFontFamily provides resolvedFontFamily,
+        LocalBengaliFontFamily provides resolvedBengaliFontFamily,
         LocalTextStyle provides TextStyle(fontFamily = resolvedFontFamily),
         content = content
     )

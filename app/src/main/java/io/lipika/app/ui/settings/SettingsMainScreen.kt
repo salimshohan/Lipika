@@ -477,7 +477,7 @@ fun SettingsMainScreen(
                     )
                 }
 
-                // Row 3: Preferences & Clipboard
+                // Row 3: Preferences & Sound & Vibration
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -485,11 +485,26 @@ fun SettingsMainScreen(
                     DashboardOptionCard(
                         modifier = Modifier.weight(1f),
                         title = "Preferences",
-                        subtitle = "Haptics & gestures",
+                        subtitle = "Keys, popup & delay",
                         icon = Icons.Outlined.Tune,
                         colors = colors,
                         onClick = { onNavigate(SettingsScreen.Preferences) }
                     )
+                    DashboardOptionCard(
+                        modifier = Modifier.weight(1f),
+                        title = "Sound & Vibration",
+                        subtitle = "Volume, haptics & pulse",
+                        icon = Icons.Outlined.VolumeUp,
+                        colors = colors,
+                        onClick = { onNavigate(SettingsScreen.SoundVibration) }
+                    )
+                }
+
+                // Row 4: Clipboard & Appearance
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
                     DashboardOptionCard(
                         modifier = Modifier.weight(1f),
                         title = "Clipboard",
@@ -498,13 +513,6 @@ fun SettingsMainScreen(
                         colors = colors,
                         onClick = { onNavigate(SettingsScreen.Clipboard) }
                     )
-                }
-
-                // Row 4: Appearance (NEW) & About
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
                     DashboardOptionCard(
                         modifier = Modifier.weight(1f),
                         title = "Appearance",
@@ -512,6 +520,21 @@ fun SettingsMainScreen(
                         icon = Icons.Outlined.BrightnessMedium,
                         colors = colors,
                         onClick = { onNavigate(SettingsScreen.Appearance) }
+                    )
+                }
+
+                // Row 5: Voice Typing & About
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    DashboardOptionCard(
+                        modifier = Modifier.weight(1f),
+                        title = "Voice Typing",
+                        subtitle = "Speech to text input",
+                        icon = Icons.Outlined.Mic,
+                        colors = colors,
+                        onClick = { onNavigate(SettingsScreen.VoiceTyping) }
                     )
                     DashboardOptionCard(
                         modifier = Modifier.weight(1f),
@@ -846,8 +869,7 @@ private fun DashboardOptionCard(
                 Text(
                     text = subtitle,
                     fontSize = 11.sp,
-                    color = colors.textSecondary,
-                    maxLines = 1
+                    color = colors.textSecondary
                 )
             }
         }

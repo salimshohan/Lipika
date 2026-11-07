@@ -49,21 +49,28 @@ jobs:
           echo "y" | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --install "ndk;26.2.11394342"
           echo "ANDROID_NDK_HOME=$ANDROID_HOME/ndk/26.2.11394342" >> $GITHUB_ENV
 
-      - name: Build Debug APK
-        run: ./gradlew assembleDebug --stacktrace --no-daemon -Dorg.gradle.jvmargs="-Xmx4096m -XX:MaxMetaspaceSize=1024m"
+      - name: Build Debug APK & AAB Bundle
+        run: ./gradlew assembleDebug bundleDebug --stacktrace --no-daemon -Dorg.gradle.jvmargs="-Xmx4096m -XX:MaxMetaspaceSize=1024m"
 
-      - name: Prepare APK
+      - name: Prepare Dynamic Artifacts
         run: |
+          VERSION_NAME=$(grep 'versionName = ' app/build.gradle.kts | head -n 1 | sed 's/.*"\(.*\)".*/\1/')
+          echo "Building release for Lipika version: $VERSION_NAME"
           mkdir -p dist
-          cp app/build/outputs/apk/debug/app-debug.apk dist/Lipika.apk
+          cp app/build/outputs/apk/debug/app-debug.apk "dist/Lipika v${VERSION_NAME}.apk"
+          cp app/build/outputs/apk/debug/app-debug.apk "dist/Lipika.apk"
+          if [ -f app/build/outputs/bundle/debug/app-debug.aab ]; then
+            cp app/build/outputs/bundle/debug/app-debug.aab "dist/Lipika v${VERSION_NAME}.aab"
+          fi
+          ls -la dist/
 
-      - name: Upload Debug APK Artifact
+      - name: Upload Debug APK & Bundle Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: Lipika-APK
-          path: dist/Lipika.apk
+          name: Lipika-Release-Packages
+          path: dist/*
 
-      - name: Release Lipika APK
+      - name: Release Lipika APK & AAB
         if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
         with:
@@ -72,25 +79,30 @@ jobs:
           body: |
             ### 🌟 Lipika Keyboard ${{ github.ref_name }} Release
 
-            - **🖼️ App Icon Artwork Complete Restoration**:
-              - Restored the complete light background canvas artwork with diagonal ambient gradient and soft specular lighting (`media_1793977899450_25297cd4.png`).
-              - Centered floating blue-to-cyan decorative squircle badge with soft ambient drop shadow and crisp white capital letter "L" glyph in safe zone across all Android densities (`mdpi`, `hdpi`, `xhdpi`, `xxhdpi`, `xxxhdpi`), adaptive launcher drawables, and SVG assets.
-            - **🎨 Theme Page Complete Redesign**:
-              - Status-bar inset respecting navigation bar with clean back navigation.
-              - Prominent **Create Theme** (launches Theme Studio) and **My Themes** management options at the top.
-              - Categorized in strict order: **Default Themes** (Default Light, Default Dark), **Color Themes** (solid colors), and **Gradient Themes** (gradient themes).
-              - Exactly **TWO** rectangular theme cards per row (`chunked(2)`) with immediate miniature keyboard preview without clicking.
-              - Interactive Customization Inspector: Clicking a card previews the theme and provides Key Border and Key Shadow toggles with an "Apply Theme" button.
-            - **📁 My Themes Sequential Auto-Naming & Management**:
-              - User custom themes automatically sequenced as "Lipika Theme 1", "Lipika Theme 2", etc. (never overwriting existing names).
-              - Full lifecycle management: Apply, Preview, Edit in Theme Studio, Rename, Share, and Delete with confirmation.
-            - **✨ Dedicated Appearance & Rich Multi-Accent System**:
-              - Cleaned up Appearance screen, removing redundant duplicates and integrating high-quality Accent Customization.
-              - **Single Color Mode**: 18 curated premium presets (Premium Blue, Royal Blue, Sky Blue, Teal, Mint Green, Emerald, Purple, Lavender, Violet, Pink, Rose, Coral, Orange, Amber, Gold, Red, Neutral Slate, Pastel Cyan) plus custom Hex color input.
-              - **Multiple Colors Mode**: Independent accent color customization for Cards, Navigation, Icons, Controls, and Buttons with live preview and reset to defaults.
-              - Automated Theme Scheduling (Always Light, Always Dark, Sunset to Sunrise, and Custom Schedule).
-            - **⚡ Dashboard Minimal Typing Animation (60+ Variations)**:
-              - Over 60 curated Bengali and English text variations with smooth typing, deleting, blinking cursor, and zero layout shift.
-          files: dist/Lipika.apk
+            - **🖼️ Official App Icon Artwork**:
+              - Restored the high-resolution light background canvas artwork with diagonal gradient, soft shadows, and centered vibrant blue-cyan squircle "L" badge across all screen densities.
+            - **⌨️ Keyboard Layout & Symbol Hints (Exact Reference Match)**:
+              - Dedicated English Number Row with Bengali numeral hints (`১`–`০`), and dedicated Bengali Number Row with English numeral hints (`1`–`0`).
+              - Standard QWERTY layout symbol hints (`q`→`৳`, `w`→`%`, `e`→`_`, `r`→`;`, `t`→`<`, `y`→`>`, `u`→`+`, `i`→`=`, `o`→`[`, `p`→`]`).
+              - Bottom row arranged as: `?123 / ?১২৩`, `Emoji`, `/`, `Spacebar`, `. / ।`, `Go / Enter`.
+              - Symbols layout 1 and 2 updated with exact glyphs (`☞ ◐ ⊕ ✖ ✔ ✪ ∞ ⇒ ➤ ✆`, etc.).
+            - **✨ Bengali Unicode & Provat Engine Refinement**:
+              - Eliminated HarfBuzz dotted circle (`◌`) artifacts at the Unicode level with smart vowel kar merging, independent vowel resolution, and duplicate hasanta prevention.
+            - **🔊 Dedicated Sound & Vibration Settings**:
+              - Added dedicated Sound & Vibration settings section with volume slider, vibration mode (Haptic vs Vibration), intensity, and duration controls.
+              - Configured `VibrationAttributes.USAGE_TOUCH` and `AudioAttributes.USAGE_ASSISTANCE_SONIFICATION` for guaranteed keypress sound and vibration feedback on all OEM Android devices.
+            - **🔤 Dual Font System & 10 New Fonts**:
+              - Choose English and Bengali typography simultaneously with dedicated preview sentences.
+              - Added 5 new Bengali fonts: **SolaimanLipi**, **Siyam Rupali**, **Noto Sans Bengali**, **Hind Siliguri**, **AponaLohit**.
+              - Added 5 new English fonts: **Roboto**, **Inter**, **Poppins**, **Outfit**, **Montserrat**.
+              - Added dedicated **Fonts** shortcut directly on the keyboard toolbar.
+            - **⚡ Performance & Latency Optimization**:
+              - Ultra-responsive touch handling preventing missed keypresses during rapid multi-touch typing.
+              - Spacebar swipe threshold reduced to 28dp for instant language switching.
+            - **🎨 Appearance & Theme Polish**:
+              - Streamlined Appearance screen without unnecessary live previews.
+              - Added "System Default" to automated theme schedule.
+              - Removed description line limits to eliminate truncated text.
+          files: dist/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
