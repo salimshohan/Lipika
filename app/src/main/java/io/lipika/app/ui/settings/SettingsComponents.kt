@@ -1,6 +1,7 @@
 package io.lipika.app.ui.settings
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.border
 
 import androidx.annotation.DrawableRes
 import androidx.compose.animation.AnimatedContent
